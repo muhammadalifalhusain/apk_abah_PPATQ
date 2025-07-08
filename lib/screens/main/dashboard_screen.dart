@@ -5,6 +5,7 @@ import '../../models/dashboard_model.dart';
 import '../../services/dashboard_service.dart';
 import '../../services/login_service.dart';
 import '../login_screen.dart';
+import '../../widgets/menu_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -175,28 +176,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.dashboard, color: Colors.white.withOpacity(0.9), size: 16),
-                const SizedBox(width: 8),
-                Text(
-                  'Dashboard Overview',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
+                  title: const Text('Konfirmasi Logout'),
+                  content: const Text('Apakah Anda yakin ingin logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Batal'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        handleLogout(); // Pastikan handleLogout() ada di screen ini
+                      },
+                      child: const Text('Logout'),
+                    ),
+                  ],
                 ),
-              ],
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.50), // Warna latar belakang merah lembut
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.red),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.logout_rounded, color: Colors.white, size: 18),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Keluar',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -236,43 +272,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         backgroundColor: Colors.indigo,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  title: const Text('Konfirmasi Logout'),
-                  content: const Text('Apakah Anda yakin ingin logout?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Batal'),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        handleLogout();
-                      },
-                      child: const Text('Logout'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          )
-        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -290,8 +289,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildHeader(),
-                        const SizedBox(height: 15),
-                        
+                        const SizedBox(height: 10),
+                        MenuIkonWidget(),
+                        const SizedBox(height: 8),
                         // Santri Section
                         _buildSectionTitle('Data Santri', Icons.school),
                         const SizedBox(height: 12),
