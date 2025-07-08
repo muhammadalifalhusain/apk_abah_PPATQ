@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/main/psb_screen.dart';
 import '../screens/main/pegawai_screen.dart';
+import '../screens/main/belum_lapor_screen.dart';
+import '../screens/main/bayar_bulan_lalu_screen.dart';
+
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -109,7 +112,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         label: 'Belum Lapor',
         color: const Color(0xFFE91E63),
         onTap: () {
-          _showComingSoonDialog(context, 'Belum Lapor');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const BelumLaporScreen()));
         },
       ),
       _MenuItem(
@@ -125,7 +128,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         label: 'Bayar Lalu',
         color: const Color(0xFF607D8B),
         onTap: () {
-          _showComingSoonDialog(context, 'Bayar Bulan Lalu');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const BayarBulanLaluScreen()));
         },
       ),
       _MenuItem(
