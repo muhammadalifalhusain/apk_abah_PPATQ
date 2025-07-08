@@ -6,6 +6,8 @@ import '../../services/dashboard_service.dart';
 import '../../services/login_service.dart';
 import '../login_screen.dart';
 import '../../widgets/menu_widget.dart';
+import 'pegawai_screen.dart';
+import 'belum_lapor_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -85,26 +87,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: items.map((item) {
           return Expanded(
-            child: Column(
-              children: [
-                Icon(item['icon'], color: item['color'], size: 20),
-                const SizedBox(height: 6),
-                Text(
-                  item['value'].toString(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+            child: GestureDetector(
+              onTap: item['onTap'],
+              child: Column(
+                children: [
+                  Icon(item['icon'], color: item['color'], size: 20),
+                  const SizedBox(height: 6),
+                  Text(
+                    item['value'].toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item['label'],
-                  style: const TextStyle(fontSize: 11),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    item['label'],
+                    style: const TextStyle(fontSize: 11),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           );
         }).toList(),
@@ -112,62 +117,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
-
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildHeader() {
     return Container(
@@ -368,6 +317,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'value': _dashboardData!.jumlahSantriBelumLapor,
                             'icon': Icons.warning_amber,
                             'color': Colors.orange,
+                            'onTap': () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => const BelumLaporScreen()));
+                            }
                           },
                         ]),
                         const SizedBox(height: 5),
@@ -381,6 +333,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'value': _dashboardData!.jumlahPegawai,
                             'icon': Icons.groups,
                             'color': Colors.purple,
+                            'onTap': () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen()));
+                            }
                           },
                           {
                             'label': 'Laki-laki',
