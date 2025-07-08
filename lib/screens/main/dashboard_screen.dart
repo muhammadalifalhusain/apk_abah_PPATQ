@@ -41,8 +41,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-
-
   Future<void> loadDashboard() async {
     final data = await _dashboardService.fetchDashboard();
     setState(() {
@@ -67,6 +65,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }
   }
+
+  Widget _buildStatGroupCard(List<Map<String, dynamic>> items) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: items.map((item) {
+          return Expanded(
+            child: Column(
+              children: [
+                Icon(item['icon'], color: item['color'], size: 20),
+                const SizedBox(height: 6),
+                Text(
+                  item['value'].toString(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  item['label'],
+                  style: const TextStyle(fontSize: 11),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+
 
   Widget _buildStatCard(String label, String value, IconData icon, Color color) {
     return Container(
@@ -241,8 +287,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
-
   Widget _buildSectionTitle(String title, IconData icon) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
@@ -300,57 +344,86 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         // Santri Section
                         _buildSectionTitle('Data Santri', Icons.school),
                         const SizedBox(height: 12),
-                        GridView.count(
-                          crossAxisCount: 2,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 1.5,
-                          children: [
-                            _buildStatCard('Total', _dashboardData!.jumlahSantri.toString(), Icons.groups, Colors.green),
-                            _buildStatCard('Laki-laki', _dashboardData!.jumlahSantriLaki.toString(), Icons.male, Colors.blue),
-                            _buildStatCard('Perempuan', _dashboardData!.jumlahSantriPerempuan.toString(), Icons.female, Colors.pink),
-                            _buildStatCard('Belum Lapor', _dashboardData!.jumlahSantriBelumLapor.toString(), Icons.warning_amber, Colors.orange),
-                          ],
-                        ),
-                        const SizedBox(height: 15),
+                        _buildStatGroupCard([
+                          {
+                            'label': 'Total',
+                            'value': _dashboardData!.jumlahSantri,
+                            'icon': Icons.groups,
+                            'color': Colors.green,
+                          },
+                          {
+                            'label': 'Laki-laki',
+                            'value': _dashboardData!.jumlahSantriLaki,
+                            'icon': Icons.male,
+                            'color': Colors.blue,
+                          },
+                          {
+                            'label': 'Perempuan',
+                            'value': _dashboardData!.jumlahSantriPerempuan,
+                            'icon': Icons.female,
+                            'color': Colors.pink,
+                          },
+                          {
+                            'label': 'Belum Lapor',
+                            'value': _dashboardData!.jumlahSantriBelumLapor,
+                            'icon': Icons.warning_amber,
+                            'color': Colors.orange,
+                          },
+                        ]),
+                        const SizedBox(height: 5),
                         
                         // Pegawai Section
                         _buildSectionTitle('Data Pegawai', Icons.people),
                         const SizedBox(height: 12),
-                        GridView.count(
-                          crossAxisCount: 2,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 1.5,
-                          children: [
-                            _buildStatCard('Total', _dashboardData!.jumlahPegawai.toString(), Icons.groups, Colors.purple),
-                            _buildStatCard('Laki-laki', _dashboardData!.jumlahPegawaiLaki.toString(), Icons.male, Colors.blue),
-                            _buildStatCard('Perempuan', _dashboardData!.jumlahPegawaiPerempuan.toString(), Icons.female, Colors.pink),
-                          ],
-                        ),
-                        const SizedBox(height: 15),
-                        
-                        // PSB Section
+                        _buildStatGroupCard([
+                          {
+                            'label': 'Total',
+                            'value': _dashboardData!.jumlahPegawai,
+                            'icon': Icons.groups,
+                            'color': Colors.purple,
+                          },
+                          {
+                            'label': 'Laki-laki',
+                            'value': _dashboardData!.jumlahPegawaiLaki,
+                            'icon': Icons.male,
+                            'color': Colors.blue,
+                          },
+                          {
+                            'label': 'Perempuan',
+                            'value': _dashboardData!.jumlahPegawaiPerempuan,
+                            'icon': Icons.female,
+                            'color': Colors.pink,
+                          },
+                        ]),
+                        const SizedBox(height: 5),
                         _buildSectionTitle('Data PSB', Icons.app_registration),
                         const SizedBox(height: 12),
-                        GridView.count(
-                          crossAxisCount: 2,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 1.5,
-                          children: [
-                            _buildStatCard('Tahun Ini', _dashboardData!.jumlahPsb.toString(), Icons.app_registration, Colors.teal),
-                            _buildStatCard('Laki-laki', _dashboardData!.jumlahPsbLaki.toString(), Icons.male, Colors.blue),
-                            _buildStatCard('Perempuan', _dashboardData!.jumlahPsbPerempuan.toString(), Icons.female, Colors.pink),
-                            _buildStatCard('Tahun Lalu', _dashboardData!.jumlahPsbTahunLalu.toString(), Icons.history, Colors.grey),
-                          ],
-                        ),
+                        _buildStatGroupCard([
+                          {
+                            'label': 'Tahun Ini',
+                            'value': _dashboardData!.jumlahPsb,
+                            'icon': Icons.app_registration,
+                            'color': Colors.teal,
+                          },
+                          {
+                            'label': 'Laki-laki',
+                            'value': _dashboardData!.jumlahPsbLaki,
+                            'icon': Icons.male,
+                            'color': Colors.blue,
+                          },
+                          {
+                            'label': 'Perempuan',
+                            'value': _dashboardData!.jumlahPsbPerempuan,
+                            'icon': Icons.female,
+                            'color': Colors.pink,
+                          },
+                          {
+                            'label': 'Tahun Lalu',
+                            'value': _dashboardData!.jumlahPsbTahunLalu,
+                            'icon': Icons.history,
+                            'color': Colors.grey,
+                          },
+                        ]),
                         const SizedBox(height: 15),
                         
                         // Pembayaran Section
