@@ -1,48 +1,38 @@
-class Pegawai {
+class PegawaiData {
   final String photo;
   final String nama;
   final String jenisKelamin;
 
-  Pegawai({
+  PegawaiData({
     required this.photo,
     required this.nama,
     required this.jenisKelamin,
   });
 
-  factory Pegawai.fromJson(Map<String, dynamic> json) {
-    return Pegawai(
-      photo: (json['photo'] ?? '').toString().isEmpty
-          ? 'default.png' // fallback jika kosong
-          : json['photo'],
-      nama: (json['nama'] ?? '').toString().isEmpty
-          ? 'Tidak diketahui'
-          : json['nama'],
-      jenisKelamin: (json['jenisKelamin'] ?? '').toString().isEmpty
-          ? 'Tidak diketahui'
-          : json['jenisKelamin'],
+  factory PegawaiData.fromJson(Map<String, dynamic> json) {
+    return PegawaiData(
+      photo: (json['photo'] ?? '').toString().isNotEmpty
+          ? json['photo']
+          : 'default.png',
+      nama: (json['nama'] ?? '').toString().isNotEmpty
+          ? json['nama']
+          : 'Tidak diketahui',
+      jenisKelamin: (json['jenisKelamin'] ?? '').toString().isNotEmpty
+          ? json['jenisKelamin']
+          : 'Tidak diketahui',
     );
   }
 }
 
 class PegawaiResponse {
-  final List<Pegawai> data;
-  final String message;
-  final int status;
+  final List<PegawaiData> data;
 
-  PegawaiResponse({
-    required this.data,
-    required this.message,
-    required this.status,
-  });
+  PegawaiResponse({required this.data});
 
   factory PegawaiResponse.fromJson(Map<String, dynamic> json) {
-    var list = (json['data'] as List?) ?? [];
-    List<Pegawai> pegawaiList = list.map((e) => Pegawai.fromJson(e)).toList();
-
-    return PegawaiResponse(
-      data: pegawaiList,
-      message: json['message'] ?? '',
-      status: json['status'] ?? 0,
-    );
+    var list = json['data'] as List? ?? [];
+    List<PegawaiData> pegawaiList =
+        list.map((e) => PegawaiData.fromJson(e)).toList();
+    return PegawaiResponse(data: pegawaiList);
   }
 }

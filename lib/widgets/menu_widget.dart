@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/main/psb_screen.dart';
+import '../screens/main/pegawai_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -9,28 +10,27 @@ class MenuIkonWidget extends StatefulWidget {
   State<MenuIkonWidget> createState() => _MenuIkonWidgetState();
 }
 
+class _MenuItem {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback? onTap;
+
+  _MenuItem({
+    required this.icon,
+    required this.label,
+    required this.color,
+    this.onTap,
+  });
+}
+
 class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   bool _showAll = false;
 
-  final List<_MenuItem> _allMenuItems = [
-    _MenuItem(icon: Icons.group_add_rounded, label: 'PSB', color: Color(0xFF4CAF50), onTap: PsbScreen()),
-    _MenuItem(icon: Icons.school_rounded, label: 'Santri', color: Color(0xFF2196F3)),
-    _MenuItem(icon: Icons.badge_rounded, label: 'Pegawai', color: Color(0xFFFF9800)),
-    _MenuItem(icon: Icons.report_rounded, label: 'Belum Lapor', color: Color(0xFFE91E63)),
-    _MenuItem(icon: Icons.verified_user_rounded, label: 'Bayar Valid', color: Color(0xFF9C27B0)),
-    _MenuItem(icon: Icons.history_rounded, label: 'Bayar Lalu', color: Color(0xFF607D8B)),
-    _MenuItem(icon: Icons.bed_rounded, label: 'Kamar', color: Color(0xFF3F51B5)),
-    _MenuItem(icon: Icons.class_rounded, label: 'Kelas', color: Color(0xFF00BCD4)),
-    _MenuItem(icon: Icons.menu_book_rounded, label: 'Tahfidz', color: Color(0xFF795548)),
-    _MenuItem(icon: Icons.warehouse_rounded, label: 'Aset', color: Color(0xFF8BC34A)),
-    _MenuItem(icon: Icons.supervised_user_circle_rounded, label: 'Murroby', color: Color(0xFFFF5722)),
-    _MenuItem(icon: Icons.account_circle_rounded, label: 'Ustad', color: Color(0xFF673AB7)),
-    _MenuItem(icon: Icons.local_fire_department_rounded, label: 'Kurban', color: Color(0xFFCDDC39)),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final displayedItems = _showAll ? _allMenuItems : _allMenuItems.take(6).toList();
+    final menuItems = _buildMenuItems(context);
+    final displayedItems = _showAll ? menuItems : menuItems.take(6).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +52,6 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
             ],
           ),
         ),
-
         const SizedBox(height: 10),
         GridView.count(
           shrinkWrap: true,
@@ -79,18 +78,118 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
     );
   }
 
+  List<_MenuItem> _buildMenuItems(BuildContext context) {
+    return [
+      _MenuItem(
+        icon: Icons.group_add_rounded,
+        label: 'PSB',
+        color: const Color(0xFF4CAF50),
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const PsbScreen()));
+        },
+      ),
+      _MenuItem(
+        icon: Icons.school_rounded,
+        label: 'Santri',
+        color: const Color(0xFF2196F3),
+        onTap: () {
+          _showComingSoonDialog(context, 'Santri');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.badge_rounded,
+        label: 'Pegawai',
+        color: const Color(0xFFFF9800),
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen()));
+        },
+      ),
+      _MenuItem(
+        icon: Icons.report_rounded,
+        label: 'Belum Lapor',
+        color: const Color(0xFFE91E63),
+        onTap: () {
+          _showComingSoonDialog(context, 'Belum Lapor');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.verified_user_rounded,
+        label: 'Bayar Valid',
+        color: const Color(0xFF9C27B0),
+        onTap: () {
+          _showComingSoonDialog(context, 'Bayar Valid');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.history_rounded,
+        label: 'Bayar Lalu',
+        color: const Color(0xFF607D8B),
+        onTap: () {
+          _showComingSoonDialog(context, 'Bayar Bulan Lalu');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.bed_rounded,
+        label: 'Kamar',
+        color: const Color(0xFF3F51B5),
+        onTap: () {
+          _showComingSoonDialog(context, 'Kamar');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.class_rounded,
+        label: 'Kelas',
+        color: const Color(0xFF00BCD4),
+        onTap: () {
+          _showComingSoonDialog(context, 'Kelas');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.menu_book_rounded,
+        label: 'Tahfidz',
+        color: const Color(0xFF795548),
+        onTap: () {
+          _showComingSoonDialog(context, 'Tahfidz');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.warehouse_rounded,
+        label: 'Aset',
+        color: const Color(0xFF8BC34A),
+        onTap: () {
+          _showComingSoonDialog(context, 'Aset');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.supervised_user_circle_rounded,
+        label: 'Murroby',
+        color: const Color(0xFFFF5722),
+        onTap: () {
+          _showComingSoonDialog(context, 'Murroby');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.account_circle_rounded,
+        label: 'Ustad',
+        color: const Color(0xFF673AB7),
+        onTap: () {
+          _showComingSoonDialog(context, 'Ustad Tahfidz');
+        },
+      ),
+      _MenuItem(
+        icon: Icons.local_fire_department_rounded,
+        label: 'Kurban',
+        color: const Color(0xFFCDDC39),
+        onTap: () {
+          _showComingSoonDialog(context, 'Kurban');
+        },
+      ),
+    ];
+  }
+
   Widget _buildMenuItem(BuildContext context, _MenuItem item) {
     return GestureDetector(
-      onTap: () {
-        if (item.onTap != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => item.onTap!),
-          );
-        } else {
-          _showComingSoonDialog(context, item.label);
-        }
-      },
+      onTap: item.onTap,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -120,7 +219,10 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
               const SizedBox(height: 12),
               Text(
                 item.label,
-                style: GoogleFonts.poppins(fontSize: 9, fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -155,18 +257,4 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
       ),
     );
   }
-}
-
-class _MenuItem {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final Widget? onTap;
-
-  _MenuItem({
-    required this.icon,
-    required this.label,
-    required this.color,
-    this.onTap,
-  });
 }

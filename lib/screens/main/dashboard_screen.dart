@@ -20,7 +20,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _isLoading = true;
 
   String? nama;
-  String? photoUrl;
+  String? photo;
 
   @override
   void initState() {
@@ -31,14 +31,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> loadUserSession() async {
     final prefs = await SharedPreferences.getInstance();
+    final storedPhoto = prefs.getString('photo') ?? '';
+
     setState(() {
       nama = prefs.getString('nama') ?? 'Pengguna';
-      final photo = prefs.getString('photo') ?? '';
-      if (photo.isNotEmpty) {
-        photoUrl = "https://manajemen.ppatq-rf.id/assets/img/upload/berita/thumbnail/$photo";
-      }
+      photo = storedPhoto.isNotEmpty
+          ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/$storedPhoto'
+          : ''; // Kosong jika tidak tersedia
     });
   }
+
+
 
   Future<void> loadDashboard() async {
     final data = await _dashboardService.fetchDashboard();
@@ -143,9 +146,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 child: CircleAvatar(
                   radius: 30,
-                  backgroundImage: photoUrl != null
-                      ? NetworkImage(photoUrl!)
-                      : const AssetImage('assets/images/default_profile.png') as ImageProvider,
+                  backgroundImage: (photo != null && photo!.isNotEmpty)
+                      ? NetworkImage(photo!)
+                      : const AssetImage('assets/images/logo.png') as ImageProvider,
                 ),
               ),
               const SizedBox(width: 16),
@@ -201,7 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       onPressed: () {
                         Navigator.pop(context);
-                        handleLogout(); // Pastikan handleLogout() ada di screen ini
+                        handleLogout();
                       },
                       child: const Text('Logout'),
                     ),
@@ -212,14 +215,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.50), // Warna latar belakang merah lembut
+                color: Colors.red.withOpacity(0.50),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.red),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.logout_rounded, color: Colors.white, size: 18),
+                  const Icon(Icons.logout_rounded, color: Colors.white, size: 18),
                   const SizedBox(width: 8),
                   Text(
                     'Keluar',
@@ -232,11 +235,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
+
 
   Widget _buildSectionTitle(String title, IconData icon) {
     return Container(
