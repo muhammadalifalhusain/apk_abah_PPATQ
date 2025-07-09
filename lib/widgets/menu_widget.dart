@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../screens/main/psb_screen.dart';
-import '../screens/main/pegawai_screen.dart';
+import '../screens/main/kurban_screen.dart';
 import '../screens/main/belum_lapor_screen.dart';
 import '../screens/main/bayar_bulan_lalu_screen.dart';
 
@@ -84,14 +83,6 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   List<_MenuItem> _buildMenuItems(BuildContext context) {
     return [
       _MenuItem(
-        icon: Icons.group_add_rounded,
-        label: 'PSB',
-        color: const Color(0xFF4CAF50),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const PsbScreen()));
-        },
-      ),
-      _MenuItem(
         icon: Icons.report_rounded,
         label: 'Belum Lapor',
         color: const Color(0xFFE91E63),
@@ -148,27 +139,11 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         },
       ),
       _MenuItem(
-        icon: Icons.supervised_user_circle_rounded,
-        label: 'Murroby',
-        color: const Color(0xFFFF5722),
-        onTap: () {
-          _showComingSoonDialog(context, 'Murroby');
-        },
-      ),
-      _MenuItem(
-        icon: Icons.account_circle_rounded,
-        label: 'Ustad',
-        color: const Color(0xFF673AB7),
-        onTap: () {
-          _showComingSoonDialog(context, 'Ustad Tahfidz');
-        },
-      ),
-      _MenuItem(
         icon: Icons.local_fire_department_rounded,
         label: 'Kurban',
         color: const Color(0xFFCDDC39),
         onTap: () {
-          _showComingSoonDialog(context, 'Kurban');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const KurbanScreen()));
         },
       ),
     ];

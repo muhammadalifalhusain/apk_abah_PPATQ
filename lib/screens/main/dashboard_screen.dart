@@ -8,6 +8,8 @@ import '../login_screen.dart';
 import '../../widgets/menu_widget.dart';
 import 'pegawai_screen.dart';
 import 'belum_lapor_screen.dart';
+import 'psb_screen.dart';
+import 'santri_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -69,53 +71,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildStatGroupCard(List<Map<String, dynamic>> items) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: items.map((item) {
-          return Expanded(
-            child: GestureDetector(
-              onTap: item['onTap'],
-              child: Column(
-                children: [
-                  Icon(item['icon'], color: item['color'], size: 20),
-                  const SizedBox(height: 6),
-                  Text(
-                    item['value'].toString(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+  return Container(
+    margin: const EdgeInsets.fromLTRB(8, 0, 8, 16), // Kiri-kanan: 8, bawah: 16
+    padding: const EdgeInsets.symmetric(vertical: 12), // Hanya vertical padding
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.1),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: items.map((item) {
+        return Expanded(
+          child: GestureDetector(
+            onTap: item['onTap'],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(item['icon'], color: item['color'], size: 20),
+                const SizedBox(height: 6),
+                Text(
+                  item['value'].toString(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item['label'],
-                    style: const TextStyle(fontSize: 11),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  item['label'],
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey,
                   ),
-                ],
-              ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          );
-        }).toList(),
-      ),
-    );
-  }
+          ),
+        );
+      }).toList(),
+    ),
+  );
+}
 
 
   Widget _buildHeader() {
@@ -299,6 +305,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'value': _dashboardData!.jumlahSantri,
                             'icon': Icons.groups,
                             'color': Colors.green,
+                            'onTap': () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => const SantriScreen()));
+                            }
                           },
                           {
                             'label': 'Laki-laki',
@@ -313,7 +322,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'color': Colors.pink,
                           },
                           {
-                            'label': 'Belum Lapor',
+                            'label': 'Tidak Melapor',
                             'value': _dashboardData!.jumlahSantriBelumLapor,
                             'icon': Icons.warning_amber,
                             'color': Colors.orange,
@@ -359,6 +368,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'value': _dashboardData!.jumlahPsb,
                             'icon': Icons.app_registration,
                             'color': Colors.teal,
+                            'onTap': () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => const PsbScreen()));
+                            }
                           },
                           {
                             'label': 'Laki-laki',
