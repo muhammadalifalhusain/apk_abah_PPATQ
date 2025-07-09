@@ -11,7 +11,8 @@ class PegawaiScreen extends StatefulWidget {
 
 class _PegawaiScreenState extends State<PegawaiScreen> {
   String selectedKategori = 'Pegawai';
-  final List<String> kategoriList = ['Pegawai', 'Murroby'];
+  final List<String> kategoriList = ['Pegawai', 'Murroby', 'Ustadz-Ustadzah'];
+
 
   List<dynamic> _dataList = [];
   bool _isLoading = true;
@@ -27,20 +28,30 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
 
+    final service = PegawaiService();
+
     if (selectedKategori == 'Pegawai') {
-      final pegawai = await PegawaiService().fetchPegawaiData();
+      final pegawai = await service.fetchPegawaiData();
       setState(() {
         _dataList = pegawai;
         _isLoading = false;
       });
-    } else {
-      final murroby = await PegawaiService().fetchMurrobyData();
+    } else if (selectedKategori == 'Murroby') {
+      final murroby = await service.fetchMurrobyData();
       setState(() {
         _dataList = murroby;
         _isLoading = false;
       });
+    } else if (selectedKategori == 'Ustadz-Ustadzah') {
+      final ustadz = await service.fetchUstadzData();
+      setState(() {
+        _dataList = ustadz;
+        _isLoading = false;
+      });
     }
   }
+
+
 
   Widget _buildItem(dynamic item) {
     final String nama = item.nama;
@@ -94,9 +105,21 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Data ${selectedKategori}', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          selectedKategori,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
       ),
+
       body: Column(
         children: [
           Padding(

@@ -92,14 +92,6 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         },
       ),
       _MenuItem(
-        icon: Icons.badge_rounded,
-        label: 'Pegawai',
-        color: const Color(0xFFFF9800),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen()));
-        },
-      ),
-      _MenuItem(
         icon: Icons.report_rounded,
         label: 'Belum Lapor',
         color: const Color(0xFFE91E63),

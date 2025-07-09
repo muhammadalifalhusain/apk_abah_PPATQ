@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/psb_model.dart';
 import '../../services/psb_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PsbScreen extends StatefulWidget {
   const PsbScreen({super.key});
@@ -53,9 +54,21 @@ class _PsbScreenState extends State<PsbScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Data PSB'),
         backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Data PSB',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
       ),
+
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _psbList.isEmpty
