@@ -92,14 +92,6 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         },
       ),
       _MenuItem(
-        icon: Icons.school_rounded,
-        label: 'Santri',
-        color: const Color(0xFF2196F3),
-        onTap: () {
-          _showComingSoonDialog(context, 'Santri');
-        },
-      ),
-      _MenuItem(
         icon: Icons.badge_rounded,
         label: 'Pegawai',
         color: const Color(0xFFFF9800),
