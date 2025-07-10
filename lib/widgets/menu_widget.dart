@@ -4,6 +4,7 @@ import '../screens/main/kurban_screen.dart';
 import '../screens/main/belum_lapor_screen.dart';
 import '../screens/main/bayar_bulan_lalu_screen.dart';
 import '../screens/main/kamar_screen.dart';
+import '../screens/main/aset_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -135,7 +136,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         label: 'Aset',
         color: const Color(0xFF8BC34A),
         onTap: () {
-          _showComingSoonDialog(context, 'Aset');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const AsetScreen()));
         },
       ),
       _MenuItem(
