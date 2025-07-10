@@ -41,7 +41,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       nama = prefs.getString('nama') ?? 'Pengguna';
       photo = storedPhoto.isNotEmpty
           ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/$storedPhoto'
-          : ''; // Kosong jika tidak tersedia
+          : ''; 
     });
   }
 
@@ -71,57 +71,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildStatGroupCard(List<Map<String, dynamic>> items) {
-  return Container(
-    margin: const EdgeInsets.fromLTRB(8, 0, 8, 16), // Kiri-kanan: 8, bawah: 16
-    padding: const EdgeInsets.symmetric(vertical: 12), // Hanya vertical padding
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.1),
-          blurRadius: 6,
-          offset: const Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: items.map((item) {
-        return Expanded(
-          child: GestureDetector(
-            onTap: item['onTap'],
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(item['icon'], color: item['color'], size: 20),
-                const SizedBox(height: 6),
-                Text(
-                  item['value'].toString(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item['label'],
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
-        );
-      }).toList(),
-    ),
-  );
-}
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: items.map((item) {
+          return Expanded(
+            child: GestureDetector(
+              onTap: item['onTap'],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(item['icon'], color: item['color'], size: 20),
+                  const SizedBox(height: 6),
+                  Text(
+                    item['value'].toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    item['label'],
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
 
 
   Widget _buildHeader() {
@@ -332,8 +332,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           },
                         ]),
                         const SizedBox(height: 5),
-                        
-                        // Pegawai Section
                         _buildSectionTitle('Data Pegawai', Icons.people),
                         const SizedBox(height: 12),
                         _buildStatGroupCard([

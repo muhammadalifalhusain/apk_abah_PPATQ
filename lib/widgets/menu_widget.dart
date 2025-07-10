@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../screens/main/kurban_screen.dart';
 import '../screens/main/belum_lapor_screen.dart';
 import '../screens/main/bayar_bulan_lalu_screen.dart';
-
+import '../screens/main/kamar_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -111,7 +111,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         label: 'Kamar',
         color: const Color(0xFF3F51B5),
         onTap: () {
-          _showComingSoonDialog(context, 'Kamar');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const KamarScreen()));
         },
       ),
       _MenuItem(
