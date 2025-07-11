@@ -49,20 +49,19 @@ class DawuhResponse {
 class DawuhRequest {
   final String judul;
   final String isiDakwah;
-  final File foto;
+  final File? foto; 
 
   DawuhRequest({
     required this.judul,
     required this.isiDakwah,
-    required this.foto,
+    this.foto,
   });
-
-  // Untuk debug
   @override
   String toString() {
-    return 'DawuhRequest{judul: $judul, isiDakwah: $isiDakwah, foto: ${foto.path}}';
+    return 'DawuhRequest{judul: $judul, isiDakwah: $isiDakwah, foto: ${foto?.path ?? "null"}}';
   }
 }
+
 
 class DawuhCreateResponse {
   final int status;

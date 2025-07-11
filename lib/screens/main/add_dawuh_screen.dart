@@ -6,11 +6,14 @@ import '../../services/dawuh_service.dart';
 import '../../models/dawuh_model.dart';
 
 class AddDawuhScreen extends StatefulWidget {
-  const AddDawuhScreen({Key? key}) : super(key: key);
+  final DawuhAbah? editDawuh; // Tambahkan ini
+
+  const AddDawuhScreen({Key? key, this.editDawuh}) : super(key: key);
 
   @override
   _AddDawuhScreenState createState() => _AddDawuhScreenState();
 }
+
 
 class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
@@ -28,24 +31,21 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
   @override
   void initState() {
     super.initState();
+
+    if (widget.editDawuh != null) {
+      _judulController.text = widget.editDawuh!.judul;
+      _isiDakwahController.text = widget.editDawuh!.isiDakwah;
+    }
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
     _animationController.forward();
   }
 
@@ -75,11 +75,13 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
     }
   }
 
-
-    
-
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (widget.editDawuh == null && _selectedImage == null) {
+      _showErrorSnackBar('Silakan pilih gambar terlebih dahulu');
       return;
     }
 
@@ -88,25 +90,39 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
     });
 
     try {
-      await _dawuhService.createDawuh(
-        DawuhRequest(
-          judul: _judulController.text,
-          isiDakwah: _isiDakwahController.text,
-          foto: _selectedImage!,
-        ),
-      );
+      if (widget.editDawuh != null) {
+        // EDIT MODE
+        final dawuhId = widget.editDawuh!.id;
+        await _dawuhService.updateDawuh(
+          dawuhId,
+          DawuhRequest(
+            judul: _judulController.text,
+            isiDakwah: _isiDakwahController.text,
+            foto: _selectedImage, 
+          ),
+        );
+        _showSuccessSnackBar('Dawuh berhasil diperbarui');
+      } else {
+        await _dawuhService.createDawuh(
+          DawuhRequest(
+            judul: _judulController.text,
+            isiDakwah: _isiDakwahController.text,
+            foto: _selectedImage!, 
+          ),
+        );
+        _showSuccessSnackBar('Dawuh berhasil ditambahkan');
+      }
 
-      
-      _showSuccessSnackBar('Dawuh berhasil ditambahkan');
       Navigator.pop(context, true);
     } catch (e) {
-      _showErrorSnackBar('Gagal menambahkan dawuh: $e');
+      _showErrorSnackBar('Gagal menyimpan dawuh: $e');
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
   }
+
 
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -420,6 +436,8 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
   }
 
   Widget _buildSubmitButton() {
+    final isEdit = widget.editDawuh != null;
+
     return SizedBox(
       width: double.infinity,
       height: 56,
@@ -438,7 +456,7 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
@@ -448,7 +466,7 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Menyimpan...',
+                    isEdit ? 'Menyimpan Perubahan...' : 'Menyimpan...',
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -457,7 +475,7 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
                 ],
               )
             : Text(
-                'Simpan Dawuh',
+                isEdit ? 'Simpan Perubahan' : 'Simpan Dawuh',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -466,4 +484,5 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
       ),
     );
   }
+
 }

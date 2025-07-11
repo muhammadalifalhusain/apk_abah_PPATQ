@@ -116,6 +116,46 @@ class _DawuhScreenState extends State<DawuhScreen> {
                   dawuh.isiDakwah,
                   style: GoogleFonts.poppins(fontSize: 14),
                 ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AddDawuhScreen(editDawuh: dawuh),
+                          ),
+                        );
+
+                        if (result == true) {
+                          await _refreshData();
+                        }
+                      },
+                      icon: const Icon(Icons.edit, color: Colors.orange),
+                      label: Text(
+                        'Edit Data',
+                        style: GoogleFonts.poppins(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton.icon(
+                      onPressed: () => _showDeleteConfirmation(dawuh.id),
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      label: Text(
+                        'Hapus Data',
+                        style: GoogleFonts.poppins(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -123,6 +163,50 @@ class _DawuhScreenState extends State<DawuhScreen> {
       ),
     );
   }
+  void _showDeleteConfirmation(int id) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text(
+          'Konfirmasi Hapus',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Apakah Anda yakin ingin menghapus dawuh ini?',
+          style: GoogleFonts.poppins(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Batal', style: GoogleFonts.poppins()),
+          ),
+          TextButton(
+            onPressed: () async {
+              // Jangan langsung pop sebelum async selesai
+              final success = await _dawuhService.deleteDawuh(id);
+
+              if (success) {
+                Navigator.pop(context); // ✅ Pop dialog setelah berhasil
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Dawuh berhasil dihapus')),
+                );
+                await _refreshData(); // ✅ Pastikan pakai `await`
+              } else {
+                Navigator.pop(context); // ✅ Tetap pop jika gagal
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Gagal menghapus dawuh')),
+                );
+              }
+            },
+            child: Text('Hapus', style: GoogleFonts.poppins(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   Widget _buildFloatingActionButton() {
     return FloatingActionButton.extended(
       onPressed: () async {
@@ -130,17 +214,23 @@ class _DawuhScreenState extends State<DawuhScreen> {
           context,
           MaterialPageRoute(builder: (_) => const AddDawuhScreen()),
         );
-        if (result == true) _refreshData();
+        if (result == true) {
+          await _refreshData();
+        }
       },
       icon: const Icon(
         Icons.add,
         color: Colors.white,
-        ),
+      ),
       label: Text(
         'Tambah Dawuh',
-        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.white),
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
       ),
       backgroundColor: Colors.indigo,
     );
   }
+
 }

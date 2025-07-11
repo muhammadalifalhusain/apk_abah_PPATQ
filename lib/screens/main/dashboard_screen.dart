@@ -301,10 +301,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         const SizedBox(height: 8),
                         MenuIkonWidget(),
-                        const SizedBox(height: 8),
-                        // Santri Section
                         _buildSectionTitle('Data Santri', Icons.school),
-                        const SizedBox(height: 12),
                         _buildStatGroupCard([
                           {
                             'label': 'Total',
@@ -337,9 +334,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             }
                           },
                         ]),
-                        const SizedBox(height: 5),
                         _buildSectionTitle('Data Pegawai', Icons.people),
-                        const SizedBox(height: 12),
                         _buildStatGroupCard([
                           {
                             'label': 'Total',
@@ -363,9 +358,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'color': Colors.pink,
                           },
                         ]),
-                        const SizedBox(height: 5),
                         _buildSectionTitle('Data PSB', Icons.app_registration),
-                        const SizedBox(height: 12),
                         _buildStatGroupCard([
                           {
                             'label': 'Tahun Ini',
