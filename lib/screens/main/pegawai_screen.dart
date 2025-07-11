@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/pegawai_service.dart';
@@ -13,45 +14,60 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
   String selectedKategori = 'Pegawai';
   final List<String> kategoriList = ['Pegawai', 'Murroby', 'Ustadz-Ustadzah'];
 
-
   List<dynamic> _dataList = [];
   bool _isLoading = true;
+
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   final String imageBaseUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/';
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _loadData(); // initial load
+
+    _searchController.addListener(() {
+      if (selectedKategori != 'Pegawai') return;
+
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        _loadData(search: _searchController.text);
+      });
+    });
   }
 
-  Future<void> _loadData() async {
-    setState(() => _isLoading = true);
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
 
+  Future<void> _loadData({String? search}) async {
+    setState(() => _isLoading = true);
     final service = PegawaiService();
 
     if (selectedKategori == 'Pegawai') {
-      final pegawai = await service.fetchPegawaiData();
+      final data = await service.fetchPegawaiData(search: search);
       setState(() {
-        _dataList = pegawai;
+        _dataList = data;
         _isLoading = false;
       });
     } else if (selectedKategori == 'Murroby') {
-      final murroby = await service.fetchMurrobyData();
+      final data = await service.fetchMurrobyData();
       setState(() {
-        _dataList = murroby;
+        _dataList = data;
         _isLoading = false;
       });
     } else if (selectedKategori == 'Ustadz-Ustadzah') {
-      final ustadz = await service.fetchUstadzData();
+      final data = await service.fetchUstadzData();
       setState(() {
-        _dataList = ustadz;
+        _dataList = data;
         _isLoading = false;
       });
     }
   }
-
-
 
   Widget _buildItem(dynamic item) {
     final String nama = item.nama;
@@ -75,7 +91,8 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
                 width: 55,
                 height: 55,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.person, size: 55),
+                errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.person, size: 55),
               ),
             ),
             const SizedBox(width: 12),
@@ -119,7 +136,6 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
           ),
         ),
       ),
-
       body: Column(
         children: [
           Padding(
@@ -127,12 +143,16 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
             child: DropdownButtonFormField<String>(
               value: selectedKategori,
               items: kategoriList
-                  .map((kategori) => DropdownMenuItem(value: kategori, child: Text(kategori)))
+                  .map((kategori) => DropdownMenuItem(
+                        value: kategori,
+                        child: Text(kategori),
+                      ))
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
                   setState(() {
                     selectedKategori = value;
+                    _searchController.clear();
                   });
                   _loadData();
                 }
@@ -144,13 +164,36 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
               ),
             ),
           ),
+
+          if (selectedKategori == 'Pegawai')
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Cari nama pegawai...',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                      _loadData();
+                    },
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _dataList.isEmpty
                     ? const Center(child: Text('Data tidak ditemukan'))
                     : RefreshIndicator(
-                        onRefresh: _loadData,
+                        onRefresh: () => _loadData(search: _searchController.text),
                         child: ListView.builder(
                           padding: const EdgeInsets.all(16),
                           itemCount: _dataList.length,

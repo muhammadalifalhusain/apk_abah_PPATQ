@@ -293,7 +293,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildHeader(),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 12),
+                        Column(
+                          children: [
+                            _buildCombinedStatsCard(),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
                         MenuIkonWidget(),
                         const SizedBox(height: 8),
                         // Santri Section
@@ -389,21 +395,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'color': Colors.grey,
                           },
                         ]),
-                        const SizedBox(height: 15),
-                        
-                        // Pembayaran Section
-                        _buildSectionTitle('Data Pembayaran', Icons.payments),
-                        const SizedBox(height: 12),
-                        Column(
-                          children: [
-                            _buildLargeStatCard('Jumlah', _dashboardData!.jumlahPembayaran.toString(), Icons.receipt, Colors.red),
-                            const SizedBox(height: 12),
-                            _buildLargeStatCard('Total', _formatCurrency(_dashboardData!.totalPembayaran), Icons.money, Colors.green),
-                            const SizedBox(height: 12),
-                            _buildLargeStatCard('Tahun Lalu', _formatCurrency(_dashboardData!.jumlahPembayaranLalu), Icons.history, Colors.grey),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -411,7 +402,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildLargeStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildCombinedStatsCard() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -427,44 +418,80 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+          Text(
+            'Ringkasan Pembayaran',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
             ),
-            child: Icon(icon, color: color, size: 15),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+          const SizedBox(height: 8),
+          _buildStatItem(
+            'Jumlah Pembayaran', 
+            _formatCurrency(_dashboardData!.jumlahPembayaran), 
+            Icons.receipt, 
+            Colors.orange
+          ),
+          const SizedBox(height: 12),
+          _buildStatItem(
+            'Total', 
+            _formatCurrency(_dashboardData!.totalPembayaran), 
+            Icons.money, 
+            Colors.green
+          ),
+          const SizedBox(height: 12),
+          _buildStatItem(
+            'Tahun Lalu', 
+            _formatCurrency(_dashboardData!.jumlahPembayaranLalu), 
+            Icons.history, 
+            Colors.grey
           ),
         ],
       ),
+    );
+  }
+  Widget _buildStatItem(String label, String value, IconData icon, Color color) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: color, size: 20),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../models/psb_model.dart';
 import '../../services/psb_service.dart';
@@ -12,20 +13,34 @@ class PsbScreen extends StatefulWidget {
 
 class _PsbScreenState extends State<PsbScreen> {
   final PsbService _psbService = PsbService();
+  final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
   List<PsbData> _psbList = [];
   bool _isLoading = true;
+  bool _isSearching = false;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     fetchPsb();
+
+    _searchController.addListener(() {
+      if (_debounce?.isActive ?? false) _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        fetchPsb(search: _searchController.text);
+      });
+    });
   }
 
-  Future<void> fetchPsb() async {
-    final data = await _psbService.fetchPsbData();
+  Future<void> fetchPsb({String? search}) async {
+    if (search != null) setState(() => _isSearching = true);
+    final data = await _psbService.fetchPsbData(search: search);
     setState(() {
       _psbList = data;
       _isLoading = false;
+      _isSearching = false;
     });
   }
 
@@ -51,6 +66,14 @@ class _PsbScreenState extends State<PsbScreen> {
   }
 
   @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -68,20 +91,55 @@ class _PsbScreenState extends State<PsbScreen> {
           ),
         ),
       ),
-
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _psbList.isEmpty
-              ? const Center(child: Text('Belum ada data PSB'))
-              : RefreshIndicator(
-                  onRefresh: fetchPsb,
-                  child: ListView.builder(
-                    itemCount: _psbList.length,
-                    itemBuilder: (context, index) {
-                      return _buildPsbItem(_psbList[index]);
-                    },
-                  ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Cari nama atau asal...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: _isSearching
+                    ? const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          fetchPsb(); // reset data
+                        },
+                      ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _psbList.isEmpty
+                    ? const Center(child: Text('Data PSB tidak ditemukan'))
+                    : RefreshIndicator(
+                        onRefresh: () => fetchPsb(search: _searchController.text),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: _psbList.length,
+                          itemBuilder: (context, index) {
+                            return _buildPsbItem(_psbList[index]);
+                          },
+                        ),
+                      ),
+          ),
+        ],
+      ),
     );
   }
 }

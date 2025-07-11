@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/santri_model.dart';
@@ -13,21 +14,33 @@ class SantriScreen extends StatefulWidget {
 class _SantriScreenState extends State<SantriScreen> {
   final SantriService _service = SantriService();
   final String imageBaseUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/';
+  final TextEditingController _searchController = TextEditingController();
 
   List<Santri> _santriList = [];
   bool _isLoading = true;
+  bool _isSearching = false;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     _fetchSantriData();
+
+    _searchController.addListener(() {
+      if (_debounce?.isActive ?? false) _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        _fetchSantriData(search: _searchController.text);
+      });
+    });
   }
 
-  Future<void> _fetchSantriData() async {
-    final result = await _service.fetchSantriData();
+  Future<void> _fetchSantriData({String? search}) async {
+    if (search != null) setState(() => _isSearching = true);
+    final result = await _service.fetchSantriData(search: search);
     setState(() {
       _santriList = result;
       _isLoading = false;
+      _isSearching = false;
     });
   }
 
@@ -85,6 +98,13 @@ class _SantriScreenState extends State<SantriScreen> {
   }
 
   @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -96,23 +116,58 @@ class _SantriScreenState extends State<SantriScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _santriList.isEmpty
-              ? const Center(child: Text('Tidak ada data santri'))
-              : RefreshIndicator(
-                  onRefresh: _fetchSantriData,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _santriList.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _buildSantriCard(_santriList[index]),
-                      );
-                    },
-                  ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Cari nama santri...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: _isSearching
+                    ? const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          _fetchSantriData();
+                        },
+                      ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _santriList.isEmpty
+                    ? const Center(child: Text('Tidak ada data santri'))
+                    : RefreshIndicator(
+                        onRefresh: () => _fetchSantriData(search: _searchController.text),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: _santriList.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _buildSantriCard(_santriList[index]),
+                            );
+                          },
+                        ),
+                      ),
+          ),
+        ],
+      ),
     );
   }
 }

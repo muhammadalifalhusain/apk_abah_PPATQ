@@ -29,7 +29,7 @@ class DashboardData {
   final int jumlahPegawai;
   final int jumlahPegawaiLaki;
   final int jumlahPegawaiPerempuan;
-  final int jumlahPembayaran;
+  final String jumlahPembayaran;
   final String totalPembayaran;
   final int jumlahSantriBelumLapor;
   final String jumlahPembayaranLalu;
