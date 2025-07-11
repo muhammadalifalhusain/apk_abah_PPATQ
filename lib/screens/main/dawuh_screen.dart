@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io'; 
+import 'package:google_fonts/google_fonts.dart';
 import '../../services/dawuh_service.dart';
 import '../../models/dawuh_model.dart';
+import 'add_dawuh_screen.dart';
 
 class DawuhScreen extends StatefulWidget {
   const DawuhScreen({Key? key}) : super(key: key);
@@ -31,202 +31,116 @@ class _DawuhScreenState extends State<DawuhScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Dawuh'),
-        centerTitle: true,
-      ),
-      body: RefreshIndicator(
-        onRefresh: _refreshData,
-        child: FutureBuilder<List<DawuhAbah>>(
-          future: _dawuhFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('Tidak ada data dawuh'));
-            } else {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final dawuh = snapshot.data![index];
-                  return _buildDawuhCard(dawuh);
-                },
-              );
-            }
-          },
+        title: Text('Dawuh Abah', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddDawuhDialog(context),
-        child: const Icon(Icons.add),
+      backgroundColor: Colors.grey[50],
+      body: FutureBuilder<List<DawuhAbah>>(
+        future: _dawuhFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _buildLoadingState();
+          } else if (snapshot.hasError) {
+            return _buildErrorState(snapshot.error.toString());
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return _buildEmptyState();
+          } else {
+            return RefreshIndicator(
+              onRefresh: _refreshData,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return _buildDawuhCard(snapshot.data![index]);
+                },
+              ),
+            );
+          }
+        },
       ),
+      floatingActionButton: _buildFloatingActionButton(),
     );
+  }
+
+  Widget _buildLoadingState() => const Center(child: CircularProgressIndicator());
+
+  Widget _buildErrorState(String error) {
+    return Center(child: Text('Error: $error'));
+  }
+
+  Widget _buildEmptyState() {
+    return Center(child: Text('Belum ada dawuh'));
   }
 
   Widget _buildDawuhCard(DawuhAbah dawuh) {
     return Card(
-      margin: const EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (dawuh.foto.isNotEmpty)
-              Image.network(
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (dawuh.foto.isNotEmpty)
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.network(
                 'https://api.ppatq-rf.id/assets/upload/dawuh-abah/${dawuh.foto}',
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => 
-                  const Icon(Icons.broken_image, size: 100),
-              ),
-            const SizedBox(height: 12),
-            Text(
-              dawuh.judul,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                errorBuilder: (_, __, ___) => const SizedBox(
+                  height: 200,
+                  child: Center(child: Icon(Icons.broken_image)),
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(dawuh.isiDakwah),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showAddDawuhDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AddDawuhDialog(
-        onSubmitted: () {
-          _refreshData(); // Refresh data setelah submit
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
-}
-
-class AddDawuhDialog extends StatefulWidget {
-  final VoidCallback onSubmitted;
-
-  const AddDawuhDialog({required this.onSubmitted, Key? key}) : super(key: key);
-
-  @override
-  _AddDawuhDialogState createState() => _AddDawuhDialogState();
-}
-
-class _AddDawuhDialogState extends State<AddDawuhDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _judulController = TextEditingController();
-  final _isiDakwahController = TextEditingController();
-  File? _selectedImage;
-  bool _isLoading = false;
-
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> _submitDawuh() async {
-    if (!_formKey.currentState!.validate() || _selectedImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Harap isi semua field dan pilih gambar')),
-      );
-      return;
-    }
-
-    setState(() => _isLoading = true);
-
-    try {
-      final request = DawuhRequest(
-        judul: _judulController.text,
-        isiDakwah: _isiDakwahController.text,
-        foto: _selectedImage!,
-      );
-
-      final response = await DawuhService().createDawuh(request);
-
-      if (response.status == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message)),
-        );
-        widget.onSubmitted();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message)),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  @override
-  void dispose() {
-    _judulController.dispose();
-    _isiDakwahController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Tambah Dawuh Baru'),
-      content: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _judulController,
-                decoration: const InputDecoration(labelText: 'Judul'),
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Judul wajib diisi' : null,
-              ),
-              TextFormField(
-                controller: _isiDakwahController,
-                decoration: const InputDecoration(labelText: 'Isi Dakwah'),
-                maxLines: 3,
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Isi dakwah wajib diisi' : null,
-              ),
-              const SizedBox(height: 16),
-              _selectedImage != null
-                  ? Image.file(_selectedImage!, height: 150)
-                  : const Text('Belum ada gambar dipilih'),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: const Text('Pilih Gambar'),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  dawuh.judul,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  dawuh.isiDakwah,
+                  style: GoogleFonts.poppins(fontSize: 14),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Batal'),
+    );
+  }
+  Widget _buildFloatingActionButton() {
+    return FloatingActionButton.extended(
+      onPressed: () async {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const AddDawuhScreen()),
+        );
+        if (result == true) _refreshData();
+      },
+      icon: const Icon(
+        Icons.add,
+        color: Colors.white,
         ),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _submitDawuh,
-          child: _isLoading
-              ? const CircularProgressIndicator()
-              : const Text('Simpan'),
-        ),
-      ],
+      label: Text(
+        'Tambah Dawuh',
+        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.white),
+      ),
+      backgroundColor: Colors.indigo,
     );
   }
 }

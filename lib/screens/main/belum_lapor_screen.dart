@@ -38,6 +38,10 @@ class _BelumLaporScreenState extends State<BelumLaporScreen> {
         title: Text('Belum Lapor', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
