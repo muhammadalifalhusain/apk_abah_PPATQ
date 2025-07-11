@@ -5,6 +5,7 @@ import '../screens/main/belum_lapor_screen.dart';
 import '../screens/main/bayar_bulan_lalu_screen.dart';
 import '../screens/main/kamar_screen.dart';
 import '../screens/main/aset_screen.dart';
+import '../screens/main/dawuh_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -92,11 +93,11 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         },
       ),
       _MenuItem(
-        icon: Icons.verified_user_rounded,
-        label: 'Bayar Valid',
+        icon: Icons.book_online_rounded,
+        label: 'Dawuh',
         color: const Color(0xFF9C27B0),
         onTap: () {
-          _showComingSoonDialog(context, 'Bayar Valid');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen()));
         },
       ),
       _MenuItem(
