@@ -1,9 +1,11 @@
 class Kamar {
-  final String namaKelas;
+  final int id;
+  final String namaKamar;
   final String murroby;
 
   Kamar({
-    required this.namaKelas,
+    required this.id,
+    required this.namaKamar,
     required this.murroby,
   });
 
@@ -14,7 +16,8 @@ class Kamar {
     }
 
     return Kamar(
-      namaKelas: parseString(json['namaKelas']),
+      id: json['id'] ?? 0,
+      namaKamar: parseString(json['namaKamar']),
       murroby: parseString(json['murroby']),
     );
   }
@@ -23,11 +26,13 @@ class Kamar {
 class KamarResponse {
   final int status;
   final String message;
+  final int jumlah;
   final List<Kamar> data;
 
   KamarResponse({
     required this.status,
     required this.message,
+    required this.jumlah,
     required this.data,
   });
 
@@ -35,9 +40,11 @@ class KamarResponse {
     return KamarResponse(
       status: json['status'] ?? 0,
       message: json['message'] ?? '',
-      data: (json['data'] as List<dynamic>)
+      jumlah: json['jumlah'] ?? 0,
+      data: (json['data'] as List)
           .map((item) => Kamar.fromJson(item))
           .toList(),
     );
   }
 }
+

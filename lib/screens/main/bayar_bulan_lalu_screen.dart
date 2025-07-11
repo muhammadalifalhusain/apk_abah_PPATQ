@@ -34,8 +34,13 @@ class _BayarBulanLaluScreenState extends State<BayarBulanLaluScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bayar Bulan Lalu', style: GoogleFonts.poppins()),
+        title: Text('Bayar Bulan Lalu', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

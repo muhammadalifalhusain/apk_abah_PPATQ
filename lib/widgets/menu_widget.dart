@@ -85,14 +85,6 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   List<_MenuItem> _buildMenuItems(BuildContext context) {
     return [
       _MenuItem(
-        icon: Icons.report_rounded,
-        label: 'Belum Lapor',
-        color: const Color(0xFFE91E63),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const BelumLaporScreen()));
-        },
-      ),
-      _MenuItem(
         icon: Icons.book_online_rounded,
         label: 'Dawuh',
         color: const Color(0xFF9C27B0),
