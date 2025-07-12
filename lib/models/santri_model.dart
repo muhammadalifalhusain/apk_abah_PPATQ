@@ -1,10 +1,12 @@
 class Santri {
+  final int id;
   final String photo;
   final String nama;
   final String jenisKelamin;
   final String kelas;
 
   Santri({
+    required this.id,
     required this.photo,
     required this.nama,
     required this.jenisKelamin,
@@ -13,18 +15,14 @@ class Santri {
 
   factory Santri.fromJson(Map<String, dynamic> json) {
     return Santri(
+      id: json['id'] ?? 0,
       photo: (json['photo'] ?? '').toString().trim(),
-      nama: (json['nama'] ?? '').toString().trim().isNotEmpty
-          ? json['nama']
-          : 'Tidak diketahui',
+      nama: (json['nama'] ?? 'Tidak diketahui').toString().trim(),
       jenisKelamin: _mapGender(json['jenisKelamin']),
-      kelas: (json['kelas'] ?? '').toString().trim().isNotEmpty
-          ? json['kelas']
-          : '-',
+      kelas: (json['kelas'] ?? '-').toString().trim(),
     );
   }
 
-  /// Helper untuk mengonversi 'L' → 'Laki-laki', 'P' → 'Perempuan'
   static String _mapGender(dynamic value) {
     final code = value?.toString().toUpperCase();
     if (code == 'L') return 'Laki-laki';
@@ -33,10 +31,50 @@ class Santri {
   }
 }
 
+class SantriPaginatedData {
+  final int currentPage;
+  final List<Santri> data;
+  final String? nextPageUrl;
+  final String? prevPageUrl;
+  final int total;
+  final int lastPage;
+
+  SantriPaginatedData({
+    required this.currentPage,
+    required this.data,
+    required this.nextPageUrl,
+    required this.prevPageUrl,
+    required this.total,
+    required this.lastPage,
+  });
+
+  factory SantriPaginatedData.fromJson(Map<String, dynamic> json) {
+    return SantriPaginatedData(
+      currentPage: json['current_page'] ?? 1,
+      data: (json['data'] as List).map((e) => Santri.fromJson(e)).toList(),
+      nextPageUrl: json['next_page_url'],
+      prevPageUrl: json['prev_page_url'],
+      total: json['total'] ?? 0,
+      lastPage: json['last_page'] ?? 1,
+    );
+  }
+
+  factory SantriPaginatedData.empty() {
+    return SantriPaginatedData(
+      currentPage: 1,
+      data: [],
+      nextPageUrl: null,
+      prevPageUrl: null,
+      total: 0,
+      lastPage: 1,
+    );
+  }
+}
+
 class SantriResponse {
   final int status;
   final String message;
-  final List<Santri> data;
+  final SantriPaginatedData data;
 
   SantriResponse({
     required this.status,
@@ -48,9 +86,7 @@ class SantriResponse {
     return SantriResponse(
       status: json['status'] ?? 0,
       message: json['message'] ?? '',
-      data: (json['data'] as List)
-          .map((e) => Santri.fromJson(e))
-          .toList(),
+      data: SantriPaginatedData.fromJson(json['data']),
     );
   }
 }

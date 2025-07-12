@@ -82,7 +82,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                       const SizedBox(height: 4),
                       Text(
                         'Pelapor: ${keluhan.namaPelapor.isNotEmpty ? keluhan.namaPelapor : 'Tidak diketahui'}',
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        style: const TextStyle(fontSize: 12, color: Colors.black),
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -95,12 +95,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                       ),
                     ],
                   ),
-                  trailing: Icon(
-                    keluhan.jenis.toLowerCase() == 'aduan'
-                        ? Icons.warning_amber_rounded
-                        : Icons.feedback_outlined,
-                    color: Colors.orange,
-                  ),
+                  trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     showModalBottomSheet(
                       context: context,

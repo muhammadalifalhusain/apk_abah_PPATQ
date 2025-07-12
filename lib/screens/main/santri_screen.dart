@@ -15,32 +15,69 @@ class _SantriScreenState extends State<SantriScreen> {
   final SantriService _service = SantriService();
   final String imageBaseUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/';
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   List<Santri> _santriList = [];
   bool _isLoading = true;
   bool _isSearching = false;
+  bool _isFetchingMore = false;
   Timer? _debounce;
+
+  int _currentPage = 1;
+  int _lastPage = 1;
+  String? _nextPageUrl;
 
   @override
   void initState() {
     super.initState();
     _fetchSantriData();
 
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
+        if (_nextPageUrl != null && !_isFetchingMore && !_isSearching) {
+          _fetchMoreSantri();
+        }
+      }
+    });
+
     _searchController.addListener(() {
       if (_debounce?.isActive ?? false) _debounce?.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
+        _currentPage = 1;
         _fetchSantriData(search: _searchController.text);
       });
     });
   }
 
   Future<void> _fetchSantriData({String? search}) async {
-    if (search != null) setState(() => _isSearching = true);
-    final result = await _service.fetchSantriData(search: search);
     setState(() {
-      _santriList = result;
+      _isLoading = true;
+    });
+
+    final response = await _service.fetchSantriData(search: search);
+
+    setState(() {
+      _santriList = response.data;
+      _currentPage = response.currentPage;
+      _lastPage = response.lastPage;
+      _nextPageUrl = response.nextPageUrl;
       _isLoading = false;
-      _isSearching = false;
+    });
+  }
+
+  Future<void> _fetchMoreSantri() async {
+    if (_nextPageUrl == null || _isFetchingMore) return;
+
+    setState(() {
+      _isFetchingMore = true;
+    });
+
+    final moreData = await _service.fetchSantriByUrl(_nextPageUrl!);
+    setState(() {
+      _santriList.addAll(moreData.data);
+      _currentPage = moreData.currentPage;
+      _nextPageUrl = moreData.nextPageUrl;
+      _isFetchingMore = false;
     });
   }
 
@@ -74,14 +111,11 @@ class _SantriScreenState extends State<SantriScreen> {
                 children: [
                   Text(
                     santri.nama,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${santri.jenisKelamin}',
+                    santri.jenisKelamin,
                     style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
                   ),
                   Text(
@@ -101,6 +135,7 @@ class _SantriScreenState extends State<SantriScreen> {
   void dispose() {
     _debounce?.cancel();
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -155,13 +190,23 @@ class _SantriScreenState extends State<SantriScreen> {
                     : RefreshIndicator(
                         onRefresh: () => _fetchSantriData(search: _searchController.text),
                         child: ListView.builder(
+                          controller: _scrollController,
                           padding: const EdgeInsets.all(16),
-                          itemCount: _santriList.length,
+                          itemCount: _santriList.length + (_isFetchingMore ? 1 : 0),
                           itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _buildSantriCard(_santriList[index]),
-                            );
+                            if (index < _santriList.length) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _buildSantriCard(_santriList[index]),
+                              );
+                            } else {
+                              return const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
                           },
                         ),
                       ),

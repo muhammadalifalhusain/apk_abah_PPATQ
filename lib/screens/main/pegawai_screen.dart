@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../models/pegawai_model.dart';
 import '../../services/pegawai_service.dart';
 
 class PegawaiScreen extends StatefulWidget {
@@ -11,25 +12,36 @@ class PegawaiScreen extends StatefulWidget {
 }
 
 class _PegawaiScreenState extends State<PegawaiScreen> {
-  String selectedKategori = 'Pegawai';
+  final PegawaiService _service = PegawaiService();
+  final String imageBaseUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/';
+  final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final List<String> kategoriList = ['Pegawai', 'Murroby', 'Ustadz-Ustadzah'];
 
-  List<dynamic> _dataList = [];
+  String selectedKategori = 'Pegawai';
+  List<PegawaiData> _dataList = [];
+  PegawaiPaginatedData? _currentPageData;
   bool _isLoading = true;
-
-  final TextEditingController _searchController = TextEditingController();
+  bool _isLoadingMore = false;
   Timer? _debounce;
-
-  final String imageBaseUrl = 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/';
 
   @override
   void initState() {
     super.initState();
-    _loadData(); // initial load
+    _loadData();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 100 &&
+          !_isLoadingMore &&
+          selectedKategori == 'Pegawai' &&
+          _currentPageData?.nextPageUrl != null) {
+        _loadMoreData();
+      }
+    });
 
     _searchController.addListener(() {
       if (selectedKategori != 'Pegawai') return;
-
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
         _loadData(search: _searchController.text);
@@ -39,6 +51,7 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     _debounce?.cancel();
     super.dispose();
@@ -46,22 +59,21 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
 
   Future<void> _loadData({String? search}) async {
     setState(() => _isLoading = true);
-    final service = PegawaiService();
-
     if (selectedKategori == 'Pegawai') {
-      final data = await service.fetchPegawaiData(search: search);
+      final data = await _service.fetchPegawaiData(search: search);
       setState(() {
-        _dataList = data;
+        _currentPageData = data;
+        _dataList = data.data;
         _isLoading = false;
       });
     } else if (selectedKategori == 'Murroby') {
-      final data = await service.fetchMurrobyData();
+      final data = await _service.fetchMurrobyData();
       setState(() {
         _dataList = data;
         _isLoading = false;
       });
     } else if (selectedKategori == 'Ustadz-Ustadzah') {
-      final data = await service.fetchUstadzData();
+      final data = await _service.fetchUstadzData();
       setState(() {
         _dataList = data;
         _isLoading = false;
@@ -69,13 +81,22 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
     }
   }
 
-  Widget _buildItem(dynamic item) {
-    final String nama = item.nama;
-    final String jenisKelamin = item.jenisKelamin;
-    final String photo = item.photo;
-    final photoUrl = (photo.isNotEmpty && photo != 'default.png')
-        ? '$imageBaseUrl$photo'
-        : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(nama)}&background=0D8ABC&color=fff';
+  Future<void> _loadMoreData() async {
+    if (_currentPageData?.nextPageUrl == null) return;
+    setState(() => _isLoadingMore = true);
+
+    final nextPageData = await _service.fetchPegawaiByUrl(_currentPageData!.nextPageUrl!);
+    setState(() {
+      _currentPageData = nextPageData;
+      _dataList.addAll(nextPageData.data);
+      _isLoadingMore = false;
+    });
+  }
+
+  Widget _buildItem(PegawaiData item) {
+    final String photoUrl = (item.photo.isNotEmpty && item.photo != 'default.png')
+        ? '$imageBaseUrl${item.photo}'
+        : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(item.nama)}&background=0D8ABC&color=fff';
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -101,12 +122,12 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    nama,
+                    item.nama,
                     style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    jenisKelamin,
+                    item.jenisKelamin,
                     style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
                   ),
                 ],
@@ -124,16 +145,13 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
       appBar: AppBar(
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
+        title: Text(
+          selectedKategori,
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          selectedKategori,
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
         ),
       ),
       body: Column(
@@ -164,7 +182,6 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
               ),
             ),
           ),
-
           if (selectedKategori == 'Pegawai')
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -186,7 +203,6 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
                 ),
               ),
             ),
-
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -195,13 +211,23 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
                     : RefreshIndicator(
                         onRefresh: () => _loadData(search: _searchController.text),
                         child: ListView.builder(
+                          controller: _scrollController,
                           padding: const EdgeInsets.all(16),
-                          itemCount: _dataList.length,
+                          itemCount: _dataList.length + (_isLoadingMore ? 1 : 0),
                           itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _buildItem(_dataList[index]),
-                            );
+                            if (index < _dataList.length) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _buildItem(_dataList[index]),
+                              );
+                            } else {
+                              return const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
                           },
                         ),
                       ),

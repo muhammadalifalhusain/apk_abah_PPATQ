@@ -46,6 +46,15 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                   Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   const Text('Balas Keluhan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -225,15 +234,16 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
           children: [
             Center(
               child: Container(
-                width: 40,
+                width: 80,
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Colors.black,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
+            
             Text(
               _keluhan.kategori.isNotEmpty ? _keluhan.kategori : "Kategori",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

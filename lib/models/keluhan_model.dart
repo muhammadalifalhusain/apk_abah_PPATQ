@@ -51,7 +51,7 @@ class KeluhanItem {
   final String namaWaliSantri;
   final String kategori;
   final String jenis;
-  final int status; // Digunakan secara internal sebagai int
+  final int status; 
   final String masukan;
   final String saran;
   final int rating;
