@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../services/dawuh_service.dart';
 import '../../models/dawuh_model.dart';
 import 'add_dawuh_screen.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class DawuhScreen extends StatefulWidget {
   const DawuhScreen({Key? key}) : super(key: key);
@@ -112,9 +113,16 @@ class _DawuhScreenState extends State<DawuhScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  dawuh.isiDakwah,
-                  style: GoogleFonts.poppins(fontSize: 14),
+                Html(
+                  data: dawuh.isiDakwah,
+                  style: {
+                    "body": Style(
+                      fontSize: FontSize(14.0),
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      color: Colors.black87,
+                      lineHeight: LineHeight.number(1.5),
+                    ),
+                  },
                 ),
                 const SizedBox(height: 12),
                 Row(

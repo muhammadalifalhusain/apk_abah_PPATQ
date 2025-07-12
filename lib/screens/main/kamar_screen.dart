@@ -290,7 +290,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: Text('Data Kanar', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        title: Text('Data Kamar', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
         leading: IconButton(
