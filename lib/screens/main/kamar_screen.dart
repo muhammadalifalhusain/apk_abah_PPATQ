@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/kamar_model.dart';
 import '../../services/kamar_service.dart';
+import 'detail_kamar_screen.dart';
 
 class KamarScreen extends StatefulWidget {
   const KamarScreen({super.key});
@@ -125,13 +126,10 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Kamar ${kamar.namaKamar} dipilih'),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailKamarScreen(idKamar: kamar.id.toString()),
               ),
             );
           },
