@@ -6,7 +6,7 @@ import '../../services/dawuh_service.dart';
 import '../../models/dawuh_model.dart';
 
 class AddDawuhScreen extends StatefulWidget {
-  final DawuhAbah? editDawuh; // Tambahkan ini
+  final DawuhAbah? editDawuh; 
 
   const AddDawuhScreen({Key? key, this.editDawuh}) : super(key: key);
 
@@ -91,7 +91,6 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
 
     try {
       if (widget.editDawuh != null) {
-        // EDIT MODE
         final dawuhId = widget.editDawuh!.id;
         await _dawuhService.updateDawuh(
           dawuhId,
@@ -122,7 +121,6 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
       });
     }
   }
-
 
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(

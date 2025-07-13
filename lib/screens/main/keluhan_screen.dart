@@ -86,7 +86,7 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Status: ${keluhan.statusLabel}',
+                        '${keluhan.statusLabel}',
                         style: TextStyle(
                           fontSize: 12,
                           color: keluhan.status == 2 ? Colors.green : Colors.red,

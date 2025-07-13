@@ -68,18 +68,7 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Silahkan Login Sebagai Murroby',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                      letterSpacing: 1.2,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 40),
-                  // Form Container
+                  SizedBox(height: 60),
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -178,7 +167,7 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Text(
-              'BETA VERSION-V.30.7',
+              'VERSION 1.1.1',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,

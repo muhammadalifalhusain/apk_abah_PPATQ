@@ -224,9 +224,9 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(_keluhan.statusColorValue),
         borderRadius: BorderRadius.circular(12),
       ),
+
       padding: const EdgeInsets.all(20),
       child: SingleChildScrollView(
         child: Column(
@@ -257,7 +257,7 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
             Text("Saran:", style: TextStyle(fontWeight: FontWeight.w600)),
             Text(_keluhan.saran.isNotEmpty ? _keluhan.saran : '-'),
             const SizedBox(height: 12),
-            Text("Rating: ${_keluhan.rating}/5"),
+            Text("Rating: ${_keluhan.rating}/10"),
             const SizedBox(height: 20),
 
             if (_keluhan.balasan.isEmpty)

@@ -1,12 +1,12 @@
 class Santri {
-  final int id;
+  final int noInduk;
   final String photo;
   final String nama;
   final String jenisKelamin;
   final String kelas;
 
   Santri({
-    required this.id,
+    required this.noInduk,
     required this.photo,
     required this.nama,
     required this.jenisKelamin,
@@ -15,9 +15,9 @@ class Santri {
 
   factory Santri.fromJson(Map<String, dynamic> json) {
     return Santri(
-      id: json['id'] ?? 0,
+      noInduk: json['noInduk'] ?? 0,
       photo: (json['photo'] ?? '').toString().trim(),
-      nama: (json['nama'] ?? 'Tidak diketahui').toString().trim(),
+      nama: (json['nama'] ?? 'noInduk tidak diketahui').toString().trim(),
       jenisKelamin: _mapGender(json['jenisKelamin']),
       kelas: (json['kelas'] ?? '-').toString().trim(),
     );

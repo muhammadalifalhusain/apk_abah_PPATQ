@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/pegawai_model.dart';
 import '../../services/pegawai_service.dart';
+import 'detail_pegawai_screen.dart';
 
 class PegawaiScreen extends StatefulWidget {
   const PegawaiScreen({super.key});
@@ -101,43 +102,56 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                photoUrl,
-                width: 55,
-                height: 55,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.person, size: 55),
-              ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => DetailPegawaiScreen(idPegawai: item.id),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.nama,
-                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.jenisKelamin,
-                    style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
-                  ),
-                ],
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  photoUrl,
+                  width: 55,
+                  height: 55,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.person, size: 55),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.nama,
+                      style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.jenisKelamin,
+                      style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.grey),
+            ],
+          ),
         ),
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -204,33 +218,33 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
               ),
             ),
           Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _dataList.isEmpty
-                    ? const Center(child: Text('Data tidak ditemukan'))
-                    : RefreshIndicator(
-                        onRefresh: () => _loadData(search: _searchController.text),
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(16),
-                          itemCount: _dataList.length + (_isLoadingMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index < _dataList.length) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: _buildItem(_dataList[index]),
-                              );
-                            } else {
-                              return const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            }
-                          },
-                        ),
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _dataList.isEmpty
+                  ? const Center(child: Text('Data tidak ditemukan'))
+                  : RefreshIndicator(
+                      onRefresh: () => _loadData(search: _searchController.text),
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: _dataList.length + (_isLoadingMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index < _dataList.length) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _buildItem(_dataList[index]),
+                            );
+                          } else {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                        },
                       ),
+                    ),
           ),
         ],
       ),
