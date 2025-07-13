@@ -6,6 +6,7 @@ import '../screens/main/kamar_screen.dart';
 import '../screens/main/aset_screen.dart';
 import '../screens/main/dawuh_screen.dart';
 import '../screens/main/keluhan_screen.dart';
+import '../screens/main/kelas_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -121,7 +122,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         label: 'Kelas',
         color: const Color(0xFF00BCD4),
         onTap: () {
-          _showComingSoonDialog(context, 'Kelas');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const KelasScreen()));
         },
       ),
       _MenuItem(

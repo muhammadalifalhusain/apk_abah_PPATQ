@@ -22,8 +22,6 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
     fetchKamar();
   }
 
-
-
   Future<void> fetchKamar() async {
     setState(() => _isLoading = true);
     final response = await _service.fetchKamarData();
