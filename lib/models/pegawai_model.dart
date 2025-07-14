@@ -134,7 +134,6 @@ class PegawaiDetailDataDiri {
   }
 }
 
-
 class KetahfidzanSantri {
   final int noInduk;
   final String nama;

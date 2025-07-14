@@ -29,23 +29,20 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _fadeController,
+        curve: Curves.easeInOut,
+      ),
+    );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _scaleController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _scaleController,
+        curve: Curves.elasticOut,
+      ),
+    );
 
-    // Start animations
     _startAnimations();
     _navigateToHome();
   }
@@ -59,16 +56,15 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _navigateToHome() async {
     final isLoggedIn = await SessionManager.isUserLoggedIn();
-
+    await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            isLoggedIn ? DashboardScreen() : LoginAbah(),
+        builder: (_) => isLoggedIn ? const DashboardScreen() :  LoginAbah(),
       ),
     );
   }
-
 
   @override
   void dispose() {
@@ -90,14 +86,13 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo with scale animation
                     ScaleTransition(
                       scale: _scaleAnimation,
                       child: Container(
-                        width: 120,
-                        height: 120,
+                        width: 140,
+                        height: 140,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(100),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
@@ -107,61 +102,39 @@ class _SplashScreenState extends State<SplashScreen>
                           ],
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(100),
                           child: Image.asset(
-                            'assets/images/logo.png',
+                            'assets/images/abah.png',
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Icon(
-                                  Icons.school,
-                                  size: 60,
-                                  color: Colors.grey,
-                                ),
-                              );
-                            },
                           ),
                         ),
                       ),
                     ),
-                    
-                    const SizedBox(height: 40),
-                    
-                    // App Title
+                    const SizedBox(height: 24),
                     const Text(
-                      'Murroby PPATQ',
+                      'Selamat Datang',
                       style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
                     ),
-                    
-                    const SizedBox(height: 10),
-                    
-                    // Subtitle
+                    const SizedBox(height: 6),
                     const Text(
-                      'Raudlatul Falah - PATI',
+                      'K. Noor Shokhib, AH, M.Pd.I',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Color.fromARGB(137, 38, 36, 36),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
                       ),
                     ),
-                    
-                    const SizedBox(height: 50),
-                    
-                    // Loading indicator
+                    const SizedBox(height: 40),
                     const SizedBox(
                       width: 30,
                       height: 30,
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black54),
                         strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
                       ),
                     ),
                   ],
@@ -169,9 +142,9 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 50),
+              padding: const EdgeInsets.only(bottom: 40),
               child: Text(
-                'BETA VERSION-v.25.6',
+                'VERSION-1.1.2',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,

@@ -7,6 +7,7 @@ import '../screens/main/aset_screen.dart';
 import '../screens/main/dawuh_screen.dart';
 import '../screens/main/keluhan_screen.dart';
 import '../screens/main/kelas_screen.dart';
+import '../screens/main/tahfidz_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -130,7 +131,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         label: 'Tahfidz',
         color: const Color(0xFF795548),
         onTap: () {
-          _showComingSoonDialog(context, 'Tahfidz');
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const TahfidzScreen()));
         },
       ),
       _MenuItem(

@@ -54,11 +54,7 @@ class _KelasScreenState extends State<KelasScreen> {
                 Container(
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-                    ),
+                    color: const Color(0xFF254B62), 
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
@@ -87,11 +83,22 @@ class _KelasScreenState extends State<KelasScreen> {
                           color: const Color(0xFF2D3748),
                         ),
                       ),
-                      Text(
-                        '${kelas.guru}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: Colors.grey[700],
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF667eea).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '${kelas.guru}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ],
@@ -110,34 +117,18 @@ class _KelasScreenState extends State<KelasScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.class_, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
-          Text(
-            'Belum ada data kelas tersedia',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.grey.shade600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text('Data Kelas', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: FutureBuilder<List<Kelas>>(
         future: _kelasListFuture,

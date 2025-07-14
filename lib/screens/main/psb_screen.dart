@@ -77,18 +77,12 @@ class _PsbScreenState extends State<PsbScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
+        title: Text('Data PSB', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Data PSB',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
         ),
       ),
       body: Column(

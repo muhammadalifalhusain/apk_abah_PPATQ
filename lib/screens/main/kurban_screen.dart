@@ -33,9 +33,9 @@ class _KurbanScreenState extends State<KurbanScreen> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
+      
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-        leading: const Icon(Icons.volunteer_activism, color: Colors.redAccent),
         title: Text(item.namaSantri,
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         subtitle: Column(
@@ -54,9 +54,8 @@ class _KurbanScreenState extends State<KurbanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Data Kurban',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        title: Text('Data Kurban', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),

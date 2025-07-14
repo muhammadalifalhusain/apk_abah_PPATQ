@@ -33,7 +33,7 @@ class _DawuhScreenState extends State<DawuhScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Dawuh Abah', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -143,7 +143,7 @@ class _DawuhScreenState extends State<DawuhScreen> {
                       },
                       icon: const Icon(Icons.edit, color: Colors.orange),
                       label: Text(
-                        'Edit Data',
+                        'Edit',
                         style: GoogleFonts.poppins(
                           color: Colors.orange,
                           fontWeight: FontWeight.w500,
@@ -155,7 +155,7 @@ class _DawuhScreenState extends State<DawuhScreen> {
                       onPressed: () => _showDeleteConfirmation(dawuh.id),
                       icon: const Icon(Icons.delete, color: Colors.red),
                       label: Text(
-                        'Hapus Data',
+                        'Hapus',
                         style: GoogleFonts.poppins(
                           color: Colors.red,
                           fontWeight: FontWeight.w500,
@@ -191,17 +191,16 @@ class _DawuhScreenState extends State<DawuhScreen> {
           ),
           TextButton(
             onPressed: () async {
-              // Jangan langsung pop sebelum async selesai
               final success = await _dawuhService.deleteDawuh(id);
 
               if (success) {
-                Navigator.pop(context); // ✅ Pop dialog setelah berhasil
+                Navigator.pop(context); 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Dawuh berhasil dihapus')),
                 );
-                await _refreshData(); // ✅ Pastikan pakai `await`
+                await _refreshData(); 
               } else {
-                Navigator.pop(context); // ✅ Tetap pop jika gagal
+                Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Gagal menghapus dawuh')),
                 );
@@ -237,7 +236,7 @@ class _DawuhScreenState extends State<DawuhScreen> {
           color: Colors.white,
         ),
       ),
-      backgroundColor: Colors.indigo,
+      backgroundColor: const Color(0xFF5B913B), 
     );
   }
 

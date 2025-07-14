@@ -123,19 +123,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.indigo, Colors.indigo.shade700],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+     return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFF254B62), 
+          borderRadius: BorderRadius.circular(20),
         ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
+        child: Column(
         children: [
           Row(
             children: [
@@ -274,9 +269,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Center(
+              child: Text(
+                'V 1.1.2',
+                style: GoogleFonts.poppins(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _dashboardData == null
@@ -315,14 +326,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           {
                             'label': 'Laki-laki',
                             'value': _dashboardData!.jumlahSantriLaki,
-                            'icon': Icons.male,
-                            'color': Colors.blue,
                           },
                           {
                             'label': 'Perempuan',
                             'value': _dashboardData!.jumlahSantriPerempuan,
-                            'icon': Icons.female,
-                            'color': Colors.pink,
                           },
                           {
                             'label': 'Tidak Melapor',
@@ -348,14 +355,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           {
                             'label': 'Laki-laki',
                             'value': _dashboardData!.jumlahPegawaiLaki,
-                            'icon': Icons.male,
-                            'color': Colors.blue,
                           },
                           {
                             'label': 'Perempuan',
                             'value': _dashboardData!.jumlahPegawaiPerempuan,
-                            'icon': Icons.female,
-                            'color': Colors.pink,
                           },
                         ]),
                         _buildSectionTitle('Data PSB', Icons.app_registration),
@@ -372,20 +375,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           {
                             'label': 'Laki-laki',
                             'value': _dashboardData!.jumlahPsbLaki,
-                            'icon': Icons.male,
-                            'color': Colors.blue,
                           },
                           {
                             'label': 'Perempuan',
                             'value': _dashboardData!.jumlahPsbPerempuan,
-                            'icon': Icons.female,
-                            'color': Colors.pink,
                           },
                           {
                             'label': 'Tahun Lalu',
                             'value': _dashboardData!.jumlahPsbTahunLalu,
-                            'icon': Icons.history,
-                            'color': Colors.grey,
                           },
                         ]),
                       ],
@@ -415,7 +412,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Ringkasan Pembayaran',
+            'Resume Pembayaran',
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.bold,

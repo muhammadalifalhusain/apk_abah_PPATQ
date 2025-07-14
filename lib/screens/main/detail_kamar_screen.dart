@@ -27,7 +27,7 @@ class _DetailKamarScreenState extends State<DetailKamarScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Kamar', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -61,7 +61,7 @@ class _DetailKamarScreenState extends State<DetailKamarScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo,
+                  color: Colors.black,
                 ),
               ),
               ...santriList.map((santri) => _buildSantriTile(santri)).toList(),
@@ -80,11 +80,7 @@ class _DetailKamarScreenState extends State<DetailKamarScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: const Color(0xFF254B62), 
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(

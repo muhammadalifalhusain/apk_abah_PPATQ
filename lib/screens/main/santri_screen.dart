@@ -144,7 +144,7 @@ class _SantriScreenState extends State<SantriScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Data Santri', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),

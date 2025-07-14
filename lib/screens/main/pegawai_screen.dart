@@ -157,12 +157,9 @@ class _PegawaiScreenState extends State<PegawaiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
+        title: Text('Pegawai', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
-        title: Text(
-          selectedKategori,
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => Navigator.pop(context),

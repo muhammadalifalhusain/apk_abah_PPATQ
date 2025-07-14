@@ -38,14 +38,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF667eea),
-            Color(0xFF764ba2),
-          ],
-        ),
+        color: const Color(0xFF254B62), 
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -91,14 +84,6 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                     color: Colors.white,
                   ),
                 ),
-                Text(
-                  'Kamar Tersedia',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white70,
-                  ),
-                ),
               ],
             ),
           ),
@@ -140,14 +125,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                 Container(
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF667eea),
-                        Color(0xFF764ba2),
-                      ],
-                    ),
+                    color: const Color(0xFF254B62), 
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
@@ -173,7 +151,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF2D3748),
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -191,7 +169,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFF667eea),
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -287,7 +265,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text('Data Kamar', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -306,7 +284,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                     children: [
                       const SizedBox(height: 10),
                       _buildStatCard(),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(

@@ -41,13 +41,12 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: Text('Detail Pegawai', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        elevation: 0,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

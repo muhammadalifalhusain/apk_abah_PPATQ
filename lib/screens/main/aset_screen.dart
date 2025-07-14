@@ -25,12 +25,12 @@ class _AsetScreenState extends State<AsetScreen> with TickerProviderStateMixin {
     return PreferredSize(
       preferredSize: const Size.fromHeight(kToolbarHeight),
       child: Container(
-        color: Colors.indigo, 
+        color: const Color.fromARGB(255, 224, 226, 223), 
         child: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.white,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.black,
+          labelColor: Colors.black,
+          unselectedLabelColor: const Color.fromARGB(179, 104, 100, 100),
           tabs: const [
             Tab(text: 'Ruang'),
             Tab(text: 'Barang'),
@@ -114,7 +114,7 @@ class _AsetScreenState extends State<AsetScreen> with TickerProviderStateMixin {
           'Data Aset',
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
         ),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         bottom: _buildTabBar(),
         leading: IconButton(

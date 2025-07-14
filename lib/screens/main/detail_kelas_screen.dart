@@ -33,9 +33,8 @@ class _DetailKelasScreenState extends State<DetailKelasScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Detail Kelas', 
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        title: Text('Detail Kelas', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),

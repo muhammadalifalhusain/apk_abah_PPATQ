@@ -35,7 +35,7 @@ class _BayarBulanLaluScreenState extends State<BayarBulanLaluScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Bayar Bulan Lalu', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
