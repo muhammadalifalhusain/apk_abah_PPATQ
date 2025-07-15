@@ -10,6 +10,7 @@ import '../screens/main/kelas_screen.dart';
 import '../screens/main/tahfidz_screen.dart';
 import '../screens/main/pegawai_screen.dart';
 import '../screens/main/agenda_screen.dart';
+import '../screens/main/alumni_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -195,7 +196,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         icon: Icons.history_edu_rounded,
         label: 'Alumni',
         color: Colors.teal,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AlumniScreen())),
       ),
     ];
   }
