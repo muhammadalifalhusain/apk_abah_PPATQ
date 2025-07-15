@@ -10,6 +10,7 @@ import '../screens/main/pegawai_screen.dart';
 import '../screens/main/agenda_screen.dart';
 import '../screens/main/alumni_screen.dart';
 import '../screens/main/surah_list_screen.dart';
+import '../screens/main/santri_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -132,7 +133,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         icon: Icons.groups_rounded,
         label: 'Santri',
         color: Colors.brown,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SantriScreen())),
       ),
       _MenuItem(
         icon: Icons.badge_rounded,

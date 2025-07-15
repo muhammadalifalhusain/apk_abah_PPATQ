@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../models/santri_model.dart';
 import '../../services/santri_service.dart';
 
@@ -50,35 +51,101 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (isLoading) {
+      return Scaffold(
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
     final profil = _detail!.dataDiri;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Santri'),
+        title: Text(
+          'Detail Santri',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: const Color(0xFF5B913B),
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
+          indicatorColor: Colors.black,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          labelStyle: GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+          unselectedLabelStyle: GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
+          tabAlignment: TabAlignment.start,
           tabs: _tabs,
         ),
       ),
       body: Column(
         children: [
           // Card Profil
-          Card(
+          Container(
             margin: const EdgeInsets.all(12),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: (profil.photo != null && profil.photo!.isNotEmpty)
-                    ? NetworkImage('https://manajemen.ppatq-rf.id/assets/img/upload/photo/${profil.photo}')
-                    : null,
-                child: (profil.photo == null || profil.photo!.isEmpty)
-                    ? const Icon(Icons.person)
-                    : null,
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-              title: Text(profil.nama),
-              subtitle: Text('No Induk: ${profil.noInduk} | Kelas: ${profil.kelas ?? "-"}'),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: (profil.photo != null && profil.photo!.isNotEmpty)
+                          ? NetworkImage('https://manajemen.ppatq-rf.id/assets/img/upload/photo/${profil.photo}')
+                          : null,
+                      child: (profil.photo == null || profil.photo!.isEmpty)
+                          ? const Icon(Icons.person, size: 30)
+                          : null,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            profil.nama,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'No Induk: ${profil.noInduk}',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            'Kelas: ${profil.kelas ?? "-"}',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
           // Tab View
@@ -101,125 +168,212 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
     );
   }
 
-    Widget _buildKesehatanTab(SantriDetail data) {
-      if (data.riwayatSakit.isEmpty) {
-        return const Center(child: Text('Belum ada data riwayat sakit'));
-      }
-
-      return ListView(
-        children: data.riwayatSakit.map((e) {
-          return ListTile(
-            title: Text(e.keluhan),
-            subtitle: Text('Sakit: ${e.tanggalSakit}, Sembuh: ${e.tanggalSembuh}'),
-          );
-        }).toList(),
-      );
+  Widget _buildKesehatanTab(SantriDetail data) {
+    if (data.riwayatSakit.isEmpty) {
+      return const Center(child: Text('Belum ada data riwayat sakit'));
     }
 
-    Widget _buildPemeriksaanTab(SantriDetail data) {
-      if (data.pemeriksaan.isEmpty) {
-        return const Center(child: Text('Belum ada data pemeriksaan'));
-      }
-
-      return ListView(
-        children: data.pemeriksaan.map((e) {
-          return ListTile(
-            title: Text('Tinggi: ${e.tinggiBadan} cm'),
-            subtitle: Text('Gigi: ${e.kondisiGigi}'),
-          );
-        }).toList(),
-      );
-    }
-
-    Widget _buildRawatInapTab(SantriDetail data) {
-      if (data.rawatInap.isEmpty) {
-        return const Center(child: Text('Belum ada data rawat inap'));
-      }
-
-      return ListView(
-        children: data.rawatInap.map((e) {
-          return ListTile(
-            title: Text(e.keluhan),
-            subtitle: Text('Masuk: ${e.tanggalMasuk}, Keluar: ${e.tanggalKeluar ?? "-"}'),
-          );
-        }).toList(),
-      );
-    }
-
-    Widget _buildPerilakuTab(SantriDetail data) {
-      if (data.perilaku.isEmpty) {
-        return const Center(child: Text('Belum ada data perilaku'));
-      }
-
-      return ListView(
-        children: data.perilaku.map((e) {
-          return ListTile(
-            title: Text('Tanggal: ${e.tanggal}'),
-            subtitle: Text('Kesopanan: ${e.kesopanan}, Kedisiplinan: ${e.kedisiplinan}'),
-          );
-        }).toList(),
-      );
-    }
-
-    Widget _buildKelengkapanTab(SantriDetail data) {
-      if (data.kelengkapan.isEmpty) {
-        return const Center(child: Text('Belum ada data kelengkapan'));
-      }
-
-      return ListView(
-        children: data.kelengkapan.map((e) {
-          return ListTile(
-            title: Text('Tanggal: ${e.tanggal}'),
-            subtitle: Text('Sekolah: ${e.peralatanSekolah}, Diri: ${e.perlengkapanDiri}'),
-          );
-        }).toList(),
-      );
-    }
-
-    Widget _buildKetahfidzanTab(SantriDetail data) {
-      if (data.ketahfidzan.isEmpty) {
-        return const Center(child: Text("Belum ada data ketahfidzan"));
-      }
-
-      final tahunKeys = data.ketahfidzan.keys.toList();
-      final tahun = tahunKeys.first;
-
-      final bulanKeys = data.ketahfidzan[tahun]!.keys.toList();
-      if (bulanKeys.isEmpty) {
-        return const Center(child: Text("Belum ada data bulan ketahfidzan"));
-      }
-
-      final bulan = bulanKeys.first;
-      final nilaiList = data.ketahfidzan[tahun]![bulan]!;
-
-      if (nilaiList.isEmpty) {
-        return const Center(child: Text("Belum ada nilai ketahfidzan"));
-      }
-
-      return ListView.builder(
-        itemCount: nilaiList.length,
-        itemBuilder: (context, index) {
-          final e = nilaiList[index];
-          return ListTile(
-            title: Text('Juz: ${e.nmJuz}'),
-            subtitle: Text('Tanggal: ${e.tanggal}, Hafalan: ${e.hafalan}'),
-          );
-        },
-      );
-    }
-
-    Widget _buildPembayaranTab(SantriDetail data) {
-      if (data.riwayatBayar.isEmpty) {
-        return const Center(child: Text('Belum ada data pembayaran'));
-      }
-
-      return ListView(
-        children: data.riwayatBayar.map((e) {
-          return ListTile(
-            title: Text('Periode: ${e.periode}'),
-            subtitle: Text('Validasi: ${e.validasi}'),
-          );
-        }).toList(),
-      );
-    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: data.riwayatSakit.length,
+      itemBuilder: (context, index) {
+        final e = data.riwayatSakit[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(
+              e.keluhan,
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text(
+              'Sakit: ${e.tanggalSakit}\nSembuh: ${e.tanggalSembuh}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+            isThreeLine: true,
+          ),
+        );
+      },
+    );
   }
+
+  Widget _buildPemeriksaanTab(SantriDetail data) {
+    if (data.pemeriksaan.isEmpty) {
+      return const Center(child: Text('Belum ada data pemeriksaan'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: data.pemeriksaan.length,
+      itemBuilder: (context, index) {
+        final e = data.pemeriksaan[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(
+              'Tinggi: ${e.tinggiBadan} cm',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text(
+              'Gigi: ${e.kondisiGigi}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRawatInapTab(SantriDetail data) {
+    if (data.rawatInap.isEmpty) {
+      return const Center(child: Text('Belum ada data rawat inap'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: data.rawatInap.length,
+      itemBuilder: (context, index) {
+        final e = data.rawatInap[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(
+              e.keluhan,
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text(
+              'Masuk: ${e.tanggalMasuk}\nKeluar: ${e.tanggalKeluar ?? "-"}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+            isThreeLine: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPerilakuTab(SantriDetail data) {
+    if (data.perilaku.isEmpty) {
+      return const Center(child: Text('Belum ada data perilaku'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: data.perilaku.length,
+      itemBuilder: (context, index) {
+        final e = data.perilaku[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(
+              'Tanggal: ${e.tanggal}',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text(
+              'Kesopanan: ${e.kesopanan}\nKedisiplinan: ${e.kedisiplinan}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+            isThreeLine: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildKelengkapanTab(SantriDetail data) {
+    if (data.kelengkapan.isEmpty) {
+      return const Center(child: Text('Belum ada data kelengkapan'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: data.kelengkapan.length,
+      itemBuilder: (context, index) {
+        final e = data.kelengkapan[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(
+              'Tanggal: ${e.tanggal}',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text(
+              'Sekolah: ${e.peralatanSekolah}\nDiri: ${e.perlengkapanDiri}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+            isThreeLine: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildKetahfidzanTab(SantriDetail data) {
+    if (data.ketahfidzan.isEmpty) {
+      return const Center(child: Text("Belum ada data ketahfidzan"));
+    }
+
+    final tahunKeys = data.ketahfidzan.keys.toList();
+    final tahun = tahunKeys.first;
+
+    final bulanKeys = data.ketahfidzan[tahun]!.keys.toList();
+    if (bulanKeys.isEmpty) {
+      return const Center(child: Text("Belum ada data bulan ketahfidzan"));
+    }
+
+    final bulan = bulanKeys.first;
+    final nilaiList = data.ketahfidzan[tahun]![bulan]!;
+
+    if (nilaiList.isEmpty) {
+      return const Center(child: Text("Belum ada nilai ketahfidzan"));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: nilaiList.length,
+      itemBuilder: (context, index) {
+        final e = nilaiList[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(
+              'Juz: ${e.nmJuz}',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text(
+              'Tanggal: ${e.tanggal}\nHafalan: ${e.hafalan}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+            isThreeLine: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPembayaranTab(SantriDetail data) {
+    if (data.riwayatBayar.isEmpty) {
+      return const Center(child: Text('Belum ada data pembayaran'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: data.riwayatBayar.length,
+      itemBuilder: (context, index) {
+        final e = data.riwayatBayar[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            title: Text(
+              'Periode: ${e.periode}',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text(
+              'Validasi: ${e.validasi}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
