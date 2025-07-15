@@ -69,7 +69,6 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
         isLastPage = response.data.nextPageUrl == null;
       });
     }
-
     setState(() => isLoading = false);
   }
 
@@ -78,8 +77,6 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
 
     _debounce = Timer(const Duration(milliseconds: 500), () {
       final input = value.trim();
-      print('[SEARCH] Keyword: $input');
-
       if (input.length >= 3) {
         searchQuery = input;
         _fetchAlumni(refresh: true);

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/main/kurban_screen.dart';
-import '../screens/main/bayar_bulan_lalu_screen.dart';
 import '../screens/main/kamar_screen.dart';
 import '../screens/main/aset_screen.dart';
 import '../screens/main/dawuh_screen.dart';
 import '../screens/main/keluhan_screen.dart';
-import '../screens/main/kelas_screen.dart';
 import '../screens/main/tahfidz_screen.dart';
 import '../screens/main/pegawai_screen.dart';
 import '../screens/main/agenda_screen.dart';
 import '../screens/main/alumni_screen.dart';
+import '../screens/main/surah_list_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -115,6 +114,15 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   List<_MenuItem> _buildMenuItems(BuildContext context) {
     return [
       _MenuItem(
+        icon: Icons.menu_book_rounded,
+        label: 'Al-Qur\'an', 
+        color: const Color.fromARGB(255, 73, 78, 223),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => QuranScreen()),
+        ),
+      ),
+      _MenuItem(
         icon: Icons.assignment_ind_rounded,
         label: 'PSB',
         color: Colors.deepPurple,
@@ -133,8 +141,38 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
       ),
       _MenuItem(
+        icon: Icons.bedroom_child_rounded,
+        label: 'Kemurobbian',
+        color: Colors.deepPurpleAccent,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KamarScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.auto_stories_rounded,
+        label: 'Ketahfidzan',
+        color: Colors.brown,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TahfidzScreen())),
+      ),
+      _MenuItem(
         icon: Icons.security_rounded,
         label: 'Keamanan',
+        color: Colors.blueGrey,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.security_rounded,
+        label: 'Kelengkapan',
+        color: Colors.blueGrey,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.health_and_safety,
+        label: 'Kesehatan',
+        color: Colors.blueGrey,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.health_and_safety,
+        label: 'Ketertiban',
         color: Colors.blueGrey,
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
       ),
@@ -145,46 +183,28 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
       ),
       _MenuItem(
+        icon: Icons.record_voice_over_rounded,
+        label: 'Keuangan',
+        color: Colors.indigo,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
+      ),
+      _MenuItem(
         icon: Icons.report_problem_rounded,
-        label: 'Keluhan',
+        label: 'Saran&Kritik',
         color: Colors.red,
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KeluhanScreen())),
-      ),
+      ), 
       _MenuItem(
-        icon: Icons.payments_rounded,
-        label: 'Bayar Lalu',
-        color: Colors.blueGrey,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BayarBulanLaluScreen())),
-      ),
-      _MenuItem(
-        icon: Icons.bedroom_child_rounded,
-        label: 'Kemurobbian',
-        color: Colors.deepPurpleAccent,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KamarScreen())),
-      ),
-      _MenuItem(
-        icon: Icons.school_rounded,
-        label: 'Kelas',
-        color: Colors.cyan,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KelasScreen())),
-      ),
-      _MenuItem(
-        icon: Icons.auto_stories_rounded,
-        label: 'Ketahfidzan',
-        color: Colors.brown,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TahfidzScreen())),
+        icon: Icons.volunteer_activism_rounded,
+        label: 'Qurban',
+        color: Colors.lime,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KurbanScreen())),
       ),
       _MenuItem(
         icon: Icons.inventory_2_rounded,
         label: 'Aset',
         color: Colors.lightGreen,
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AsetScreen())),
-      ),
-      _MenuItem(
-        icon: Icons.volunteer_activism_rounded,
-        label: 'Kurban',
-        color: Colors.lime,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KurbanScreen())),
       ),
       _MenuItem(
         icon: Icons.volunteer_activism_rounded,
