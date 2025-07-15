@@ -8,6 +8,8 @@ import '../screens/main/dawuh_screen.dart';
 import '../screens/main/keluhan_screen.dart';
 import '../screens/main/kelas_screen.dart';
 import '../screens/main/tahfidz_screen.dart';
+import '../screens/main/pegawai_screen.dart';
+import '../screens/main/agenda_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -32,11 +34,16 @@ class _MenuItem {
 
 class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   bool _showAll = false;
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
-    final menuItems = _buildMenuItems(context);
-    final displayedItems = _showAll ? menuItems : menuItems.take(6).toList();
+    final allItems = _buildMenuItems(context);
+    final filteredItems = allItems
+        .where((item) =>
+            item.label.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+    final displayedItems = _showAll ? filteredItems : filteredItems.take(6).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +52,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.dashboard_customize_rounded, color: Colors.grey, size: 20),
+              const Icon(Icons.grid_view_rounded, color: Colors.grey, size: 20),
               const SizedBox(width: 6),
               Text(
                 'Menu Cepat',
@@ -58,7 +65,26 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: TextField(
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value;
+              });
+            },
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              hintText: 'Cari menu...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -69,17 +95,18 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
           children: displayedItems.map((item) => _buildMenuItem(context, item)).toList(),
         ),
         const SizedBox(height: 10),
-        Center(
-          child: TextButton.icon(
-            onPressed: () {
-              setState(() {
-                _showAll = !_showAll;
-              });
-            },
-            icon: Icon(_showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
-            label: Text(_showAll ? 'Tutup' : 'Lainnya'),
+        if (filteredItems.length > 6)
+          Center(
+            child: TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  _showAll = !_showAll;
+                });
+              },
+              icon: Icon(_showAll ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+              label: Text(_showAll ? 'Tutup' : 'Lainnya'),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -87,68 +114,88 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   List<_MenuItem> _buildMenuItems(BuildContext context) {
     return [
       _MenuItem(
-        icon: Icons.book_online_rounded,
+        icon: Icons.assignment_ind_rounded,
+        label: 'PSB',
+        color: Colors.deepPurple,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.groups_rounded,
+        label: 'Santri',
+        color: Colors.brown,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.badge_rounded,
+        label: 'Staff',
+        color: Colors.deepOrange,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.security_rounded,
+        label: 'Keamanan',
+        color: Colors.blueGrey,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.record_voice_over_rounded,
         label: 'Dawuh',
-        color: const Color(0xFF9C27B0),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen()));
-        },
+        color: Colors.indigo,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
       ),
       _MenuItem(
-        icon: Icons.message,
+        icon: Icons.report_problem_rounded,
         label: 'Keluhan',
-        color: const Color(0xFF9C27B0),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const KeluhanScreen()));
-        },
+        color: Colors.red,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KeluhanScreen())),
       ),
       _MenuItem(
-        icon: Icons.history_rounded,
+        icon: Icons.payments_rounded,
         label: 'Bayar Lalu',
-        color: const Color(0xFF607D8B),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const BayarBulanLaluScreen()));
-        },
+        color: Colors.blueGrey,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BayarBulanLaluScreen())),
       ),
       _MenuItem(
-        icon: Icons.bed_rounded,
-        label: 'Kamar',
-        color: const Color(0xFF3F51B5),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const KamarScreen()));
-        },
+        icon: Icons.bedroom_child_rounded,
+        label: 'Kemurobbian',
+        color: Colors.deepPurpleAccent,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KamarScreen())),
       ),
       _MenuItem(
-        icon: Icons.class_rounded,
+        icon: Icons.school_rounded,
         label: 'Kelas',
-        color: const Color(0xFF00BCD4),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const KelasScreen()));
-        },
+        color: Colors.cyan,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KelasScreen())),
       ),
       _MenuItem(
-        icon: Icons.menu_book_rounded,
-        label: 'Tahfidz',
-        color: const Color(0xFF795548),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const TahfidzScreen()));
-        },
+        icon: Icons.auto_stories_rounded,
+        label: 'Ketahfidzan',
+        color: Colors.brown,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TahfidzScreen())),
       ),
       _MenuItem(
-        icon: Icons.warehouse_rounded,
+        icon: Icons.inventory_2_rounded,
         label: 'Aset',
-        color: const Color(0xFF8BC34A),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const AsetScreen()));
-        },
+        color: Colors.lightGreen,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AsetScreen())),
       ),
       _MenuItem(
-        icon: Icons.local_fire_department_rounded,
+        icon: Icons.volunteer_activism_rounded,
         label: 'Kurban',
-        color: const Color(0xFFCDDC39),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const KurbanScreen()));
-        },
+        color: Colors.lime,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KurbanScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.volunteer_activism_rounded,
+        label: 'Agenda',
+        color: Colors.lime,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AgendaScreen())),
+      ),
+      _MenuItem(
+        icon: Icons.history_edu_rounded,
+        label: 'Alumni',
+        color: Colors.teal,
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
       ),
     ];
   }
@@ -194,32 +241,6 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showComingSoonDialog(BuildContext context, String feature) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            const Icon(Icons.info_outline, color: Colors.blue),
-            const SizedBox(width: 8),
-            Text('Info', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-          ],
-        ),
-        content: Text(
-          'Fitur $feature sedang dalam pengembangan dan akan segera tersedia.',
-          style: GoogleFonts.poppins(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Mengerti', style: GoogleFonts.poppins()),
-          ),
-        ],
       ),
     );
   }

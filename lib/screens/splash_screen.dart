@@ -89,8 +89,8 @@ class _SplashScreenState extends State<SplashScreen>
                     ScaleTransition(
                       scale: _scaleAnimation,
                       child: Container(
-                        width: 140,
-                        height: 140,
+                        width: 270,
+                        height: 270,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           boxShadow: [
@@ -102,9 +102,8 @@ class _SplashScreenState extends State<SplashScreen>
                           ],
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
                           child: Image.asset(
-                            'assets/images/abah.png',
+                            'assets/images/revisiAbah.jpg',
                             fit: BoxFit.cover,
                           ),
                         ),
