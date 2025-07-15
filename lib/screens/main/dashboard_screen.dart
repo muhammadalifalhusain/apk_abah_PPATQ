@@ -10,6 +10,9 @@ import 'pegawai_screen.dart';
 import 'belum_lapor_screen.dart';
 import 'psb_screen.dart';
 import 'santri_screen.dart';
+import 'berita_screen.dart';
+import '../../models/berita_model.dart';
+import '../../services/berita_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -25,12 +28,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String? nama;
   String? photo;
+  List<BeritaItem> _beritaList = [];
+  bool _isLoadingBerita = false;
+  int _beritaPage = 1;
+
 
   @override
   void initState() {
     super.initState();
     loadUserSession();
     loadDashboard();
+    loadBerita(); 
   }
 
   Future<void> loadUserSession() async {
@@ -44,6 +52,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
           : ''; 
     });
   }
+
+  Future<void> loadBerita() async {
+    if (_isLoadingBerita) return;
+    setState(() => _isLoadingBerita = true);
+
+    final res = await BeritaService.fetchBerita(page: _beritaPage);
+    if (res != null) {
+      setState(() {
+        _beritaList.addAll(res.data.data);
+        _beritaPage++;
+      });
+    }
+
+    setState(() => _isLoadingBerita = false);
+  }
+
 
   Future<void> loadDashboard() async {
     final data = await _dashboardService.fetchDashboard();
@@ -385,6 +409,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'value': _dashboardData!.jumlahPsbTahunLalu,
                           },
                         ]),
+                        _beritaList.isEmpty
+                        ? const SizedBox()
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildSectionTitle('Berita Terbaru', Icons.newspaper),
+                              BeritaScreen(
+                                beritaList: _beritaList,
+                                onReachEnd: () {
+                                  loadBerita();
+                                },
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),
