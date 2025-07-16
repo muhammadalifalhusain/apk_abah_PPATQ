@@ -1,7 +1,7 @@
 class DashboardResponse {
   final int status;
   final String message;
-  final DashboardData? data;
+  final DashboardData data;
 
   DashboardResponse({
     required this.status,
@@ -13,12 +13,14 @@ class DashboardResponse {
     return DashboardResponse(
       status: json['status'] ?? 0,
       message: json['message'] ?? '',
-      data: json['data'] != null ? DashboardData.fromJson(json['data']) : null,
+      data: DashboardData.fromJson(json['data'] ?? {}),
     );
   }
 }
 
 class DashboardData {
+  final String bulanIni;
+  final String totalTagihanSyahriah;
   final int jumlahPsbTahunLalu;
   final int jumlahPsb;
   final int jumlahPsbLaki;
@@ -29,12 +31,13 @@ class DashboardData {
   final int jumlahPegawai;
   final int jumlahPegawaiLaki;
   final int jumlahPegawaiPerempuan;
-  final String jumlahPembayaran;
-  final String totalPembayaran;
+  final String totalPembayaranValidBulanIni;
   final int jumlahSantriBelumLapor;
   final String jumlahPembayaranLalu;
 
   DashboardData({
+    required this.bulanIni,
+    required this.totalTagihanSyahriah,
     required this.jumlahPsbTahunLalu,
     required this.jumlahPsb,
     required this.jumlahPsbLaki,
@@ -45,14 +48,15 @@ class DashboardData {
     required this.jumlahPegawai,
     required this.jumlahPegawaiLaki,
     required this.jumlahPegawaiPerempuan,
-    required this.jumlahPembayaran,
-    required this.totalPembayaran,
+    required this.totalPembayaranValidBulanIni,
     required this.jumlahSantriBelumLapor,
     required this.jumlahPembayaranLalu,
   });
 
   factory DashboardData.fromJson(Map<String, dynamic> json) {
     return DashboardData(
+      bulanIni: json['bulanIni'] ?? '',
+      totalTagihanSyahriah: json['totalTagihanSyahriah'] ?? '',
       jumlahPsbTahunLalu: json['jumlahPsbTahunLalu'] ?? 0,
       jumlahPsb: json['jumlahPsb'] ?? 0,
       jumlahPsbLaki: json['jumlahPsbLaki'] ?? 0,
@@ -63,10 +67,9 @@ class DashboardData {
       jumlahPegawai: json['jumlahPegawai'] ?? 0,
       jumlahPegawaiLaki: json['jumlahPegawaiLaki'] ?? 0,
       jumlahPegawaiPerempuan: json['jumlahPegawaiPerempuan'] ?? 0,
-      jumlahPembayaran: json['jumlahPembayaran'] ?? 0,
-      totalPembayaran: json['totalPembayaran'] ?? '0',
+      totalPembayaranValidBulanIni: json['totalPembayaranValidBulanIni'] ?? '',
       jumlahSantriBelumLapor: json['jumlahSantriBelumLapor'] ?? 0,
-      jumlahPembayaranLalu: json['jumlahPembayaranLalu'] ?? '0',
+      jumlahPembayaranLalu: json['jumlahPembayaranLalu'] ?? '',
     );
   }
 }

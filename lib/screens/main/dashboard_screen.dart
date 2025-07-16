@@ -13,6 +13,7 @@ import 'santri_screen.dart';
 import 'berita_screen.dart';
 import '../../models/berita_model.dart';
 import '../../services/berita_service.dart';
+import '../../utils/get_month.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -457,27 +458,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: Colors.black87,
             ),
           ),
+          Text(
+            'Bulan ${_dashboardData?.bulanIni ?? '0'}',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildStatItem(
+            'Total Tagihan Syahriah',
+            'Rp : ${_dashboardData!.totalTagihanSyahriah}',
+            Icons.money,
+            Colors.black,
+          ),
+          const SizedBox(height: 12),
+          Text.rich(
+            TextSpan(
+              text: "Total Pembayaran Syahriah s/d tanggal 1–${DateTime.now().day} ${getMonthName(DateTime.now().month)} ${DateTime.now().year}\n ",
+              style: TextStyle(fontSize: 14), 
+              children: [
+                TextSpan(
+                  text: "Rp : ",
+                  style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16, color: Colors.black87),
+                ),
+                TextSpan(
+                  text: _dashboardData?.totalPembayaranValidBulanIni ?? '0',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 8),
-          _buildStatItem(
-            'Jumlah Pembayaran', 
-            _formatCurrency(_dashboardData!.jumlahPembayaran), 
-            Icons.receipt, 
-            Colors.orange
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '${_dashboardData?.jumlahSantriBelumLapor ?? '0'}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold, 
+                    color: Colors.black87,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Santri Belum melakukan pembayaran syahriah',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal, 
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          _buildStatItem(
-            'Total', 
-            _formatCurrency(_dashboardData!.totalPembayaran), 
-            Icons.money, 
-            Colors.green
-          ),
-          const SizedBox(height: 12),
-          _buildStatItem(
-            'Tahun Lalu', 
-            _formatCurrency(_dashboardData!.jumlahPembayaranLalu), 
-            Icons.history, 
-            Colors.grey
-          ),
+
         ],
       ),
     );

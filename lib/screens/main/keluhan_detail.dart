@@ -87,6 +87,7 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                       label: const Text('Kirim Balasan'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal,
+                        foregroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: _isLoading
@@ -183,7 +184,8 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                         : const Icon(Icons.check),
                     label: const Text('Tandai Ditangani'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.teal,
+                      foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                     onPressed: _isLoading
