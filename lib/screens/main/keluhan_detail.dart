@@ -4,8 +4,13 @@ import '../../models/keluhan_model.dart';
 
 class KeluhanDetail extends StatefulWidget {
   final KeluhanItem keluhan;
+  final void Function(KeluhanItem)? onUpdate;
 
-  const KeluhanDetail({super.key, required this.keluhan});
+  const KeluhanDetail({
+    super.key,
+    required this.keluhan,
+    this.onUpdate,
+  });
 
   @override
   State<KeluhanDetail> createState() => _KeluhanDetailState();
@@ -46,7 +51,7 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                   Container(
+                  Container(
                     width: 40,
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 16),
@@ -55,7 +60,8 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  const Text('Balas Keluhan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text('Balas Keluhan',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _replyController,
@@ -64,9 +70,8 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                       hintText: 'Tulis balasan di sini...',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    validator: (value) => (value == null || value.trim().isEmpty)
-                        ? 'Pesan tidak boleh kosong'
-                        : null,
+                    validator: (value) =>
+                        (value == null || value.trim().isEmpty) ? 'Pesan tidak boleh kosong' : null,
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
@@ -92,7 +97,6 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                                 final result = await _service.submitReplyKeluhan(
                                   ReplyKeluhanRequest(
                                     idKeluhan: _keluhan.idKeluhan,
-                                    status: 1,
                                     pesan: _replyController.text.trim(),
                                   ),
                                 );
@@ -109,9 +113,10 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                                     setState(() {
                                       _keluhan = _keluhan.copyWith(
                                         balasan: _replyController.text.trim(),
-                                        status: 1,
                                       );
                                     });
+
+                                    widget.onUpdate?.call(_keluhan);
                                   }
                                 }
                               }
@@ -152,7 +157,8 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Tandai Sebagai Ditangani', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Tandai Sebagai Ditangani',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _statusReplyController,
@@ -161,9 +167,8 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                     hintText: 'Edit balasan jika perlu...',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  validator: (value) => (value == null || value.trim().isEmpty)
-                      ? 'Pesan tidak boleh kosong'
-                      : null,
+                  validator: (value) =>
+                      (value == null || value.trim().isEmpty) ? 'Pesan tidak boleh kosong' : null,
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
@@ -199,13 +204,16 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                                   content: Text(result.message),
                                   backgroundColor: result.status == 200 ? Colors.green : Colors.orange,
                                 ));
+
                                 if (result.status == 200) {
                                   setState(() {
                                     _keluhan = _keluhan.copyWith(
-                                      balasan: _statusReplyController.text.trim(),
-                                      status: 2,
-                                    );
+                                    status: '2',
+                                  );
+
                                   });
+
+                                  widget.onUpdate?.call(_keluhan);
                                 }
                               }
                             }
@@ -223,11 +231,8 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
-
       padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,13 +248,29 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                 ),
               ),
             ),
-            
             Text(
               _keluhan.kategori.isNotEmpty ? _keluhan.kategori : "Kategori",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            Text("Status: ${_keluhan.statusLabel}"),
+            Row(
+              children: [
+                Text("Status: ${_keluhan.statusLabel}"),
+                if (_keluhan.status == '1' && _keluhan.balasan.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.orange[100],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      "Menunggu Validasi",
+                      style: TextStyle(fontSize: 12, color: Colors.orange),
+                    ),
+                  ),
+              ],
+            ),
             const Divider(height: 24),
             Text("Masukan:", style: TextStyle(fontWeight: FontWeight.w600)),
             Text(_keluhan.masukan.isNotEmpty ? _keluhan.masukan : '-'),
@@ -281,7 +302,7 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                     child: IconButton(
                       icon: const Icon(Icons.verified, color: Colors.green, size: 28),
                       tooltip: "Tandai sebagai ditangani",
-                      onPressed: _keluhan.status == 2 ? null : () => _showUpdateStatusForm(context),
+                      onPressed: _keluhan.status == '2' ? null : () => _showUpdateStatusForm(context),
                     ),
                   ),
                 ],
