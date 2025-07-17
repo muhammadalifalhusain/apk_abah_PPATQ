@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../models/kelas_model.dart';
 import '../../services/kelas_service.dart';
+import 'keuangan_detail_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({super.key});
@@ -41,9 +43,25 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Keuangan Santri'),
+        title: Text(
+          'Keuangan Santri',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: const Color(0xFF5B913B),
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
         bottom: TabBar(
           controller: _tabController,
+          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          unselectedLabelStyle: GoogleFonts.poppins(),
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70, 
+          indicatorColor: Colors.black,
+          indicatorWeight: 3.0, 
+          indicatorPadding: const EdgeInsets.symmetric(horizontal: 16),
           tabs: const [
             Tab(text: 'Keuangan'),
             Tab(text: 'Syahriah'),
@@ -68,7 +86,6 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
     if (_kelasList.isEmpty) {
       return const Center(child: Text('Belum ada data kelas.'));
     }
-
     return ListView.builder(
       itemCount: _kelasList.length,
       padding: const EdgeInsets.all(12),
@@ -77,16 +94,23 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
           child: ListTile(
-            title: Text(kelas.namaKelas),
-            subtitle: Text('Wali Kelas: ${kelas.guru}'),
+            title: Text(
+              '${kelas.namaKelas} - ${kelas.guru}',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
             trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
             onTap: () {
-              // Arahkan ke detail keuangan kelas atau santri
-              // Navigator.push(context, MaterialPageRoute(builder: (_) => KelasDetailScreen(kelas: kelas)));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => KeuanganDetailScreen(kodeKelas: kelas.kode),
+                ),
+              );
             },
           ),
         );
       },
     );
   }
+
 }

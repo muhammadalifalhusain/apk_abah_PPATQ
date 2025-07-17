@@ -386,6 +386,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'value': _dashboardData!.jumlahPegawaiPerempuan,
                           },
                         ]),
+                        if ((_dashboardData?.tahfidzan.highest?.students.isNotEmpty ?? false) ||
+                          (_dashboardData?.tahfidzan.lowest?.students.isNotEmpty ?? false)) ...[
+                          _buildSectionTitle('Ketahfidzan Santri', Icons.menu_book_rounded),
+                          const SizedBox(height: 4),
+                          Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: ExpansionTile(
+                              initiallyExpanded: false,
+                              title: const Text('Lihat Detail Capaian'),
+                              childrenPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              children: [
+                                if (_dashboardData!.tahfidzan.highest?.students.isNotEmpty == true) ...[
+                                  Text(
+                                    'Capaian Tertinggi: ${_dashboardData!.tahfidzan.highest?.achievement.isNotEmpty == true ? _dashboardData!.tahfidzan.highest!.achievement : "-"}',
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _buildSantriGrid(_dashboardData!.tahfidzan.highest!.students),
+                                  const SizedBox(height: 16),
+                                ],
+                                if (_dashboardData!.tahfidzan.lowest?.students.isNotEmpty == true) ...[
+                                  Text(
+                                    'Capaian Terendah: ${_dashboardData!.tahfidzan.lowest?.achievement.isNotEmpty == true ? _dashboardData!.tahfidzan.lowest!.achievement : "-"}',
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _buildSantriGrid(_dashboardData!.tahfidzan.lowest!.students),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 10),
                         _buildSectionTitle('Data PSB', Icons.app_registration),
                         _buildStatGroupCard([
                           {
@@ -515,6 +549,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+  Widget _buildSantriGrid(List<Student> students) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: students.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 0.75,
+      ),
+      itemBuilder: (context, index) {
+        final student = students[index];
+        final hasPhoto = student.photo != null && student.photo!.isNotEmpty;
+        final photoUrl = hasPhoto
+            ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${student.photo}'
+            : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(student.name)}&background=0D8ABC&color=fff';
+
+        return Column(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundImage: NetworkImage(photoUrl),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              student.name,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
   Widget _buildStatItem(String label, String value, IconData icon, Color color) {
     return Row(
       children: [

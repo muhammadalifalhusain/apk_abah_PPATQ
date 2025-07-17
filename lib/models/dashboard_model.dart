@@ -9,11 +9,19 @@ class DashboardResponse {
     required this.data,
   });
 
-  factory DashboardResponse.fromJson(Map<String, dynamic> json) {
+  factory DashboardResponse.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return DashboardResponse(
+        status: 0,
+        message: 'No data',
+        data: DashboardData.empty(),
+      );
+    }
+
     return DashboardResponse(
-      status: json['status'] ?? 0,
-      message: json['message'] ?? '',
-      data: DashboardData.fromJson(json['data'] ?? {}),
+      status: json['status'] as int? ?? 0,
+      message: json['message'] as String? ?? '',
+      data: DashboardData.fromJson(json['data'] as Map<String, dynamic>? ?? {}),
     );
   }
 }
@@ -35,6 +43,7 @@ class DashboardData {
   final String totalPembayaranUnvalidBulanIni;
   final int jumlahSantriBelumLapor;
   final String jumlahPembayaranLalu;
+  final Tahfidzan tahfidzan;
 
   DashboardData({
     required this.bulanIni,
@@ -53,26 +62,126 @@ class DashboardData {
     required this.totalPembayaranUnvalidBulanIni,
     required this.jumlahSantriBelumLapor,
     required this.jumlahPembayaranLalu,
+    required this.tahfidzan,
   });
 
-  factory DashboardData.fromJson(Map<String, dynamic> json) {
+  factory DashboardData.fromJson(Map<String, dynamic>? json) {
+    json ??= {};
     return DashboardData(
-      bulanIni: json['bulanIni'] ?? '',
-      totalTagihanSyahriah: json['totalTagihanSyahriah'] ?? '',
-      jumlahPsbTahunLalu: json['jumlahPsbTahunLalu'] ?? 0,
-      jumlahPsb: json['jumlahPsb'] ?? 0,
-      jumlahPsbLaki: json['jumlahPsbLaki'] ?? 0,
-      jumlahPsbPerempuan: json['jumlahPsbPerempuan'] ?? 0,
-      jumlahSantri: json['jumlahSantri'] ?? 0,
-      jumlahSantriLaki: json['jumlahSantriLaki'] ?? 0,
-      jumlahSantriPerempuan: json['jumlahSantriPerempuan'] ?? 0,
-      jumlahPegawai: json['jumlahPegawai'] ?? 0,
-      jumlahPegawaiLaki: json['jumlahPegawaiLaki'] ?? 0,
-      jumlahPegawaiPerempuan: json['jumlahPegawaiPerempuan'] ?? 0,
-      totalPembayaranValidBulanIni: json['totalPembayaranValidBulanIni'] ?? '',
-      totalPembayaranUnvalidBulanIni: json['totalPembayaranUnvalidBulanIni'] ?? '',
-      jumlahSantriBelumLapor: json['jumlahSantriBelumLapor'] ?? 0,
-      jumlahPembayaranLalu: json['jumlahPembayaranLalu'] ?? '',
+      bulanIni: json['bulanIni'] as String? ?? '',
+      totalTagihanSyahriah: json['totalTagihanSyahriah'] as String? ?? '0',
+      jumlahPsbTahunLalu: json['jumlahPsbTahunLalu'] as int? ?? 0,
+      jumlahPsb: json['jumlahPsb'] as int? ?? 0,
+      jumlahPsbLaki: json['jumlahPsbLaki'] as int? ?? 0,
+      jumlahPsbPerempuan: json['jumlahPsbPerempuan'] as int? ?? 0,
+      jumlahSantri: json['jumlahSantri'] as int? ?? 0,
+      jumlahSantriLaki: json['jumlahSantriLaki'] as int? ?? 0,
+      jumlahSantriPerempuan: json['jumlahSantriPerempuan'] as int? ?? 0,
+      jumlahPegawai: json['jumlahPegawai'] as int? ?? 0,
+      jumlahPegawaiLaki: json['jumlahPegawaiLaki'] as int? ?? 0,
+      jumlahPegawaiPerempuan: json['jumlahPegawaiPerempuan'] as int? ?? 0,
+      totalPembayaranValidBulanIni:
+          json['totalPembayaranValidBulanIni'] as String? ?? '0',
+      totalPembayaranUnvalidBulanIni:
+          json['totalPembayaranUnvalidBulanIni'] as String? ?? '0',
+      jumlahSantriBelumLapor: json['jumlahSantriBelumLapor'] as int? ?? 0,
+      jumlahPembayaranLalu: json['jumlahPembayaranLalu'] as String? ?? '0',
+      tahfidzan: Tahfidzan.fromJson(json['tahfidzan'] as Map<String, dynamic>?),
+    );
+  }
+
+  factory DashboardData.empty() {
+    return DashboardData(
+      bulanIni: '',
+      totalTagihanSyahriah: '0',
+      jumlahPsbTahunLalu: 0,
+      jumlahPsb: 0,
+      jumlahPsbLaki: 0,
+      jumlahPsbPerempuan: 0,
+      jumlahSantri: 0,
+      jumlahSantriLaki: 0,
+      jumlahSantriPerempuan: 0,
+      jumlahPegawai: 0,
+      jumlahPegawaiLaki: 0,
+      jumlahPegawaiPerempuan: 0,
+      totalPembayaranValidBulanIni: '0',
+      totalPembayaranUnvalidBulanIni: '0',
+      jumlahSantriBelumLapor: 0,
+      jumlahPembayaranLalu: '0',
+      tahfidzan: Tahfidzan.empty());
+  }
+}
+
+class Tahfidzan {
+  final HighestLowest? highest;
+  final HighestLowest? lowest;
+
+  Tahfidzan({
+    required this.highest,
+    required this.lowest,
+  });
+
+  factory Tahfidzan.fromJson(Map<String, dynamic>? json) {
+    json ??= {};
+    return Tahfidzan(
+      highest: json['tertinggi'] != null
+          ? HighestLowest.fromJson(json['tertinggi'] as Map<String, dynamic>)
+          : null,
+      lowest: json['terendah'] != null
+          ? HighestLowest.fromJson(json['terendah'] as Map<String, dynamic>)
+          : null,
+    );
+  }
+
+  factory Tahfidzan.empty() {
+    return Tahfidzan(
+      highest: HighestLowest.empty(),
+      lowest: HighestLowest.empty(),
+    );
+  }
+}
+
+class HighestLowest {
+  final String achievement;
+  final List<Student> students;
+
+  HighestLowest({
+    required this.achievement,
+    required this.students,
+  });
+
+  factory HighestLowest.fromJson(Map<String, dynamic>? json) {
+    json ??= {};
+    return HighestLowest(
+      achievement: json['capaian'] as String? ?? '',
+      students: (json['santri'] as List<dynamic>? ?? [])
+          .map((e) => Student.fromJson(e as Map<String, dynamic>? ?? {}))
+          .toList(),
+    );
+  }
+
+  factory HighestLowest.empty() {
+    return HighestLowest(
+      achievement: '',
+      students: [],
+    );
+  }
+}
+
+class Student {
+  final String name;
+  final String? photo;
+
+  Student({
+    required this.name,
+    this.photo,
+  });
+
+  factory Student.fromJson(Map<String, dynamic>? json) {
+    json ??= {};
+    return Student(
+      name: json['nama'] as String? ?? '',
+      photo: json['photo'] as String?,
     );
   }
 }
