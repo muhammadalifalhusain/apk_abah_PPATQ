@@ -38,7 +38,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF254B62), 
+        color: const Color.fromARGB(255, 56, 96, 31),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

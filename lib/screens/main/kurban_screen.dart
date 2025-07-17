@@ -245,7 +245,7 @@ class _KurbanSummaryScreenState extends State<KurbanSummaryScreen> {
         children: [
           Expanded(
             child: _buildStatItem(
-              'Total Kurban',
+              'Total Data Kurban',
               '$totalKurban',
                Colors.black,
             ),
@@ -750,16 +750,8 @@ class _KurbanDetailScreenState extends State<KurbanDetailScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  
-                  // Atas Nama
                   Row(
                     children: [
-                      Icon(
-                        Icons.person,
-                        size: 16,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           'Atas nama: ${item.atasNama}',

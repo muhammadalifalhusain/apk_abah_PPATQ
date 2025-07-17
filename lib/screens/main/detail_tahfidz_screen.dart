@@ -44,9 +44,7 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-        ),
+        color: const Color.fromARGB(255, 56, 96, 31),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -138,7 +136,7 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text('Detail Tahfidz', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
