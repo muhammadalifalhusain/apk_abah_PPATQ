@@ -142,6 +142,13 @@ class _SantriScreenState extends State<SantriScreen> {
                         color: Colors.grey[700],
                       ),
                     ),
+                    Text(
+                      'Wali Kelas: ${santri.waliKelas}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.grey[700],
+                      ),
+                    ),
                   ],
                 ),
               ),

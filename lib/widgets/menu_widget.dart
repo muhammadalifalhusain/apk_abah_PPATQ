@@ -9,8 +9,10 @@ import '../screens/main/tahfidz_screen.dart';
 import '../screens/main/pegawai_screen.dart';
 import '../screens/main/agenda_screen.dart';
 import '../screens/main/alumni_screen.dart';
-import '../screens/main/surah_list_screen.dart';
+import '../screens/main/psb_screen.dart';
 import '../screens/main/santri_screen.dart';
+import '../screens/main/kelas_screen.dart';
+import '../screens/main/keuangan_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -115,19 +117,10 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   List<_MenuItem> _buildMenuItems(BuildContext context) {
     return [
       _MenuItem(
-        icon: Icons.menu_book_rounded,
-        label: 'Al-Qur\'an', 
-        color: const Color.fromARGB(255, 73, 78, 223),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => QuranScreen()),
-        ),
-      ),
-      _MenuItem(
         icon: Icons.assignment_ind_rounded,
         label: 'PSB',
         color: Colors.deepPurple,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PsbScreen())),
       ),
       _MenuItem(
         icon: Icons.groups_rounded,
@@ -163,7 +156,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         icon: Icons.security_rounded,
         label: 'Kelengkapan',
         color: Colors.blueGrey,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KelasScreen())),
       ),
       _MenuItem(
         icon: Icons.health_and_safety,
@@ -184,10 +177,10 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
       ),
       _MenuItem(
-        icon: Icons.record_voice_over_rounded,
+        icon: Icons.money_outlined,
         label: 'Keuangan',
         color: Colors.indigo,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DawuhScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KeuanganScreen())),
       ),
       _MenuItem(
         icon: Icons.report_problem_rounded,

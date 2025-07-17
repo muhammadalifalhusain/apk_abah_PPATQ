@@ -17,8 +17,11 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
   late TabController _tabController;
   bool isLoading = true;
   SantriDetail? _detail;
+  bool _showOrangTua = false;
+
 
   final List<Tab> _tabs = const [
+    Tab(text: 'Profil'),
     Tab(text: 'Kesehatan'),
     Tab(text: 'Pemeriksaan'),
     Tab(text: 'Rawat Inap'),
@@ -91,7 +94,6 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
       ),
       body: Column(
         children: [
-          // Card Profil
           Container(
             margin: const EdgeInsets.all(12),
             child: Card(
@@ -140,6 +142,13 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
                               color: Colors.grey[600],
                             ),
                           ),
+                          Text(
+                            'Kota: ${profil.kotaKab ?? "-"}',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -153,6 +162,7 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
+                _buildProfilTab(_detail!),
                 _buildKesehatanTab(_detail!),
                 _buildPemeriksaanTab(_detail!),
                 _buildRawatInapTab(_detail!),
@@ -163,6 +173,105 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfilTab(SantriDetail data) {
+    final profil = data.dataDiri;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Data Diri Santri",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildRow('Tanggal Lahir', profil.tanggalLahirFormatted ?? '-'),
+                  _buildRow('Jenis Kelamin', profil.jenisKelaminFormatted),
+                  _buildRow('Alamat', profil.alamat ?? '-'),
+                  _buildRow('Kota/Kabupaten', profil.kotaKab ?? '-'),
+                  _buildRow('Kamar', profil.kamar ?? '-'),
+                  _buildRow('Kelas Tahfidz', profil.kelasTahfidz ?? '-'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            "Data Orang Tua",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _showOrangTua = !_showOrangTua;
+              });
+            },
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: _showOrangTua
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildRow('Nama Ayah', profil.namaAyah ?? '-'),
+                          _buildRow('Pendidikan', profil.pendidikanAyah ?? '-'),
+                          _buildRow('Pekerjaan', profil.pekerjaanAyah ?? '-'),
+                          const Divider(),
+                          _buildRow('Nama Ibu', profil.namaIbu ?? '-'),
+                          _buildRow('Pendidikan', profil.pendidikanIbu ?? '-'),
+                          _buildRow('Pekerjaan', profil.pekerjaanIbu ?? '-'),
+                        ],
+                      )
+                    : Center(
+                        child: Text(
+                          'Klik untuk lihat data orang tua',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 130,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+          ),
+          Expanded(
+            child: Text(value),
+          ),
         ],
       ),
     );
@@ -336,7 +445,7 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
           margin: const EdgeInsets.only(bottom: 8),
           child: ListTile(
             title: Text(
-              'Juz: ${e.nmJuz}',
+              '${e.nmJuz}',
               style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
             ),
             subtitle: Text(

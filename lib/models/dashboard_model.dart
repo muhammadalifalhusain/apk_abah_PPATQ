@@ -32,6 +32,7 @@ class DashboardData {
   final int jumlahPegawaiLaki;
   final int jumlahPegawaiPerempuan;
   final String totalPembayaranValidBulanIni;
+  final String totalPembayaranUnvalidBulanIni;
   final int jumlahSantriBelumLapor;
   final String jumlahPembayaranLalu;
 
@@ -49,6 +50,7 @@ class DashboardData {
     required this.jumlahPegawaiLaki,
     required this.jumlahPegawaiPerempuan,
     required this.totalPembayaranValidBulanIni,
+    required this.totalPembayaranUnvalidBulanIni,
     required this.jumlahSantriBelumLapor,
     required this.jumlahPembayaranLalu,
   });
@@ -68,6 +70,7 @@ class DashboardData {
       jumlahPegawaiLaki: json['jumlahPegawaiLaki'] ?? 0,
       jumlahPegawaiPerempuan: json['jumlahPegawaiPerempuan'] ?? 0,
       totalPembayaranValidBulanIni: json['totalPembayaranValidBulanIni'] ?? '',
+      totalPembayaranUnvalidBulanIni: json['totalPembayaranUnvalidBulanIni'] ?? '',
       jumlahSantriBelumLapor: json['jumlahSantriBelumLapor'] ?? 0,
       jumlahPembayaranLalu: json['jumlahPembayaranLalu'] ?? '',
     );

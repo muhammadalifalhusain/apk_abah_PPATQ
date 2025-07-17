@@ -2,15 +2,19 @@ class Santri {
   final int noInduk;
   final String photo;
   final String nama;
+  final String waliKelas;
   final String jenisKelamin;
   final String kelas;
+  final String asalKota;
 
   Santri({
     required this.noInduk,
     required this.photo,
     required this.nama,
+    required this.waliKelas,
     required this.jenisKelamin,
     required this.kelas,
+    required this.asalKota,
   });
 
   factory Santri.fromJson(Map<String, dynamic> json) {
@@ -18,8 +22,10 @@ class Santri {
       noInduk: json['noInduk'] ?? 0,
       photo: (json['photo'] ?? '').toString().trim(),
       nama: (json['nama'] ?? 'noInduk tidak diketahui').toString().trim(),
+      waliKelas: (json['waliKelas'] ?? 'data tidak diketahui').toString().trim(),
       jenisKelamin: _mapGender(json['jenisKelamin']),
       kelas: (json['kelas'] ?? '-').toString().trim(),
+      asalKota: (json['asalKota'] ?? '-').toString().trim(),
     );
   }
 
@@ -262,6 +268,12 @@ class DataDiri {
       fotoTahfidz: (json['fotoTahfidz'] is String) ? json['fotoTahfidz'] : null,
     );
   }
+  String get jenisKelaminFormatted {
+    if (jenisKelamin == 'L') return 'Laki-laki';
+    if (jenisKelamin == 'P') return 'Perempuan';
+    return '-';
+  }
+
 }
 
 class RiwayatSakit {

@@ -152,7 +152,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
      return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: const Color(0xFF254B62), 
+          color: const Color.fromARGB(255, 56, 96, 31), 
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -227,7 +227,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         handleLogout();
                       },
-                      child: const Text('Logout'),
+                      child: const Text('Keluar'),
                     ),
                   ],
                 ),
@@ -466,26 +466,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 12),
-          _buildStatItem(
-            'Total Tagihan Syahriah',
-            'Rp : ${_dashboardData!.totalTagihanSyahriah}',
-            Icons.money,
-            Colors.black,
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           Text.rich(
             TextSpan(
-              text: "Total Pembayaran Syahriah s/d tanggal 1–${DateTime.now().day} ${getMonthName(DateTime.now().month)} ${DateTime.now().year}\n ",
+              text: "Laporan Bayar s/d tanggal ${DateTime.now().day} ${getMonthName(DateTime.now().month)} ${DateTime.now().year}\n",
               style: TextStyle(fontSize: 14), 
               children: [
                 TextSpan(
-                  text: "Rp : ",
-                  style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16, color: Colors.black87),
+                  text: "Jumlah Lapor Bayar Rp : ${_dashboardData?.totalTagihanSyahriah ?? '0'}\n",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
                 ),
                 TextSpan(
-                  text: _dashboardData?.totalPembayaranValidBulanIni ?? '0',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  text: "Telah divalidasi Rp : ${_dashboardData?.totalPembayaranValidBulanIni ?? '0'}\n",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                ),
+                TextSpan(
+                  text: "Belum divalidasi Rp : ${_dashboardData?.totalPembayaranUnvalidBulanIni ?? '0'}",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
                 ),
               ],
             ),
@@ -503,7 +500,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 TextSpan(
-                  text: 'Santri Belum melakukan pembayaran syahriah',
+                  text: ' Santri Belum melakukan pembayaran syahriah',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.normal, 
