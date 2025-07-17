@@ -192,7 +192,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         icon: Icons.volunteer_activism_rounded,
         label: 'Qurban',
         color: Colors.lime,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KurbanScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KurbanSummaryScreen())),
       ),
       _MenuItem(
         icon: Icons.inventory_2_rounded,

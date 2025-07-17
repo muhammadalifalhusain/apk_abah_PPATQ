@@ -1,52 +1,126 @@
-class Kurban {
-  final String namaSantri;
-  final String atasNama;
-  final String jenis;
-  final String tanggal;
-
-  Kurban({
-    required this.namaSantri,
-    required this.atasNama,
-    required this.jenis,
-    required this.tanggal,
-  });
-
-  factory Kurban.fromJson(Map<String, dynamic> json) {
-    return Kurban(
-      namaSantri: (json['namaSantri'] ?? '').toString().trim().isNotEmpty
-          ? json['namaSantri']
-          : '-',
-      atasNama: (json['atasNama'] ?? '').toString().trim().isNotEmpty
-          ? json['atasNama']
-          : '-',
-      jenis: (json['jenis'] ?? '').toString().trim().isNotEmpty
-          ? json['jenis']
-          : '-',
-      tanggal: (json['tanggal'] ?? '').toString().trim().isNotEmpty
-          ? json['tanggal']
-          : '-',
-    );
-  }
-}
-
-class KurbanResponse {
+class QurbanSummaryResponse {
   final int status;
   final String message;
-  final List<Kurban> data;
+  final QurbanSummaryData data;
 
-  KurbanResponse({
+  QurbanSummaryResponse({
     required this.status,
     required this.message,
     required this.data,
   });
 
-  factory KurbanResponse.fromJson(Map<String, dynamic> json) {
-    return KurbanResponse(
-      status: json['status'] ?? 0,
-      message: json['message'] ?? '',
+  factory QurbanSummaryResponse.fromJson(Map<String, dynamic> json) {
+    return QurbanSummaryResponse(
+      status: json['status'],
+      message: json['message'],
+      data: QurbanSummaryData.fromJson(json['data']),
+    );
+  }
+}
+
+class QurbanSummaryData {
+  final int tahunHijriah;
+  final List<QurbanSummaryItem> data;
+
+  QurbanSummaryData({
+    required this.tahunHijriah,
+    required this.data,
+  });
+
+  factory QurbanSummaryData.fromJson(Map<String, dynamic> json) {
+    return QurbanSummaryData(
+      tahunHijriah: json['tahunHijriah'],
       data: (json['data'] as List)
-          .map((item) => Kurban.fromJson(item))
+          .map((item) => QurbanSummaryItem.fromJson(item))
           .toList(),
+    );
+  }
+}
+
+class QurbanSummaryItem {
+  final int jenis;
+  final String viewJenis;
+  final int total;
+
+  QurbanSummaryItem({
+    required this.jenis,
+    required this.viewJenis,
+    required this.total,
+  });
+
+  factory QurbanSummaryItem.fromJson(Map<String, dynamic> json) {
+    return QurbanSummaryItem(
+      jenis: json['jenis'],
+      viewJenis: json['viewJenis'],
+      total: json['total'],
+    );
+  }
+}
+
+class QurbanDetailResponse {
+  final int status;
+  final String message;
+  final QurbanDetailData data;
+
+  QurbanDetailResponse({
+    required this.status,
+    required this.message,
+    required this.data,
+  });
+
+  factory QurbanDetailResponse.fromJson(Map<String, dynamic> json) {
+    return QurbanDetailResponse(
+      status: json['status'],
+      message: json['message'],
+      data: QurbanDetailData.fromJson(json['data']),
+    );
+  }
+}
+
+class QurbanDetailData {
+  final int tahunHijriah;
+  final String jenis;
+  final List<QurbanDetailItem> data;
+
+  QurbanDetailData({
+    required this.tahunHijriah,
+    required this.jenis,
+    required this.data,
+  });
+
+  factory QurbanDetailData.fromJson(Map<String, dynamic> json) {
+    return QurbanDetailData(
+      tahunHijriah: json['tahunHijriah'],
+      jenis: json['jenis'],
+      data: (json['data'] as List)
+          .map((item) => QurbanDetailItem.fromJson(item))
+          .toList(),
+    );
+  }
+}
+
+class QurbanDetailItem {
+  final String nama;
+  final String? photo;
+  final String atasNama;
+  final String? foto;
+  final int jumlah;
+
+  QurbanDetailItem({
+    required this.nama,
+    this.photo,
+    required this.atasNama,
+    this.foto,
+    required this.jumlah,
+  });
+
+  factory QurbanDetailItem.fromJson(Map<String, dynamic> json) {
+    return QurbanDetailItem(
+      nama: json['nama'],
+      photo: json['photo'],
+      atasNama: json['atasNama'],
+      foto: json['foto'],
+      jumlah: json['jumlah'],
     );
   }
 }
