@@ -204,55 +204,23 @@ class _KeuanganDetailScreenState extends State<KeuanganDetailScreen> {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(12), 
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 56, 96, 31), // Warna utama background
-        borderRadius: BorderRadius.circular(20),
+        color: const Color.fromARGB(255, 56, 96, 31),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2), // Ikuti referensi styling
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                child: Icon(
-                  Icons.class_,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  kelas.namaKelas ?? 'Kelas Tidak Diketahui',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Wali : ${kelas.namaWaliKelas ?? '-'}',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Colors.white.withOpacity(0.9),
-            ),
-          ),
-        ],
+      child: Text(
+        '${kelas.namaKelas ?? 'Kelas Tidak Diketahui'} - ${kelas.namaWaliKelas ?? '-'}',
+        style: GoogleFonts.poppins(
+          fontSize: 14, 
+          fontWeight: FontWeight.w400,
+          color: Colors.white,
+        ),
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
+
 
 
   Widget _buildStatisticsSection(

@@ -127,7 +127,6 @@ class _SantriScreenState extends State<SantriScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 4),
                     Text(
                       santri.jenisKelamin,
                       style: GoogleFonts.poppins(
@@ -136,19 +135,13 @@ class _SantriScreenState extends State<SantriScreen> {
                       ),
                     ),
                     Text(
-                      'Kelas: ${santri.kelas}',
+                      '${santri.kelas ?? '-'} - ${santri.waliKelas ?? '-'}',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 13,
                         color: Colors.grey[700],
                       ),
-                    ),
-                    Text(
-                      'Wali Kelas: ${santri.waliKelas}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: Colors.grey[700],
-                      ),
-                    ),
+                      overflow: TextOverflow.ellipsis,
+                    )
                   ],
                 ),
               ),
