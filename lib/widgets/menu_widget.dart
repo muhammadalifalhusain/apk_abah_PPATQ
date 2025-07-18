@@ -11,9 +11,9 @@ import '../screens/main/agenda_screen.dart';
 import '../screens/main/alumni_screen.dart';
 import '../screens/main/psb_screen.dart';
 import '../screens/main/santri_screen.dart';
-import '../screens/main/kelas_screen.dart';
 import '../screens/main/keuangan_screen.dart';
 import '../screens/main/pelanggaran_screen.dart';
+import '../screens/main/kelengkapan_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -157,7 +157,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         icon: Icons.security_rounded,
         label: 'Kelengkapan',
         color: Colors.blueGrey,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KelasScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KelengkapanScreen())),
       ),
       _MenuItem(
         icon: Icons.health_and_safety,
@@ -244,5 +244,4 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
       ),
     );
   }
-
 }
