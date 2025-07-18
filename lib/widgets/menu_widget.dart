@@ -14,6 +14,7 @@ import '../screens/main/santri_screen.dart';
 import '../screens/main/keuangan_screen.dart';
 import '../screens/main/pelanggaran_screen.dart';
 import '../screens/main/kelengkapan_screen.dart';
+import '../screens/main/kesehatan_screen.dart';
 
 class MenuIkonWidget extends StatefulWidget {
   const MenuIkonWidget({Key? key}) : super(key: key);
@@ -163,7 +164,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         icon: Icons.health_and_safety,
         label: 'Kesehatan',
         color: Colors.blueGrey,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PegawaiScreen())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KesehatanScreen())),
       ),
       _MenuItem(
         icon: Icons.record_voice_over_rounded,

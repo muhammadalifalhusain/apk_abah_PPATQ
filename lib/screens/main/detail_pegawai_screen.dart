@@ -99,7 +99,7 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
       ),
       child: Row(
         children: [
-          Icon(Icons.people, color: Colors.indigo, size: 20),
+          Icon(Icons.people, color: Colors.black, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -107,14 +107,14 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.indigo.shade800,
+                color: Colors.black,
               ),
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.indigo,
+              color: Colors.black,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -141,7 +141,7 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 6,
-        shadowColor: Colors.indigo.withOpacity(0.1),
+        shadowColor: Colors.black,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
@@ -189,7 +189,7 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Colors.indigo.shade800,
+                    color: Colors.black,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -197,7 +197,7 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.indigo.shade100,
+                    color: const Color.fromARGB(255, 56, 96, 31),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -205,12 +205,11 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Colors.indigo.shade700,
+                      color: Colors.white,
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
-                // Data diri section
+                const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -225,13 +224,13 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
                   ),
                   child: Column(
                     children: [
-                      _buildDetailRow(Icons.cake, "Tempat, Tgl Lahir", "${data.tempatLahir}, ${data.tanggalLahir}"),
-                      _buildDetailRow(Icons.person, "Kelamin", data.jenisKelamin),
-                      _buildDetailRow(Icons.book, "Al-Hafidz", data.alhafidz),
-                      _buildDetailRow(Icons.location_on, "Alamat", data.alamat),
-                      _buildDetailRow(Icons.school, "Pendidikan", data.pendidikan),
-                      _buildDetailRow(Icons.work, "Pengangkatan", data.pengangkatan),
-                      _buildDetailRow(Icons.business, "Lembaga Induk", data.lembagaInduk, isLast: true),
+                      _buildDetailRow("Tempat, Tgl Lahir", "${data.tempatLahir}, ${data.tanggalLahir}"),
+                      _buildDetailRow("Kelamin", data.jenisKelamin),
+                      _buildDetailRow("Al-Hafidz", data.alhafidz),
+                      _buildDetailRow("Alamat", data.alamat),
+                      _buildDetailRow("Pendidikan", data.pendidikan),
+                      _buildDetailRow("Pengangkatan", data.pengangkatan),
+                      _buildDetailRow("Lembaga Induk", data.lembagaInduk, isLast: true),
                     ],
                   ),
                 ),
@@ -243,23 +242,15 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String value, {bool isLast = false}) {
+  Widget _buildDetailRow(String label, String value, {bool isLast = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12), // kanan kiri mepet, atas bawah lebih lega
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12), 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.indigo.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, size: 16, color: Colors.indigo),
-              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -299,7 +290,7 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
 
 
   Widget _buildSantriCard(KetahfidzanSantri santri) {
-    final photoUrl = (santri.photo != 'default.png' && santri.photo.isNotEmpty)
+    final photoUrl = santri.photo.isNotEmpty
         ? "$imageBaseUrl${santri.photo}"
         : "https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.nama)}&background=0D8ABC&color=fff";
 
@@ -323,15 +314,15 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
         child: ListTile(
           contentPadding: const EdgeInsets.all(16),
           leading: Container(
-            padding: const EdgeInsets.all(2),
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [Colors.indigo.shade300, Colors.indigo.shade600],
               ),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
+            child: ClipOval(
               child: Image.network(
                 photoUrl,
                 width: 60,
@@ -351,7 +342,7 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 15,
-              color: Colors.indigo.shade800,
+              color: Colors.black,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -394,13 +385,9 @@ class _DetailPegawaiScreenState extends State<DetailPegawaiScreen> {
               ],
             ),
           ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: Colors.indigo.shade400,
-          ),
         ),
       ),
     );
   }
+
 }
