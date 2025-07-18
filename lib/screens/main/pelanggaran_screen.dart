@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../models/pelanggaran_model.dart';
 import '../../services/pelanggaran_service.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:abah/screens/main/detail_pelanggaran_screen.dart';
 
 class PelanggaranScreen extends StatefulWidget {
   const PelanggaranScreen({Key? key}) : super(key: key);
@@ -12,92 +13,12 @@ class PelanggaranScreen extends StatefulWidget {
 
 class _PelanggaranScreenState extends State<PelanggaranScreen> {
   final PelanggaranService _service = PelanggaranService();
-  final TextEditingController _searchController = TextEditingController();
-  List<Pelanggaran> _pelanggaranList = [];
-  bool isLoading = true;
-  String errorMessage = '';
+  late Future<RekapPelanggaranResponse?> _futureRekap;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData({String? search}) async {
-    setState(() {
-      isLoading = true;
-      errorMessage = '';
-    });
-
-    final response = await _service.fetchPelanggaran(search: search);
-    if (response != null && response.data.isNotEmpty) {
-      setState(() {
-        _pelanggaranList = response.data;
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        _pelanggaranList = [];
-        isLoading = false;
-        errorMessage = 'Data tidak ditemukan.';
-      });
-    }
-  }
-
-  void _showDetailDialog(Pelanggaran item) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(
-          'Detail Pelanggaran',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow("Nama", item.nama),
-            _buildDetailRow("Tanggal", item.tanggal),
-            _buildDetailRow("Jenis Pelanggaran", item.jenisPelanggaran),
-            _buildDetailRow("Kategori", item.kategori),
-            _buildDetailRow("Hukuman", item.hukuman),
-            _buildDetailRow("Bukti", item.bukti),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.black,
-              textStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            child: const Text("Tutup"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String? value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: RichText(
-        text: TextSpan(
-          style: GoogleFonts.poppins(color: Colors.black),
-          children: [
-            TextSpan(
-              text: "$label: ",
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextSpan(
-              text: (value?.isNotEmpty ?? false) ? value! : "-",
-            ),
-          ],
-        ),
-      ),
-    );
+    _futureRekap = _service.fetchRekapPelanggaran();
   }
 
   @override
@@ -112,61 +33,61 @@ class _PelanggaranScreenState extends State<PelanggaranScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
+      body: FutureBuilder<RekapPelanggaranResponse?>(
+        future: _futureRekap,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('Gagal memuat data.'));
+          }
+
+          final data = snapshot.data!.data;
+
+          if (data.isEmpty) {
+            return const Center(child: Text('Tidak ada data pelanggaran.'));
+          }
+
+          return ListView.builder(
             padding: const EdgeInsets.all(12),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Cari nama...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          _loadData();
-                        },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onSubmitted: (value) => _loadData(search: value.trim()),
-            ),
-          ),
-          Expanded(
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _pelanggaranList.isEmpty
-                    ? Center(child: Text(errorMessage, style: GoogleFonts.poppins()))
-                    : ListView.builder(
-                        itemCount: _pelanggaranList.length,
-                        padding: const EdgeInsets.all(8),
-                        itemBuilder: (context, index) {
-                          final item = _pelanggaranList[index];
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 6),
-                            elevation: 2,
-                            child: ListTile(
-                              title: Text(item.nama, style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(item.jenisPelanggaran, style: GoogleFonts.poppins()),
-                                  Text("${item.tanggal}", style: GoogleFonts.poppins(fontSize: 12)),
-                                ],
-                              ),
-                              trailing: Text(item.kategori, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-                              onTap: () => _showDetailDialog(item),
-                            ),
-                          );
-                        },
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              final item = data[index];
+              return Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                elevation: 3,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Color.fromARGB(255, 56, 96, 31),
+                    child: Text(
+                      '${item.kategori}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  title: Text(
+                    item.viewKategori,
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                  ),
+                  subtitle: Text(
+                    'Jumlah Data: ${item.jumlah}',
+                    style: GoogleFonts.poppins(fontSize: 13),
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DetailPelanggaranScreen(kodeKategori: item.kategori.toString()),
                       ),
-          ),
-        ],
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

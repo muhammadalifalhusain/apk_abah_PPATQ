@@ -47,8 +47,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         .where((item) =>
             item.label.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
-    final displayedItems = _showAll ? filteredItems : filteredItems.take(6).toList();
-
+    final displayedItems = _showAll ? filteredItems : filteredItems.take(8).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -92,14 +91,15 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 3,
+          crossAxisCount: 4,
           childAspectRatio: 0.85,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 16,
+          crossAxisSpacing: 4,
+          mainAxisSpacing: 11,
           children: displayedItems.map((item) => _buildMenuItem(context, item)).toList(),
         ),
+
         const SizedBox(height: 10),
-        if (filteredItems.length > 6)
+        if (filteredItems.length > 8)
           Center(
             child: TextButton.icon(
               onPressed: () {
@@ -213,45 +213,36 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
   Widget _buildMenuItem(BuildContext context, _MenuItem item) {
     return GestureDetector(
       onTap: item.onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: item.color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(item.icon, color: item.color, size: 22),
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 35,
-                height: 35,
-                decoration: BoxDecoration(
-                  color: item.color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(item.icon, color: item.color, size: 20),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                item.label,
-                style: GoogleFonts.poppins(
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
           ),
-        ),
+          const SizedBox(height: 6),
+          Text(
+            item.label,
+            style: GoogleFonts.poppins(
+              fontSize: 9,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
+
 }
