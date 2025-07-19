@@ -111,10 +111,6 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                             elevation: 3,
                             margin: const EdgeInsets.only(bottom: 12),
                             child: ListTile(
-                              title: Text(
-                                keluhan.kategori.isNotEmpty ? keluhan.kategori : 'Tanpa Kategori',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -127,6 +123,11 @@ class _KeluhanScreenState extends State<KeluhanScreen> {
                                   const SizedBox(height: 4),
                                   Text(
                                     'Pelapor: ${keluhan.namaPelapor.isNotEmpty ? keluhan.namaPelapor : 'Tidak diketahui'}',
+                                    style: const TextStyle(fontSize: 12, color: Colors.black),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '${keluhan.tanggal.isNotEmpty ? keluhan.tanggal : 'Tidak diketahui'}',
                                     style: const TextStyle(fontSize: 12, color: Colors.black),
                                   ),
                                   const SizedBox(height: 2),

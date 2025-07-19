@@ -4,6 +4,8 @@ import '../../models/alumni_model.dart';
 import '../../services/alumni_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+import '../../utils/phone_formatter.dart';
 class AlumniScreen extends StatefulWidget {
   const AlumniScreen({Key? key}) : super(key: key);
 
@@ -130,15 +132,12 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                             color: Colors.white,
                           ),
                         ),
-                        
                       ],
                     ),
                   ),
-                  
                 ],
               ),
             ),
-            // Search Bar
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
               child: Container(
@@ -209,7 +208,6 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: () {
-                // Handle tap if needed
               },
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -239,7 +237,7 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  'NIS: ${alumni.noInduk}',
+                                  'NIS: ${alumni.noInduk != null ? alumni.noInduk.toString() : '-'} - Tahun Lulus ${alumni.tahunLulus != null ? alumni.tahunLulus.toString() : '-'}',
                                   style: GoogleFonts.poppins(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -262,14 +260,45 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                       ),
                       child: Column(
                         children: [
-                          _buildInfoRow(Icons.supervisor_account, 'Murroby', alumni.murroby),
-                          const SizedBox(height: 12),
-                          _buildInfoRow(Icons.class_, 'Wali Kelas', alumni.waliKelas),
-                          if (alumni.noHp != null) ...[
+                          _buildInfoRow('Murroby', alumni.murroby ?? '-'),
+                          _buildInfoRow('Pondok MI', alumni.namaPondokMi ?? '-'),
+                          _buildInfoRow('Pondok Menegah Atas', alumni.namaPondokMenengahAtas ?? '-'),
+                          _buildInfoRow('Perguruan Tinggi', alumni.namaPerguruanTinggi ?? '-'),
+                          _buildInfoRow('Profesi', alumni.posisiProfesi ?? '-'),
+                          if (alumni.noHp != null && alumni.noHp!.isNotEmpty) ...[
                             const SizedBox(height: 12),
-                            _buildInfoRow(Icons.phone, 'No. HP', alumni.noHp!),
+                            InkWell(
+                              onTap: () async {
+                                final rawNoHp = alumni.noHp ?? '';
+                                final noHp = formatPhoneToInternational(rawNoHp);
+                                if (noHp.isNotEmpty) {
+                                  final Uri url = Uri.parse('https://wa.me/$noHp');
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Gagal membuka WhatsApp')),
+                                    );
+                                  }
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.call, color: Colors.green),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Hubungi Wali Santri',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ],
+
                       ),
                     ),
                   ],
@@ -282,11 +311,9 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey[600]),
-        const SizedBox(width: 8),
         Text(
           '$label: ',
           style: GoogleFonts.poppins(

@@ -714,7 +714,6 @@ class _KurbanDetailScreenState extends State<KurbanDetailScreen> {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            // Avatar
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
@@ -754,7 +753,7 @@ class _KurbanDetailScreenState extends State<KurbanDetailScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Atas nama: ${item.atasNama}',
+                          '${item.atasNama}',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -768,43 +767,9 @@ class _KurbanDetailScreenState extends State<KurbanDetailScreen> {
                 ],
               ),
             ),
-            
-            // Jumlah
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xFF8B4513).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: const Color(0xFF8B4513),
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                '${item.jumlah} ekor',
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF8B4513),
-                ),
-              ),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  IconData _getAnimalIcon(String jenis) {
-    switch (jenis.toLowerCase()) {
-      case 'sapi':
-        return Icons.agriculture;
-      case 'kambing':
-        return Icons.pets;
-      case 'domba':
-        return Icons.pets;
-      default:
-        return Icons.pets;
-    }
   }
 }

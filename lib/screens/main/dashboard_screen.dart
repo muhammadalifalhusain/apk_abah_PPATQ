@@ -301,7 +301,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: const EdgeInsets.only(right: 16.0),
             child: Center(
               child: Text(
-                'V 1.1.2',
+                'V 1.1.3',
                 style: GoogleFonts.poppins(
                   color: Colors.white70,
                   fontSize: 12,
@@ -507,15 +507,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(fontSize: 14), 
               children: [
                 TextSpan(
-                  text: "Jumlah Lapor Bayar Rp : ${_dashboardData?.totalTagihanSyahriah ?? '0'}\n",
+                  text: "Jumlah Tagihan Syahriah\nRp: ${_dashboardData?.totalTagihanSyahriah ?? '0'}\n",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
                 ),
                 TextSpan(
-                  text: "Telah divalidasi Rp : ${_dashboardData?.totalPembayaranValidBulanIni ?? '0'}\n",
+                  text: "Syahriah tervalidasi\nRp : ${_dashboardData?.totalPembayaranValidBulanIni ?? '0'}\n",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
                 ),
                 TextSpan(
-                  text: "Belum divalidasi Rp : ${_dashboardData?.totalPembayaranUnvalidBulanIni ?? '0'}",
+                  text: "Syahriah belum tervalidasi\nRp : ${_dashboardData?.totalPembayaranUnvalidBulanIni ?? '0'}",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
                 ),
               ],
@@ -534,7 +534,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 TextSpan(
-                  text: ' Santri Belum melakukan pembayaran syahriah',
+                  text: ' Santri Belum Bayar(Lapor) Syahriah',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.normal, 

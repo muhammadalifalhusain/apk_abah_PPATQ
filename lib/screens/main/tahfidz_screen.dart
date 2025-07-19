@@ -104,13 +104,6 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
                   decoration: BoxDecoration(
                     color: const Color(0xFF254B62), 
                     borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF667eea).withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: const Icon(Icons.school, color: Colors.white, size: 24),
                 ),
@@ -119,17 +112,9 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(kelas.namaKelas,
-                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600)),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF667eea).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(kelas.guruTahfidz,
-                            style: GoogleFonts.poppins(fontSize: 12, color: Colors.black)),
+                      Text(
+                        '${kelas.guruTahfidz}',
+                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),

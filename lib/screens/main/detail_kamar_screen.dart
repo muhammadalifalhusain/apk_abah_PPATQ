@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/kamar_model.dart';
 import '../../services/kamar_service.dart';
-
+import 'detail_santri_murroby_screen.dart';
 class DetailKamarScreen extends StatefulWidget {
   final String idKamar;
 
@@ -64,7 +64,7 @@ class _DetailKamarScreenState extends State<DetailKamarScreen> {
                   color: Colors.black,
                 ),
               ),
-              ...santriList.map((santri) => _buildSantriTile(santri)).toList(),
+              ...santriList.map((santri) => _buildSantriTile(context, santri)).toList()
             ],
           );
         },
@@ -116,7 +116,7 @@ class _DetailKamarScreenState extends State<DetailKamarScreen> {
     );
   }
 
-  Widget _buildSantriTile(Santri santri) {
+  Widget _buildSantriTile(BuildContext context, Santri santri) {
     final String? photo = santri.photo;
     final bool hasPhoto = photo != null && photo.isNotEmpty;
     final String? photoUrl = hasPhoto
@@ -126,6 +126,7 @@ class _DetailKamarScreenState extends State<DetailKamarScreen> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         leading: CircleAvatar(
           radius: 24,
           backgroundColor: Colors.indigo.shade100,
@@ -144,9 +145,39 @@ class _DetailKamarScreenState extends State<DetailKamarScreen> {
             fontSize: 14,
           ),
         ),
-        subtitle: Text(
-          santri.jenisKelamin == 'L' ? 'Laki-laki' : 'Perempuan',
-          style: GoogleFonts.poppins(fontSize: 12),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Asal: ${santri.asalKota}',
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.black87,
+                ),
+              ),
+              Text(
+                'Capaian: ${santri.capaian}',
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+        trailing: IconButton(
+          icon: const Icon(Icons.arrow_forward_ios, size: 20, color: Colors.black),
+          tooltip: 'Lihat Detail',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailSantriMurrobyScreen(noInduk: santri.noInduk),
+              ),
+            );
+          },
         ),
       ),
     );

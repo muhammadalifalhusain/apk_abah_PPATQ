@@ -40,13 +40,6 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 56, 96, 31),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF667eea).withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -147,30 +140,11 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Kamar :${kamar.namaKamar}',
+                        '${kamar.murroby}',
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF667eea).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          '${kamar.murroby}',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                     ],
@@ -178,7 +152,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                 ),
                 const Icon(
                   Icons.arrow_forward_ios,
-                  color: Color(0xFF667eea),
+                  color: Colors.black,
                   size: 16,
                 ),
               ],
@@ -284,7 +258,7 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                     children: [
                       const SizedBox(height: 10),
                       _buildStatCard(),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 7),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
@@ -296,7 +270,6 @@ class _KamarScreenState extends State<KamarScreen> with TickerProviderStateMixin
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
                       ..._kamarList.asMap().entries.map((entry) {
                         int index = entry.key;
                         Kamar kamar = entry.value;

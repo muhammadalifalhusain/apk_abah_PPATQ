@@ -91,6 +91,10 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
   }
 
   Widget _buildSantriItem(SantriTahfidz santri) {
+    final String imageUrl = (santri.photo != null && santri.photo!.isNotEmpty)
+        ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}'
+        : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.nama)}';
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.all(12),
@@ -109,9 +113,7 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundImage: NetworkImage(
-              'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}',
-            ),
+            backgroundImage: NetworkImage(imageUrl),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -127,6 +129,7 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

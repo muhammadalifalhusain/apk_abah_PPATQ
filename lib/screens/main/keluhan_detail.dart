@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../services/keluhan_service.dart';
 import '../../models/keluhan_model.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../utils/phone_formatter.dart';
 
 class KeluhanDetail extends StatefulWidget {
   final KeluhanItem keluhan;
@@ -250,29 +252,68 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                 ),
               ),
             ),
-            Text(
-              _keluhan.kategori.isNotEmpty ? _keluhan.kategori : "Kategori",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
             const SizedBox(height: 4),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Status: ${_keluhan.statusLabel}"),
-                if (_keluhan.status == '1' && _keluhan.balasan.isNotEmpty)
-                  Container(
-                    margin: const EdgeInsets.only(left: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.orange[100],
-                      borderRadius: BorderRadius.circular(10),
+                Row(
+                  children: [
+                    Text("${_keluhan.statusLabel}"),
+                    if (_keluhan.status == '1' && _keluhan.balasan.isNotEmpty)
+                      Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.orange[100],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(
+                          "Menunggu Validasi",
+                          style: TextStyle(fontSize: 12, color: Colors.orange),
+                        ),
+                      ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    const Text(
+                      'Balas via WhatsApp',
+                      style: TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
                     ),
-                    child: const Text(
-                      "Menunggu Validasi",
-                      style: TextStyle(fontSize: 12, color: Colors.orange),
+                    IconButton(
+                      icon: const Icon(Icons.message, color: Colors.green),
+                      tooltip: "Hubungi via WhatsApp",
+                      onPressed: () {
+                        final rawNomor = _keluhan.noHp;
+
+                        if (rawNomor == null || rawNomor.trim().isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Nomor Tidak Tersedia'),
+                              content: const Text('Nomor tujuan pada data keluhan ini tidak tersedia.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('Tutup'),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
+
+                        final nomor = formatPhoneToInternational(rawNomor);
+                        final waUrl = 'https://wa.me/$nomor';
+                        launchUrl(Uri.parse(waUrl), mode: LaunchMode.externalApplication);
+                      },
                     ),
-                  ),
+                  ],
+                ),
               ],
             ),
+
+
             const Divider(height: 24),
             Text("Masukan:", style: TextStyle(fontWeight: FontWeight.w600)),
             Text(_keluhan.masukan.isNotEmpty ? _keluhan.masukan : '-'),
@@ -286,10 +327,19 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
             if (_keluhan.balasan.isEmpty)
               Align(
                 alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: const Icon(Icons.reply, size: 28, color: Colors.teal),
-                  tooltip: "Balas Keluhan",
-                  onPressed: () => _showReplyForm(context),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "Balas Keluhan",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.reply, size: 28, color: Colors.teal),
+                      tooltip: "Balas Keluhan",
+                      onPressed: () => _showReplyForm(context),
+                    ),
+                  ],
                 ),
               )
             else
@@ -301,11 +351,20 @@ class _KeluhanDetailState extends State<KeluhanDetail> {
                   Text(_keluhan.balasan),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.verified, color: Colors.green, size: 28),
-                      tooltip: "Tandai sebagai ditangani",
-                      onPressed: _keluhan.status == '2' ? null : () => _showUpdateStatusForm(context),
-                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          "Tandai Ditangani",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.verified, color: Colors.green, size: 28),
+                          tooltip: "Tandai sebagai ditangani",
+                          onPressed: _keluhan.status == '2' ? null : () => _showUpdateStatusForm(context),
+                        ),
+                      ],
+                    )
                   ),
                 ],
               ),

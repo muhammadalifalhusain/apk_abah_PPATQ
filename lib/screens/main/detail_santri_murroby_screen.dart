@@ -2,33 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/santri_model.dart';
 import '../../services/santri_service.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../../utils/phone_formatter.dart';
-class SantriDetailScreen extends StatefulWidget {
+
+class DetailSantriMurrobyScreen extends StatefulWidget {
   final int noInduk;
 
-  const SantriDetailScreen({required this.noInduk, Key? key}) : super(key: key);
+  const DetailSantriMurrobyScreen({required this.noInduk, Key? key}) : super(key: key);
 
   @override
-  State<SantriDetailScreen> createState() => _SantriDetailScreenState();
+  State<DetailSantriMurrobyScreen> createState() => _DetailSantriMurrobyScreenState();
 }
 
-class _SantriDetailScreenState extends State<SantriDetailScreen>
+class _DetailSantriMurrobyScreenState extends State<DetailSantriMurrobyScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   bool isLoading = true;
   SantriDetail? _detail;
   bool _showOrangTua = false;
 
+
   final List<Tab> _tabs = const [
     Tab(text: 'Profil'),
     Tab(text: 'Kesehatan'),
     Tab(text: 'Pemeriksaan'),
     Tab(text: 'Rawat Inap'),
-    Tab(text: 'Perilaku'),
-    Tab(text: 'Kelengkapan'),
-    Tab(text: 'Ketahfidzan'),
-    Tab(text: 'Pembayaran'),
   ];
 
   @override
@@ -166,10 +162,6 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
                 _buildKesehatanTab(_detail!),
                 _buildPemeriksaanTab(_detail!),
                 _buildRawatInapTab(_detail!),
-                _buildPerilakuTab(_detail!),
-                _buildKelengkapanTab(_detail!),
-                _buildKetahfidzanTab(_detail!),
-                _buildPembayaranTab(_detail!),
               ],
             ),
           )
@@ -186,45 +178,6 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InkWell(
-            onTap: () async {
-              final rawNoHp = profil.noHp ?? '';
-              final noHp = formatPhoneToInternational(rawNoHp);
-              if (noHp.isNotEmpty) {
-                final Uri url = Uri.parse('https://wa.me/$noHp');
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Gagal membuka WhatsApp')),
-                  );
-                }
-              }
-            },
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.green),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.phone, color: Colors.green),
-                  SizedBox(width: 8),
-                  Text(
-                    "Hubungi Wali Santri",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
           const Text(
             "Data Diri Santri",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -243,7 +196,7 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
                   _buildRow('Alamat', profil.alamat ?? '-'),
                   _buildRow('Kota/Kabupaten', profil.kotaKab ?? '-'),
                   _buildRow('Kamar', profil.kamar ?? '-'),
-                  _buildRow('Tahfidz', profil.kelasTahfidz ?? '-'),
+                  _buildRow('Kelas', profil.kelasTahfidz ?? '-'),
                 ],
               ),
             ),
@@ -294,7 +247,6 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
       ),
     );
   }
-
 
   Widget _buildRow(String label, String value) {
     return Padding(

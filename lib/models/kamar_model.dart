@@ -49,21 +49,30 @@ class KamarResponse {
 }
 
 class Santri {
+  final int noInduk;
+  final String photo;
   final String nama;
   final String jenisKelamin;
-  final String photo;
+  final String asalKota;
+  final String capaian;
 
   Santri({
+    required this.noInduk,
+    required this.photo,
     required this.nama,
     required this.jenisKelamin,
-    required this.photo,
+    required this.asalKota,
+    required this.capaian,
   });
 
   factory Santri.fromJson(Map<String, dynamic> json) {
     return Santri(
+      noInduk: json['noInduk'] ?? '',
+      photo: json['photo'] ?? '',
       nama: json['nama'] ?? '-',
       jenisKelamin: json['jenisKelamin'] ?? '-',
-      photo: json['photo'] ?? '',
+      asalKota: json['asalKota'] ?? '-',
+      capaian: json['capaian'] ?? '-',
     );
   }
 }

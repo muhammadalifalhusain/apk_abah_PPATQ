@@ -236,9 +236,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
                 ),
               ),
               
-              const SizedBox(height: 12),
-              
-              // Judul
+              const SizedBox(height: 8),
               Text(
                 item.judul,
                 style: const TextStyle(
@@ -248,43 +246,18 @@ class _AgendaScreenState extends State<AgendaScreen> {
                 ),
               ),
               
-              const SizedBox(height: 12),
-              
-              // Tanggal
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today,
-                          size: 16,
-                          color: Colors.grey[600],
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Mulai: ${_formatDate(item.tanggalMulai)}',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey[700],
-                                ),
-                              ),
-                              if (item.tanggalSelesai != '-' && item.tanggalSelesai.isNotEmpty)
-                                Text(
-                                  'Selesai: ${_formatDate(item.tanggalSelesai)}',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      item.tanggalSelesai != '-' && item.tanggalSelesai.isNotEmpty
+                          ? 'Mulai: ${_formatDate(item.tanggalMulai)}  |  Selesai: ${_formatDate(item.tanggalSelesai)}'
+                          : 'Mulai: ${_formatDate(item.tanggalMulai)}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey[700],
+                      ),
                     ),
                   ),
                 ],

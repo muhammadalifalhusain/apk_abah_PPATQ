@@ -197,13 +197,13 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AsetScreen())),
       ),
       _MenuItem(
-        icon: Icons.volunteer_activism_rounded,
+        icon: Icons.event,
         label: 'Agenda',
         color: Colors.lime,
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AgendaScreen())),
       ),
       _MenuItem(
-        icon: Icons.history_edu_rounded,
+        icon: Icons.history_edu,
         label: 'Alumni',
         color: Colors.teal,
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AlumniScreen())),
@@ -220,13 +220,13 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2),
             child: Container(
-              width: 32,
-              height: 32,
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
                 color: item.color.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(item.icon, color: item.color, size: 22),
+              child: Icon(item.icon, color: item.color, size: 40),
             ),
           ),
           const SizedBox(height: 6),

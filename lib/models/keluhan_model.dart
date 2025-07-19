@@ -54,7 +54,7 @@ class KeluhanItem {
   final String saran;
   final int rating;
   final String balasan;
-  final String kategori;
+  final String tanggal;
 
   KeluhanItem({
     required this.idKeluhan,
@@ -71,7 +71,7 @@ class KeluhanItem {
     required this.saran,
     required this.rating,
     required this.balasan,
-    required this.kategori,
+    required this.tanggal,
   });
 
   factory KeluhanItem.fromJson(Map<String, dynamic> json) {
@@ -90,7 +90,7 @@ class KeluhanItem {
       saran: json['saran']?.toString() ?? '',
       rating: json['rating'] ?? 0,
       balasan: json['balasan']?.toString() ?? '',
-      kategori: json['kategori']?.toString() ?? '', // optional
+      tanggal: json['tanggal']?.toString() ?? '',
     );
   }
 
@@ -109,7 +109,7 @@ class KeluhanItem {
     String? saran,
     int? rating,
     String? balasan,
-    String? kategori,
+    String? tanggal,
   }) {
     return KeluhanItem(
       idKeluhan: idKeluhan ?? this.idKeluhan,
@@ -126,37 +126,31 @@ class KeluhanItem {
       saran: saran ?? this.saran,
       rating: rating ?? this.rating,
       balasan: balasan ?? this.balasan,
-      kategori: kategori ?? this.kategori,
+      tanggal: balasan ?? this.tanggal,
     );
   }
 }
 
 extension KeluhanItemExtension on KeluhanItem {
-  /// Konversi string/angka status menjadi kode numerik
   int get statusCode {
-    // Tangani jika status adalah angka dalam bentuk string (misal "1", "2")
     if (status == '1') return 1;
     if (status == '2') return 2;
-
-    // Tangani jika status adalah string deskriptif
     if (status.toLowerCase().contains('belum')) return 1;
     if (status.toLowerCase().contains('ditangani')) return 2;
 
     return 0;
   }
 
-  /// Label human-readable berdasarkan kode
   String get statusLabel {
     if (statusCode == 1) return "Belum Ditangani";
     if (statusCode == 2) return "Sudah Ditangani";
     return status;
   }
 
-  /// Warna latar kartu
   int get statusColorValue {
-    if (statusCode == 1) return 0xFFFFF3F3; // Merah muda
-    if (statusCode == 2) return 0xFFE9F7EF; // Hijau muda
-    return 0xFFFFFFFF; // Putih
+    if (statusCode == 1) return 0xFFFFF3F3; 
+    if (statusCode == 2) return 0xFFE9F7EF; 
+    return 0xFFFFFFFF;
   }
 }
 
