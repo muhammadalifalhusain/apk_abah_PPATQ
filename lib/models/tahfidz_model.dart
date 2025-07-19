@@ -41,21 +41,63 @@ class KelasTahfidzResponse {
 }
 
 class SantriTahfidz {
+  final int noInduk;
   final String nama;
   final String jenisKelamin;
-  final String photo;
+  final String? photo;
 
   SantriTahfidz({
+    required this.noInduk,
     required this.nama,
     required this.jenisKelamin,
-    required this.photo,
+    this.photo,
   });
 
   factory SantriTahfidz.fromJson(Map<String, dynamic> json) {
     return SantriTahfidz(
+      noInduk: json['no_induk'] ?? 0,
       nama: json['nama'] ?? '-',
       jenisKelamin: json['jenisKelamin'] ?? '-',
-      photo: json['photo'] ?? '',
+      photo: json['photo'],
+    );
+  }
+}
+
+class CapaianTertinggi {
+  final String capaian;
+  final int jumlahSantri;
+  final List<SantriTertinggi> listSantriTertinggi;
+
+  CapaianTertinggi({
+    required this.capaian,
+    required this.jumlahSantri,
+    required this.listSantriTertinggi,
+  });
+
+  factory CapaianTertinggi.fromJson(Map<String, dynamic> json) {
+    return CapaianTertinggi(
+      capaian: json['capaian'] ?? '-',
+      jumlahSantri: json['jumlahSantri'] ?? 0,
+      listSantriTertinggi: (json['listSantriTertinggi'] as List)
+          .map((e) => SantriTertinggi.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+class SantriTertinggi {
+  final String namaSantri;
+  final String? photo;
+
+  SantriTertinggi({
+    required this.namaSantri,
+    this.photo,
+  });
+
+  factory SantriTertinggi.fromJson(Map<String, dynamic> json) {
+    return SantriTertinggi(
+      namaSantri: json['namaSantri'] ?? '-',
+      photo: json['photo'],
     );
   }
 }
@@ -82,10 +124,12 @@ class DataTahfidzDetail {
 
 class TahfidzDetailData {
   final DataTahfidzDetail? dataTahfidz;
+  final CapaianTertinggi? capaianTertinggi;
   final List<SantriTahfidz> santri;
 
   TahfidzDetailData({
     required this.dataTahfidz,
+    required this.capaianTertinggi,
     required this.santri,
   });
 
@@ -93,6 +137,9 @@ class TahfidzDetailData {
     return TahfidzDetailData(
       dataTahfidz: json['dataTahfidz'] != null
           ? DataTahfidzDetail.fromJson(json['dataTahfidz'])
+          : null,
+      capaianTertinggi: json['capaianTertinggi'] != null
+          ? CapaianTertinggi.fromJson(json['capaianTertinggi'])
           : null,
       santri: (json['santri'] as List)
           .map((e) => SantriTahfidz.fromJson(e))

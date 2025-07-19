@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/tahfidz_model.dart';
@@ -46,21 +45,20 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 56, 96, 31),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.indigo.withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          )
-        ],
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundImage: NetworkImage(
-              'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${data.fotoGuruTahfidz}',
-            ),
+            backgroundColor: Colors.white,
+            backgroundImage: data.fotoGuruTahfidz.isNotEmpty
+                ? NetworkImage(
+                    'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${data.fotoGuruTahfidz}',
+                  )
+                : null,
+            child: data.fotoGuruTahfidz.isEmpty
+                ? const Icon(Icons.person, size: 30, color: Colors.grey)
+                : null,
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -90,21 +88,107 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
     );
   }
 
+  Widget _buildAchievementCard(CapaianTertinggi? capaian) {
+    if (capaian == null) {
+      return const SizedBox();
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.emoji_events, color: Colors.amber),
+              const SizedBox(width: 8),
+              Text(
+                'Capaian Tertinggi',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            capaian.capaian,
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF5B913B),
+            ),
+          ),
+          Text(
+            '${capaian.jumlahSantri} Santri',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: Colors.grey[600],
+            ),
+          ),
+          if (capaian.listSantriTertinggi.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...capaian.listSantriTertinggi.map((santri) {
+                  final imageUrl = (santri.photo != null && santri.photo!.isNotEmpty)
+                      ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}'
+                      : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.namaSantri)}';
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundImage: NetworkImage(imageUrl),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          santri.namaSantri,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSantriItem(SantriTahfidz santri) {
     final String imageUrl = (santri.photo != null && santri.photo!.isNotEmpty)
         ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}'
         : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.nama)}';
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 6,
             offset: const Offset(0, 3),
           )
         ],
@@ -117,19 +201,23 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: Text(
-              santri.nama,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  santri.nama,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +226,11 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: Text('Detail Tahfidz', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF5B913B), 
+        title: Text(
+          'Detail Tahfidz',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: const Color(0xFF5B913B),
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -149,26 +240,43 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
       body: _isLoading
           ? _buildLoading()
           : detail == null
-              ? Center(child: Text('Data tidak tersedia', style: GoogleFonts.poppins()))
+              ? Center(
+                  child: Text(
+                    'Data tidak tersedia',
+                    style: GoogleFonts.poppins(),
+                  ),
+                )
               : RefreshIndicator(
                   onRefresh: _fetchDetail,
-                  color: Colors.indigo,
+                  color: const Color(0xFF5B913B),
                   child: ListView(
                     children: [
                       _buildHeader(detail.dataTahfidz!),
+                      _buildAchievementCard(detail.capaianTertinggi),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        child: Text(
-                          'Daftar Santri',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF2D3748),
-                          ),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Daftar Santri',
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF2D3748),
+                              ),
+                            ),
+                            Text(
+                              'Total: ${_detailData?.jumlah ?? 0}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       ...detail.santri.map(_buildSantriItem).toList(),
-                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
