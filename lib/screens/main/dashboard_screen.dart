@@ -396,24 +396,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: ExpansionTile(
                               initiallyExpanded: false,
                               title: const Text('Lihat Detail Capaian'),
-                              childrenPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              childrenPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                               children: [
                                 if (_dashboardData!.tahfidzan.highest?.students.isNotEmpty == true) ...[
-                                  Text(
-                                    'Capaian Tertinggi: ${_dashboardData!.tahfidzan.highest?.achievement.isNotEmpty == true ? _dashboardData!.tahfidzan.highest!.achievement : "-"}',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                                  Card(
+                                    color: const Color.fromARGB(255, 56, 96, 31),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Text(
+                                        'Capaian Tertinggi: ${_dashboardData!.tahfidzan.highest?.achievement?.isNotEmpty == true ? _dashboardData!.tahfidzan.highest!.achievement! : "-"}',
+                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(height: 8),
-                                  _buildSantriGrid(_dashboardData!.tahfidzan.highest!.students),
+                                  _buildSantriList(_dashboardData!.tahfidzan.highest!.students),
                                   const SizedBox(height: 16),
                                 ],
                                 if (_dashboardData!.tahfidzan.lowest?.students.isNotEmpty == true) ...[
-                                  Text(
-                                    'Capaian Terendah: ${_dashboardData!.tahfidzan.lowest?.achievement.isNotEmpty == true ? _dashboardData!.tahfidzan.lowest!.achievement : "-"}',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                                  Card(
+                                    color: const Color.fromARGB(255, 56, 96, 31),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Text(
+                                        'Capaian Terendah: ${_dashboardData!.tahfidzan.lowest?.achievement.isNotEmpty == true ? _dashboardData!.tahfidzan.lowest!.achievement : "-"}',
+                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(height: 8),
-                                  _buildSantriGrid(_dashboardData!.tahfidzan.lowest!.students),
+                                  _buildSantriList(_dashboardData!.tahfidzan.lowest!.students),
                                 ],
                               ],
                             ),
@@ -508,7 +528,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 TextSpan(
                   text: "Jumlah Tagihan Syahriah\nRp: ${_dashboardData?.totalTagihanSyahriah ?? '0'}\n",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: const Color.fromARGB(221, 188, 42, 42)),
                 ),
                 TextSpan(
                   text: "Syahriah tervalidasi\nRp : ${_dashboardData?.totalPembayaranValidBulanIni ?? '0'}\n",
@@ -516,7 +536,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 TextSpan(
                   text: "Syahriah belum tervalidasi\nRp : ${_dashboardData?.totalPembayaranUnvalidBulanIni ?? '0'}",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: const Color.fromARGB(221, 188, 42, 42)),
                 ),
               ],
             ),
@@ -550,39 +570,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildSantriGrid(List<Student> students) {
-    return GridView.builder(
+  Widget _buildSantriList(List<Student> students) {
+    return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: students.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 0.75,
-      ),
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final student = students[index];
         final hasPhoto = student.photo != null && student.photo!.isNotEmpty;
         final photoUrl = hasPhoto
             ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${student.photo}'
-            : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(student.name)}&background=0D8ABC&color=fff';
+            : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(student.nama)}&background=0D8ABC&color=fff';
 
-        return Column(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundImage: NetworkImage(photoUrl),
+        return Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.network(
+                    photoUrl,
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 48),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        student.nama,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${student.kelas ?? '-'} | ${student.guruTahfidz ?? '-'}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              student.name,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
+          ),
         );
       },
     );
@@ -590,53 +631,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
 
-  Widget _buildStatItem(String label, String value, IconData icon, Color color) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, color: color, size: 20),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _formatCurrency(String nominal) {
-    try {
-      final number = int.tryParse(nominal) ?? 0;
-      return 'Rp ${number.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}';
-    } catch (_) {
-      return 'Rp 0';
-    }
-  }
 }

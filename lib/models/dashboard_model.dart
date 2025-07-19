@@ -169,19 +169,25 @@ class HighestLowest {
 }
 
 class Student {
-  final String name;
+  final String nama;
   final String? photo;
+  final String? kelas;
+  final String? guruTahfidz;
 
   Student({
-    required this.name,
+    required this.nama,
     this.photo,
+    this.kelas,
+    this.guruTahfidz,
   });
 
   factory Student.fromJson(Map<String, dynamic>? json) {
     json ??= {};
     return Student(
-      name: json['nama'] as String? ?? '',
+      nama: json['nama'] as String? ?? '',
       photo: json['photo'] as String?,
+      kelas: json['kelas'] as String?,
+      guruTahfidz: json['guruTahfidz'] as String?,
     );
   }
 }
