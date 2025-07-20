@@ -145,7 +145,7 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
               ),
               const SizedBox(width: 8),
               Text(
-                'Bulan: ${data.bulan}',
+                '${data.bulan}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 15,
@@ -204,7 +204,7 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Total Data Santri Sakit',
+                  'Total Santri Sakit',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,

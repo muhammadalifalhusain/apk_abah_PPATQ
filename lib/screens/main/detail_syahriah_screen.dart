@@ -195,14 +195,7 @@ class _DetailSyahriahScreenState extends State<DetailSyahriahScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            const Color(0xFF5B913B),
-            const Color(0xFF5B913B).withOpacity(0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: const Color.fromARGB(255, 56, 96, 31),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -223,7 +216,7 @@ class _DetailSyahriahScreenState extends State<DetailSyahriahScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                dataKelas.namaKelas ?? 'Kelas Tidak Diketahui',
+                dataKelas.namaWaliKelas ?? 'Kelas Tidak Diketahui',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -232,7 +225,7 @@ class _DetailSyahriahScreenState extends State<DetailSyahriahScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                dataKelas.namaWaliKelas ?? '',
+                dataKelas.namaKelas ?? '',
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   color: Colors.white.withOpacity(0.9),

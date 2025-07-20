@@ -124,18 +124,11 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
             ],
           ),
           Text(
-            capaian.capaian,
+            '${capaian.capaian} - ${capaian.jumlahSantri} Santri',
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF5B913B),
-            ),
-          ),
-          Text(
-            '${capaian.jumlahSantri} Santri',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: Colors.grey[600],
             ),
           ),
           if (capaian.listSantriTertinggi.isNotEmpty)
@@ -209,6 +202,12 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  'Capaian: ${santri.capaianTerakhir ?? '-'}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
                   ),
                 ),
               ],

@@ -45,12 +45,14 @@ class SantriTahfidz {
   final String nama;
   final String jenisKelamin;
   final String? photo;
+  final String? capaianTerakhir;
 
   SantriTahfidz({
     required this.noInduk,
     required this.nama,
     required this.jenisKelamin,
     this.photo,
+    this.capaianTerakhir,
   });
 
   factory SantriTahfidz.fromJson(Map<String, dynamic> json) {
@@ -59,6 +61,7 @@ class SantriTahfidz {
       nama: json['nama'] ?? '-',
       jenisKelamin: json['jenisKelamin'] ?? '-',
       photo: json['photo'],
+      capaianTerakhir: json['capaianTerakhir'],
     );
   }
 }
