@@ -73,7 +73,7 @@ class _DetailSantriMurrobyScreenState extends State<DetailSantriMurrobyScreen>
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
-          indicatorColor: Colors.black,
+          indicatorColor: Color.fromARGB(255, 56, 96, 31),
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           labelStyle: GoogleFonts.poppins(

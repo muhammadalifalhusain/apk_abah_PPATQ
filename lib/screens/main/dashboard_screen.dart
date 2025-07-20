@@ -301,7 +301,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: const EdgeInsets.only(right: 16.0),
             child: Center(
               child: Text(
-                'V 1.1.3',
+                'V 1.1.4',
                 style: GoogleFonts.poppins(
                   color: Colors.white70,
                   fontSize: 12,

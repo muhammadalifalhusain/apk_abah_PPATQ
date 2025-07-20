@@ -31,7 +31,7 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.teal, 
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween, 
         children: [
@@ -48,13 +48,12 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
                     width: 100,
                   ),
                   SizedBox(height: 20),
-                  // Title
                   Text(
                     'PPATQ Raudlatul Falah - Pati',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF00695C),
+                      color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -64,7 +63,7 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF00695C),
+                      color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -123,8 +122,6 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
                                         accessToken: abah.accessToken,
                                         expiresIn: abah.expiresIn,
                                       );
-
-
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
@@ -139,7 +136,7 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF00695C),
+                                  backgroundColor: Colors.teal,
                                   foregroundColor: Colors.white,
                                   elevation: 8,
                                   shape: RoundedRectangleBorder(
@@ -167,11 +164,11 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Text(
-              'VERSION 1.1.1',
+              'VERSION 1.1.4',
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade500,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
                 letterSpacing: 1.2,
               ),
             ),
@@ -201,21 +198,21 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
       },
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey),
-        prefixIcon: Icon(icon, color: Color(0xFF00695C)),
+        labelStyle: TextStyle(color: Colors.black),
+        prefixIcon: Icon(icon, color: Colors.teal),
         filled: true,
         fillColor: Colors.grey[200],
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.grey[300]!),
+          borderSide: BorderSide(color: Colors.teal),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.grey[300]!),
+          borderSide: BorderSide(color: Colors.teal),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Color(0xFF00695C), width: 2),
+          borderSide: BorderSide(color: Colors.white, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
@@ -230,7 +227,7 @@ class _LoginScreenMurrobyState extends State<LoginAbah> {
             ? IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                  color: Color(0xFF00695C),
+                  color: Colors.teal,
                 ),
                 onPressed: () {
                   setState(() {

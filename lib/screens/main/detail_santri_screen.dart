@@ -77,7 +77,7 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
-          indicatorColor: Colors.black,
+          indicatorColor: Color.fromARGB(255, 56, 96, 31),
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           labelStyle: GoogleFonts.poppins(
@@ -157,7 +157,6 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
               ),
             ),
           ),
-          // Tab View
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -242,8 +241,9 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
                   _buildRow('Jenis Kelamin', profil.jenisKelaminFormatted),
                   _buildRow('Alamat', profil.alamat ?? '-'),
                   _buildRow('Kota/Kabupaten', profil.kotaKab ?? '-'),
-                  _buildRow('Kamar', profil.kamar ?? '-'),
-                  _buildRow('Tahfidz', profil.kelasTahfidz ?? '-'),
+                  _buildRow('Kelas', profil.kelas ?? '-'),
+                  _buildRow('Kamar', profil.namaMurroby ?? '-'),
+                  _buildRow('Tahfidz', profil.namaTahfidz ?? '-'),
                 ],
               ),
             ),
@@ -295,7 +295,6 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
     );
   }
 
-
   Widget _buildRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -305,7 +304,7 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
           SizedBox(
             width: 130,
             child: Text(
-              '$label:',
+              '$label',
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
