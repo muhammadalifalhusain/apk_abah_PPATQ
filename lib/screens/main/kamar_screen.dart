@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/kamar_model.dart';
@@ -141,13 +140,6 @@ class _KamarScreenState extends State<KamarScreen> {
                   decoration: BoxDecoration(
                     color: const Color(0xFF254B62),
                     borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF667eea).withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: const Icon(Icons.bedroom_child, color: Colors.white, size: 24),
                 ),

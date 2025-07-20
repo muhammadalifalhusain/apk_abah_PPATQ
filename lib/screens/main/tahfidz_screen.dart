@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/tahfidz_model.dart';
 import '../../services/tahfidz_service.dart';
 import 'detail_tahfidz_screen.dart';
+
 class TahfidzScreen extends StatefulWidget {
   const TahfidzScreen({super.key});
 
@@ -12,8 +14,10 @@ class TahfidzScreen extends StatefulWidget {
 
 class _TahfidzScreenState extends State<TahfidzScreen> {
   final KelasTahfidzService _service = KelasTahfidzService();
+  final TextEditingController _searchController = TextEditingController();
   List<KelasTahfidz> _kelasList = [];
   bool _isLoading = true;
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -21,13 +25,48 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
     fetchKelasTahfidz();
   }
 
-  Future<void> fetchKelasTahfidz() async {
+  Future<void> fetchKelasTahfidz({String? search}) async {
     setState(() => _isLoading = true);
-    final response = await _service.fetchKelasTahfidz();
+    final response = await _service.fetchKelasTahfidz(search: search);
     setState(() {
       _kelasList = response?.data ?? [];
       _isLoading = false;
     });
+  }
+
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      fetchKelasTahfidz(search: value);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: TextField(
+        controller: _searchController,
+        onChanged: _onSearchChanged,
+        decoration: InputDecoration(
+          hintText: 'Cari nama...',
+          prefixIcon: const Icon(Icons.search),
+          filled: true,
+          fillColor: const Color.fromARGB(255, 201, 199, 199),
+          contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildStatCard() {
@@ -35,7 +74,7 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 56, 96, 31), 
+        color: const Color.fromARGB(255, 56, 96, 31),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -102,7 +141,7 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
                 Container(
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF254B62), 
+                    color: const Color(0xFF254B62),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: const Icon(Icons.school, color: Colors.white, size: 24),
@@ -154,7 +193,7 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text('Tahfidz', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF5B913B), 
+        backgroundColor: const Color(0xFF5B913B),
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -163,31 +202,38 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
       ),
       body: _isLoading
           ? _buildLoadingState()
-          : _kelasList.isEmpty
-              ? _buildEmptyState()
-              : RefreshIndicator(
-                  onRefresh: fetchKelasTahfidz,
-                  color: const Color(0xFF667eea),
-                  child: ListView(
-                    children: [
-                      const SizedBox(height: 10),
-                      _buildStatCard(),
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          'Daftar Kelas',
-                          style: GoogleFonts.poppins(
-                              fontSize: 18, fontWeight: FontWeight.w600, color: const Color(0xFF2D3748)),
-                        ),
-                      ),
-                      ..._kelasList.asMap().entries.map((entry) {
-                        return _buildKelasCard(entry.value, entry.key);
-                      }).toList(),
-                      const SizedBox(height: 30),
-                    ],
+          : RefreshIndicator(
+              onRefresh: () => fetchKelasTahfidz(search: _searchController.text),
+              color: const Color(0xFF667eea),
+              child: ListView(
+                children: [
+                  const SizedBox(height: 10),
+                  _buildStatCard(),
+                  const SizedBox(height: 8),
+                  _buildSearchField(),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      'Daftar Kelas',
+                      style: GoogleFonts.poppins(
+                          fontSize: 18, fontWeight: FontWeight.w600, color: const Color(0xFF2D3748)),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 5),
+                  if (_kelasList.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: _buildEmptyState(),
+                    )
+                  else
+                    ..._kelasList.asMap().entries.map((entry) {
+                      return _buildKelasCard(entry.value, entry.key);
+                    }),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            ),
     );
   }
 }
