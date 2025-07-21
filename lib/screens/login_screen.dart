@@ -3,12 +3,12 @@ import 'package:abah/screens/main/dashboard_screen.dart';
 import '../services/login_service.dart';
 import '../utils/session_manager.dart';
 
-class LoginAbah extends StatefulWidget {
+class LoginAbahScreen extends StatefulWidget {
   @override
-  _LoginScreenMurrobyState createState() => _LoginScreenMurrobyState();
+  _LoginAbahScreenState createState() => _LoginAbahScreenState();
 }
 
-class _LoginScreenMurrobyState extends State<LoginAbah> {
+class _LoginAbahScreenState extends State<LoginAbahScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();

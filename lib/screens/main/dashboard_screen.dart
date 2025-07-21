@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../models/dashboard_model.dart';
 import '../../services/dashboard_service.dart';
 import '../../services/login_service.dart';
-import '../login_screen.dart';
+import '../welcome_screen.dart';
 import '../../widgets/menu_widget.dart';
 import 'pegawai_screen.dart';
 import 'belum_lapor_screen.dart';
@@ -85,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (result['success'] == true) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginAbah()),
+        MaterialPageRoute(builder: (context) => WelcomeScreen()),
         (route) => false,
       );
     } else {

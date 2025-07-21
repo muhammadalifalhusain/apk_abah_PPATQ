@@ -378,7 +378,7 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                         children: [
                           _buildInfoRow('Murroby', alumni.murroby ?? '-'),
                           _buildInfoRow('Pondok MI', alumni.namaPondokMi ?? '-'),
-                          _buildInfoRow('Pondok Menengah Atas', alumni.namaPondokMenengahAtas ?? '-'),
+                          _buildInfoRow('Pondok MA', alumni.namaPondokMenengahAtas ?? '-'),
                           _buildInfoRow('Perguruan Tinggi', alumni.namaPerguruanTinggi ?? '-'),
                           _buildInfoRow('Profesi', alumni.posisiProfesi ?? '-'),
                           if (alumni.noHp != null && alumni.noHp!.isNotEmpty) ...[
