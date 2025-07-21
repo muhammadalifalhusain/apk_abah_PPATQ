@@ -55,7 +55,7 @@ class _TahfidzScreenState extends State<TahfidzScreen> {
         controller: _searchController,
         onChanged: _onSearchChanged,
         decoration: InputDecoration(
-          hintText: 'Cari nama...',
+          hintText: 'Cari nama tahfidz...',
           prefixIcon: const Icon(Icons.search),
           filled: true,
           fillColor: const Color.fromARGB(255, 201, 199, 199),

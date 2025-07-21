@@ -57,7 +57,7 @@ class SantriTahfidz {
 
   factory SantriTahfidz.fromJson(Map<String, dynamic> json) {
     return SantriTahfidz(
-      noInduk: json['no_induk'] ?? 0,
+      noInduk: json['noInduk'] ?? 0,
       nama: json['nama'] ?? '-',
       jenisKelamin: json['jenisKelamin'] ?? '-',
       photo: json['photo'],

@@ -97,6 +97,7 @@ class DetailSantriKelas {
   final String? keluhan;
   final String? terapi;
   final String? tanggalKeluarRawatInap;
+  final String? namaMurroby;
 
   DetailSantriKelas({
     required this.kodeKelas,
@@ -108,6 +109,7 @@ class DetailSantriKelas {
     this.keluhan,
     this.terapi,
     this.tanggalKeluarRawatInap,
+    this.namaMurroby,
   });
 
   factory DetailSantriKelas.fromJson(Map<String, dynamic> json) {
@@ -121,6 +123,7 @@ class DetailSantriKelas {
       keluhan: json['keluhan'],
       terapi: json['terapi'],
       tanggalKeluarRawatInap: json['tanggalKeluarRawatInap'],
+      namaMurroby: json['namaMurroby'],
     );
   }
 }

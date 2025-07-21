@@ -346,54 +346,307 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
 
   Widget _buildPemeriksaanTab(SantriDetail data) {
     if (data.pemeriksaan.isEmpty) {
-      return const Center(child: Text('Belum ada data pemeriksaan'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.medical_services_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada data pemeriksaan',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Riwayat pemeriksaan kesehatan akan muncul di sini',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       itemCount: data.pemeriksaan.length,
       itemBuilder: (context, index) {
         final e = data.pemeriksaan[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(
-              'Tinggi: ${e.tinggiBadan} cm',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-            ),
-            subtitle: Text(
-              'Gigi: ${e.kondisiGigi}',
-              style: GoogleFonts.poppins(fontSize: 12),
-            ),
-          ),
+        final isExpanded = index == 0 && data.pemeriksaan.length > 1;
+        bool isCardExpanded = isExpanded;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Colors.grey[50]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCardExpanded = !isCardExpanded;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 56, 96, 31),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.medical_services,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Pemeriksaan ke-${index + 1}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (data.pemeriksaan.length > 1)
+                              Icon(
+                                isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isCardExpanded || data.pemeriksaan.length == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildDataItem(Icons.calendar_today, 'Tanggal', e.tanggalPemeriksaan ?? '-'),
+                            _buildDataItem(Icons.height, 'Tinggi Badan', '${e.tinggiBadan} cm'),
+                            _buildDataItem(Icons.monitor_weight, 'Berat Badan', '${e.beratBadan} kg'),
+                            _buildDataItem(Icons.straighten, 'Lingkar Pinggul', '${e.lingkarPinggul} cm'),
+                            _buildDataItem(Icons.straighten, 'Lingkar Dada', '${e.lingkarDada} cm'),
+                            _buildDataItem(Icons.health_and_safety, 'Kondisi Gigi', e.kondisiGigi),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
+
+  Widget _buildDataItem(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: Colors.grey[600],
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Text(
+                    '$label',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 6,
+                  child: Text(
+                    value.isNotEmpty ? value : "-",
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRawatInapTab(SantriDetail data) {
     if (data.rawatInap.isEmpty) {
-      return const Center(child: Text('Belum ada data rawat inap'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.local_hospital_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada data rawat inap',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Riwayat rawat inap akan muncul di sini',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       itemCount: data.rawatInap.length,
       itemBuilder: (context, index) {
         final e = data.rawatInap[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(
-              e.keluhan,
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-            ),
-            subtitle: Text(
-              'Masuk: ${e.tanggalMasuk}\nKeluar: ${e.tanggalKeluar ?? "-"}',
-              style: GoogleFonts.poppins(fontSize: 12),
-            ),
-            isThreeLine: true,
-          ),
+        final isExpanded = index == 0 && data.rawatInap.length > 1;
+        bool isCardExpanded = isExpanded;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Colors.grey[50]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCardExpanded = !isCardExpanded;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 56, 96, 31), 
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.local_hospital,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                e.keluhan,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            if (data.rawatInap.length > 1)
+                              Icon(
+                                isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isCardExpanded || data.rawatInap.length == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildDataItem(Icons.calendar_today, 'Masuk', e.tanggalMasuk ?? '-'),
+                            _buildDataItem(Icons.calendar_today_outlined, 'Keluhan', e.keluhan ?? "-"),
+                            _buildDataItem(Icons.calendar_today_outlined, 'Terapi', e.terapi ?? "-"),
+                            _buildDataItem(Icons.calendar_today_outlined, 'Keluar', e.tanggalKeluar ?? "-"),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -457,7 +710,35 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
 
   Widget _buildKetahfidzanTab(SantriDetail data) {
     if (data.ketahfidzan.isEmpty) {
-      return const Center(child: Text("Belum ada data ketahfidzan"));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.book_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada data ketahfidzan',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Riwayat hafalan akan muncul di sini',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     final tahunKeys = data.ketahfidzan.keys.toList();
@@ -465,34 +746,130 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
 
     final bulanKeys = data.ketahfidzan[tahun]!.keys.toList();
     if (bulanKeys.isEmpty) {
-      return const Center(child: Text("Belum ada data bulan ketahfidzan"));
+      return Center(
+        child: Text(
+          "Belum ada data bulan ketahfidzan",
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+      );
     }
 
     final bulan = bulanKeys.first;
     final nilaiList = data.ketahfidzan[tahun]![bulan]!;
 
     if (nilaiList.isEmpty) {
-      return const Center(child: Text("Belum ada nilai ketahfidzan"));
+      return Center(
+        child: Text(
+          "Belum ada nilai ketahfidzan",
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       itemCount: nilaiList.length,
       itemBuilder: (context, index) {
         final e = nilaiList[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(
-              '${e.nmJuz}',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-            ),
-            subtitle: Text(
-              'Tanggal: ${e.tanggal}\nHafalan: ${e.hafalan}',
-              style: GoogleFonts.poppins(fontSize: 12),
-            ),
-            isThreeLine: true,
-          ),
+        final isExpanded = index == 0 && nilaiList.length > 1;
+        bool isCardExpanded = isExpanded;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Colors.grey[50]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCardExpanded = !isCardExpanded;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 56, 96, 31),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.book,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Setoran ${e.nmJuz}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (nilaiList.length > 1)
+                              Icon(
+                                isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isCardExpanded || nilaiList.length == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildDataItem(Icons.calendar_today, "Tanggal", e.tanggal),
+                            _buildDataItem(Icons.bookmark, "Nama Juz", e.nmJuz),
+                            _buildDataItem(Icons.format_quote, "Hafalan", e.hafalan),
+                            _buildDataItem(Icons.mic, "Tilawah", e.tilawah),
+                            _buildDataItem(Icons.auto_awesome, "Kefasihan", e.kefasihan),
+                            _buildDataItem(Icons.memory, "Daya Ingat", e.dayaIngat),
+                            _buildDataItem(Icons.speed, "Kelancaran", e.kelancaran),
+                            _buildDataItem(Icons.graphic_eq, "Tajwid", e.praktekTajwid),
+                            _buildDataItem(Icons.record_voice_over, "Makhroj", e.makhroj),
+                            _buildDataItem(Icons.compare, "Tanafus", e.tanafus),
+                            _buildDataItem(Icons.pause, "Waqof Wasol", e.waqofWasol),
+                            _buildDataItem(Icons.warning, "Ghorib", e.ghorib),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -500,26 +877,229 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
 
   Widget _buildPembayaranTab(SantriDetail data) {
     if (data.riwayatBayar.isEmpty) {
-      return const Center(child: Text('Belum ada data pembayaran'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.receipt_long_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada data pembayaran',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Riwayat pembayaran akan muncul di sini',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       itemCount: data.riwayatBayar.length,
       itemBuilder: (context, index) {
         final e = data.riwayatBayar[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(
-              'Periode: ${e.periode}',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-            ),
-            subtitle: Text(
-              'Validasi: ${e.validasi}',
-              style: GoogleFonts.poppins(fontSize: 12),
-            ),
-          ),
+        final isExpanded = index == 0 && data.riwayatBayar.length > 1;
+        bool isCardExpanded = isExpanded;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Colors.grey[50]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCardExpanded = !isCardExpanded;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 56, 96, 31), 
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_month,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Periode ${e.periode}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                e.validasi,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            if (data.riwayatBayar.length > 1)
+                              Icon(
+                                isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isCardExpanded || data.riwayatBayar.length == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  size: 16,
+                                  color: Colors.grey[600],
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Tanggal Bayar: ',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                Text(
+                                  e.tanggalBayar,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[800],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.receipt,
+                                  size: 16,
+                                  color: Colors.grey[600],
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Rincian Pembayaran',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: Colors.grey[800],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 12),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[50],
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.grey[200]!),
+                              ),
+                              child: Column(
+                                children: e.jenisPembayaran.entries.map((entry) {
+                                  final isLast = entry == e.jenisPembayaran.entries.last;
+                                  
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      border: isLast ? null : Border(
+                                        bottom: BorderSide(
+                                          color: Colors.grey[200]!,
+                                          width: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            entry.key,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 13,
+                                              color: Colors.grey[700],
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'Rp ${entry.value},00',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.green[700],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );

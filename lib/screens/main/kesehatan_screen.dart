@@ -115,8 +115,6 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
             const SizedBox(height: 15),
             _buildSummaryCards(),
             const SizedBox(height: 15),
-            _buildDaftarSantriSakit(),
-            const SizedBox(height: 15),
             _buildResumeKelas(),
           ],
         ),
@@ -228,66 +226,6 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
     );
   }
 
-  Widget _buildDaftarSantriSakit() {
-    final daftarSantri = _kesehatanData!.data.daftarSantriSakit;
-    
-    if (daftarSantri.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Daftar Santri Sakit',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey.shade800,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: daftarSantri.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 8),
-          itemBuilder: (context, index) {
-            final santri = daftarSantri[index];
-            return Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '${santri.nama}- Sakit ${santri.jumlah}x',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildResumeKelas() {
     final resumeKelas = _kesehatanData!.data.resumeKelas;
     
@@ -322,133 +260,85 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
   }
 
   Widget _buildKelasCard(ResumeKelas kelas) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.indigo.shade50,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-              border: Border(
-                bottom: BorderSide(color: Colors.indigo.shade200),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.class_,
-                  color: const Color.fromARGB(255, 56, 96, 31),
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Kelas ${kelas.kelas}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 56, 96, 31),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '${kelas.data.length} santri',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: kelas.data.map((santri) => _buildSantriDetail(santri)).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    final ValueNotifier<bool> isExpanded = ValueNotifier(false);
 
-  Widget _buildSantriDetail(DetailSantriKelas santri) {
-    bool isExpanded = false;
-
-    return StatefulBuilder(
-      builder: (context, setState) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: isExpanded,
+      builder: (context, expanded, _) {
         return Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade300),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      santri.nama,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                      ),
+              // Header
+              GestureDetector(
+                onTap: () => isExpanded.value = !expanded,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 56, 96, 31),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      isExpanded ? Icons.expand_less : Icons.expand_more,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isExpanded = !isExpanded;
-                      });
-                    },
-                  )
-                ],
+                  child: Row(
+                    children: [
+                      const Icon(Icons.class_, color: Colors.white, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Kelas ${kelas.kelas}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${kelas.data.length} santri',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        expanded ? Icons.expand_less : Icons.expand_more,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-
-              // Detail hanya muncul jika expanded
-              if (isExpanded) ...[
-                const SizedBox(height: 8),
-                _buildDetailRow('Tanggal Sakit', santri.tanggalSakit),
-                _buildDetailRow('Sakit', santri.sakit),
-                _buildDetailRow('Tindakan', santri.tindakan),
-                _buildDetailRow('Tanggal Masuk Rawat Inap', santri.tanggalMasukRawatInap),
-                _buildDetailRow('Keluhan', santri.keluhan),
-                _buildDetailRow('Terapi', santri.terapi),
-                _buildDetailRow('Tanggal Keluar Rawat Inap', santri.tanggalKeluarRawatInap),
-              ],
+              if (expanded)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: kelas.data.map((santri) => _buildSantriDetail(santri)).toList(),
+                  ),
+                ),
             ],
           ),
         );
@@ -457,33 +347,99 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
   }
 
 
-  Widget _buildDetailRow(String label, String? value) {
-    if (value == null || value.isEmpty) {
-      return const SizedBox.shrink();
-    }
+  Widget _buildSantriDetail(DetailSantriKelas santri) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header Santri
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.indigo.shade50,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    santri.nama,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
+          // Detail Santri (langsung tampil)
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                _buildDetailItem(Icons.calendar_today, 'Masuk Rawat Inap', santri.tanggalMasukRawatInap),
+                _buildDetailItem(Icons.medical_services, 'Sakit', santri.sakit),
+                _buildDetailItem(Icons.healing, 'Tindakan', santri.tindakan),
+                _buildDetailItem(Icons.sick, 'Keluhan', santri.keluhan),
+                _buildDetailItem(Icons.medication, 'Terapi', santri.terapi),
+                _buildDetailItem(Icons.calendar_today_outlined, 'Keluar Rawat Inap', santri.tanggalKeluarRawatInap),
+                _buildDetailItem(Icons.person, 'Murroby', santri.namaMurroby),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildDetailItem(IconData icon, String label, String? value) {
+    final isEmptyValue = value == null || value.trim().isEmpty || value.trim() == "-";
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Icon(
+            icon,
+            size: 16,
+            color: Colors.grey[600],
+          ),
+          const SizedBox(width: 8),
           Expanded(
             child: RichText(
               text: TextSpan(
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: Colors.grey[800],
+                ),
                 children: [
                   TextSpan(
-                    text: '$label: ',
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontSize: 13,
+                    text: "$label: ",
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w500,
+                      color: Colors.grey[600],
                     ),
                   ),
                   TextSpan(
-                    text: value,
-                    style: TextStyle(
-                      color: Colors.grey.shade800,
-                      fontSize: 13,
+                    text: isEmptyValue ? '-' : value!,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      color: isEmptyValue ? Colors.grey[400] : Colors.grey[800],
                     ),
                   ),
                 ],
@@ -494,4 +450,6 @@ class _KesehatanScreenState extends State<KesehatanScreen> {
       ),
     );
   }
+
+
 }

@@ -61,7 +61,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Uang Saku Santri',
+          'Keuangan',
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
         ),
         backgroundColor: const Color(0xFF5B913B),
@@ -80,7 +80,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
           indicatorWeight: 3.0, 
           indicatorPadding: const EdgeInsets.symmetric(horizontal: 16),
           tabs: const [
-            Tab(text: 'Keuangan'),
+            Tab(text: 'Saku'),
             Tab(text: 'Syahriah'),
           ],
         ),
