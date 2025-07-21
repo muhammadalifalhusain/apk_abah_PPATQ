@@ -27,7 +27,7 @@ class _HafalanSantriScreenState extends State<HafalanSantriScreen> {
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text(
-          'Detail Tahfidz',
+          'Detail Hafalan',
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
         ),
         backgroundColor: const Color(0xFF5B913B),

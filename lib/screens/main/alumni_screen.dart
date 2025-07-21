@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../models/alumni_model.dart';
 import '../../services/alumni_service.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 import '../../utils/phone_formatter.dart';
+
 class AlumniScreen extends StatefulWidget {
   const AlumniScreen({Key? key}) : super(key: key);
 
@@ -14,11 +14,13 @@ class AlumniScreen extends StatefulWidget {
 }
 
 class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMixin {
-  List<AlumniItem> alumniList = [];
+  List<AlumniDetail> alumniList = [];
+  List<PerTahun> perTahunList = [];
   int currentPage = 1;
   bool isLoading = false;
   bool isLastPage = false;
   String? searchQuery;
+  int? selectedYear;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
@@ -50,8 +52,9 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
 
   Future<void> _fetchAlumni({bool refresh = false}) async {
     if (isLoading) return;
+    
     setState(() => isLoading = true);
-
+    
     if (refresh) {
       currentPage = 1;
       alumniList.clear();
@@ -64,16 +67,35 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
     );
 
     if (response != null) {
-      final fetched = response.data.data;
       setState(() {
-        alumniList.addAll(fetched);
+        if (refresh || perTahunList.isEmpty) {
+          perTahunList = response.data.perTahun;
+        }
+        
+        alumniList.addAll(response.data.alumni.data);
         currentPage++;
-        isLastPage = response.data.nextPageUrl == null;
+        isLastPage = response.data.alumni.nextPageUrl == null;
       });
     }
+    
     setState(() => isLoading = false);
   }
 
+  List<AlumniDetail> _getFilteredAlumni() {
+    if (selectedYear == null) {
+      return alumniList;
+    } else {
+      final perTahunData = perTahunList.firstWhere(
+        (element) => element.tahun == selectedYear,
+        orElse: () => PerTahun(tahun: selectedYear!, data: []),
+      );
+      if (perTahunData.data.length >= 3) {
+        return perTahunData.data;
+      }
+      final fromAlumniList = alumniList.where((a) => a.tahunLulus == selectedYear).toList();
+      return [...perTahunData.data, ...fromAlumniList];
+    }
+  }
   void _onSearchChanged(String value) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -88,6 +110,29 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
       }
     });
   }
+
+  void _onYearFilterChanged(int? year) {
+    setState(() {
+      selectedYear = year;
+    });
+  }
+
+  List<int> _getAvailableYears() {
+    final years = <int>{};
+    for (final perTahun in perTahunList) {
+      if (perTahun.tahun != null && perTahun.tahun! > 2000) { 
+        years.add(perTahun.tahun!);
+      }
+    }
+    
+    for (final alumni in alumniList) {
+      if (alumni.tahunLulus != null && alumni.tahunLulus! > 2000) {
+        years.add(alumni.tahunLulus!);
+      }
+    }
+    return years.toList()..sort((a, b) => b.compareTo(a));
+  }
+
   @override
   void dispose() {
     _debounce?.cancel();
@@ -113,33 +158,26 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
-                  Container(
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new, size: 20, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 20, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Data Alumni',
-                          style: GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      'Data Alumni',
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -171,12 +209,91 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: DropdownButtonFormField<int>(
+                        value: selectedYear,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.calendar_today, color: Colors.grey[600], size: 20),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                        dropdownColor: Colors.white,
+                        style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF2D3748)),
+                        items: [
+                          DropdownMenuItem<int>(
+                            value: null,
+                            child: Text(
+                              'Semua Tahun',
+                              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          ..._getAvailableYears().map(
+                            (year) => DropdownMenuItem<int>(
+                              value: year,
+                              child: Text(
+                                '$year',
+                                style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                        ],
+                        onChanged: _onYearFilterChanged,
+                        icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: selectedYear != null ? const Color(0xFF5B913B) : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: selectedYear != null ? const Color(0xFF5B913B) : Colors.grey[300]!,
+                      ),
+                    ),
+                    child: IconButton(
+                      onPressed: selectedYear != null ? () => _onYearFilterChanged(null) : null,
+                      icon: Icon(
+                        Icons.close,
+                        color: selectedYear != null ? Colors.white : Colors.grey[400],
+                        size: 20,
+                      ),
+                      tooltip: 'Hapus Filter',
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-  Widget _buildAlumniCard(AlumniItem alumni, int index) {
+
+
+  Widget _buildAlumniCard(AlumniDetail alumni, int index) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: AnimatedContainer(
@@ -207,15 +324,14 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
-              onTap: () {
-              },
+              onTap: () {},
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [ 
+                      children: [
                         const SizedBox(width: 8),
                         Expanded(
                           child: Column(
@@ -237,7 +353,7 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  'NIS: ${alumni.noInduk != null ? alumni.noInduk.toString() : '-'} - Tahun Lulus ${alumni.tahunLulus != null ? alumni.tahunLulus.toString() : '-'}',
+                                  'NIS: ${alumni.noInduk} - Tahun Lulus ${alumni.tahunLulus}',
                                   style: GoogleFonts.poppins(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -262,7 +378,7 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                         children: [
                           _buildInfoRow('Murroby', alumni.murroby ?? '-'),
                           _buildInfoRow('Pondok MI', alumni.namaPondokMi ?? '-'),
-                          _buildInfoRow('Pondok Menegah Atas', alumni.namaPondokMenengahAtas ?? '-'),
+                          _buildInfoRow('Pondok Menengah Atas', alumni.namaPondokMenengahAtas ?? '-'),
                           _buildInfoRow('Perguruan Tinggi', alumni.namaPerguruanTinggi ?? '-'),
                           _buildInfoRow('Profesi', alumni.posisiProfesi ?? '-'),
                           if (alumni.noHp != null && alumni.noHp!.isNotEmpty) ...[
@@ -298,7 +414,6 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
                             ),
                           ],
                         ],
-
                       ),
                     ),
                   ],
@@ -392,7 +507,9 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
           ),
           const SizedBox(height: 20),
           Text(
-            'Tidak ada data alumni',
+            selectedYear != null 
+                ? 'Tidak ada alumni tahun $selectedYear'
+                : 'Tidak ada data alumni',
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -401,7 +518,9 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
           ),
           const SizedBox(height: 8),
           Text(
-            'Coba ubah kata kunci pencarian',
+            selectedYear != null
+                ? 'Coba pilih tahun lain atau hapus filter'
+                : 'Coba ubah kata kunci pencarian',
             style: GoogleFonts.poppins(
               fontSize: 14,
               color: Colors.grey[500],
@@ -414,6 +533,9 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final filteredAlumni = _getFilteredAlumni();
+    final shouldShowLoading = !isLastPage && !isLoading && selectedYear == null;
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: Column(
@@ -423,17 +545,17 @@ class _AlumniScreenState extends State<AlumniScreen> with TickerProviderStateMix
             child: RefreshIndicator(
               onRefresh: () => _fetchAlumni(refresh: true),
               color: const Color(0xFF5B913B),
-              child: alumniList.isEmpty && !isLoading
+              child: filteredAlumni.isEmpty && !isLoading
                   ? _buildEmptyState()
                   : ListView.builder(
                       controller: _scrollController,
                       padding: const EdgeInsets.only(top: 8, bottom: 20),
-                      itemCount: alumniList.length + (isLastPage ? 0 : 1),
+                      itemCount: filteredAlumni.length + (shouldShowLoading ? 1 : 0),
                       itemBuilder: (context, index) {
-                        if (index == alumniList.length) {
+                        if (index >= filteredAlumni.length) {
                           return _buildLoadingIndicator();
                         }
-                        return _buildAlumniCard(alumniList[index], index);
+                        return _buildAlumniCard(filteredAlumni[index], index);
                       },
                     ),
             ),
