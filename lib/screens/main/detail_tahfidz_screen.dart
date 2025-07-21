@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/tahfidz_model.dart';
 import '../../services/tahfidz_service.dart';
-
+import 'hafalan_tahfidz_screen.dart';
 class DetailTahfidzScreen extends StatefulWidget {
   final String idTahfidz;
 
@@ -167,7 +167,7 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
     );
   }
 
-  Widget _buildSantriItem(SantriTahfidz santri) {
+  Widget _buildSantriItem(BuildContext context, SantriTahfidz santri) {
     final String imageUrl = (santri.photo != null && santri.photo!.isNotEmpty)
         ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${santri.photo}'
         : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(santri.nama)}';
@@ -205,13 +205,25 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
                   ),
                 ),
                 Text(
-                  'Capaian: ${santri.capaianTerakhir ?? '-'}',
+                  'Capaian: ${santri.capaianTerakhir?.isNotEmpty == true ? santri.capaianTerakhir : '-'}',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                   ),
                 ),
               ],
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right_rounded, color: Colors.indigo),
+            tooltip: "Lihat Hafalan",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => HafalanSantriScreen(noInduk: santri.noInduk.toString()),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -275,7 +287,7 @@ class _DetailTahfidzScreenState extends State<DetailTahfidzScreen> {
                           ],
                         ),
                       ),
-                      ...detail.santri.map(_buildSantriItem).toList(),
+                      ...detail.santri.map((santri) => _buildSantriItem(context, santri)).toList(),
                     ],
                   ),
                 ),

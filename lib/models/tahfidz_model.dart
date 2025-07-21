@@ -173,3 +173,108 @@ class TahfidzDetailResponse {
     );
   }
 }
+
+class SantriHafalanResponse {
+  final int status;
+  final String message;
+  final SantriHafalanData data;
+
+  SantriHafalanResponse({
+    required this.status,
+    required this.message,
+    required this.data,
+  });
+
+  factory SantriHafalanResponse.fromJson(Map<String, dynamic> json) {
+    return SantriHafalanResponse(
+      status: json['status'] ?? 0,
+      message: json['message'] ?? '',
+      data: SantriHafalanData.fromJson(json['data'] ?? {}),
+    );
+  }
+}
+
+class SantriHafalanData {
+  final String namaSantri;
+  final List<HafalanItem> data;
+
+  SantriHafalanData({
+    required this.namaSantri,
+    required this.data,
+  });
+
+  factory SantriHafalanData.fromJson(Map<String, dynamic> json) {
+    return SantriHafalanData(
+      namaSantri: (json['namaSantri'] ?? '').toString(),
+      data: (json['data'] as List? ?? [])
+          .map((item) => HafalanItem.fromJson(item ?? {}))
+          .toList(),
+    );
+  }
+}
+
+class HafalanItem {
+  final int bulan;
+  final int tahun;
+  final String juz;
+  final String hafalan;
+  final String tilawah;
+  final String kefasihan;
+  final String dayaIngat;
+  final String kelancaran;
+  final String praktekTajwid;
+  final String makhroj;
+  final String tanafus;
+  final String waqofWasol;
+  final String ghorib;
+  final String namaBulan;
+
+  HafalanItem({
+    required this.bulan,
+    required this.tahun,
+    required this.juz,
+    required this.hafalan,
+    required this.tilawah,
+    required this.kefasihan,
+    required this.dayaIngat,
+    required this.kelancaran,
+    required this.praktekTajwid,
+    required this.makhroj,
+    required this.tanafus,
+    required this.waqofWasol,
+    required this.ghorib,
+    required this.namaBulan,
+  });
+
+  factory HafalanItem.fromJson(Map<String, dynamic> json) {
+    return HafalanItem(
+      bulan: _parseInt(json['bulan']),
+      tahun: _parseInt(json['tahun']),
+      juz: _safeString(json['juz']),
+      hafalan: _safeString(json['hafalan']),
+      tilawah: _safeString(json['tilawah']),
+      kefasihan: _safeString(json['kefasihan']),
+      dayaIngat: _safeString(json['dayaIngat']),
+      kelancaran: _safeString(json['kelancaran']),
+      praktekTajwid: _safeString(json['praktekTajwid']),
+      makhroj: _safeString(json['makhroj']),
+      tanafus: _safeString(json['tanafus']),
+      waqofWasol: _safeString(json['waqofWasol']),
+      ghorib: _safeString(json['ghorib']),
+      namaBulan: _safeString(json['namaBulan']),
+    );
+  }
+
+  static String _safeString(dynamic value) {
+    final str = value?.toString().trim();
+    return (str == null || str.isEmpty) ? '-' : str;
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value is int) return value;
+    if (value is String) {
+      return int.tryParse(value) ?? 0;
+    }
+    return 0;
+  }
+}

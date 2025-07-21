@@ -138,7 +138,7 @@ class _MenuIkonWidgetState extends State<MenuIkonWidget> {
       ),
       _MenuItem(
         icon: Icons.bedroom_child_rounded,
-        label: 'Kemurobbian',
+        label: 'Kemurobbyan',
         color: Colors.deepPurpleAccent,
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KamarScreen())),
       ),
