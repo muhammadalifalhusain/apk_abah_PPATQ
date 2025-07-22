@@ -4,9 +4,9 @@ import '../../services/keuangan_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class KeuanganDetailScreen extends StatefulWidget {
-  final String kodeKelas;
+  final String idKamar;
 
-  const KeuanganDetailScreen({super.key, required this.kodeKelas});
+  const KeuanganDetailScreen({super.key, required this.idKamar});
 
   @override
   State<KeuanganDetailScreen> createState() => _KeuanganDetailScreenState();
@@ -34,7 +34,7 @@ class _KeuanganDetailScreenState extends State<KeuanganDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _futureData = KeuanganService().fetchSakuByKelas(widget.kodeKelas);
+    _futureData = KeuanganService().fetchSakuByKelas(widget.idKamar);
   }
 
 
@@ -92,7 +92,7 @@ class _KeuanganDetailScreenState extends State<KeuanganDetailScreen> {
                   ElevatedButton.icon(
                     onPressed: () {
                       setState(() {
-                        _futureData = KeuanganService().fetchSakuByKelas(widget.kodeKelas);
+                        _futureData = KeuanganService().fetchSakuByKelas(widget.idKamar);
                       });
                     },
                     icon: const Icon(Icons.refresh),
@@ -111,7 +111,7 @@ class _KeuanganDetailScreenState extends State<KeuanganDetailScreen> {
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {
-                _futureData = KeuanganService().fetchSakuByKelas(widget.kodeKelas);
+                _futureData = KeuanganService().fetchSakuByKelas(widget.idKamar);
               });
             },
             child: SingleChildScrollView(

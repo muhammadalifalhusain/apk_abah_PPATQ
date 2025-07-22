@@ -287,6 +287,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Dashboard Abah',
           style: GoogleFonts.poppins(

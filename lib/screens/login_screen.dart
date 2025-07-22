@@ -31,7 +31,7 @@ class _LoginAbahScreenState extends State<LoginAbahScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal, 
+      backgroundColor: const Color(0xFF5B913B), 
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween, 
         children: [
@@ -136,7 +136,7 @@ class _LoginAbahScreenState extends State<LoginAbahScreen> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.teal,
+                                  backgroundColor: const Color.fromARGB(255, 56, 96, 31),
                                   foregroundColor: Colors.white,
                                   elevation: 8,
                                   shape: RoundedRectangleBorder(
@@ -199,16 +199,16 @@ class _LoginAbahScreenState extends State<LoginAbahScreen> {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.black),
-        prefixIcon: Icon(icon, color: Colors.teal),
+        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 56, 96, 31)),
         filled: true,
         fillColor: Colors.grey[200],
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.teal),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 56, 96, 31)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.teal),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 56, 96, 31)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
@@ -227,7 +227,7 @@ class _LoginAbahScreenState extends State<LoginAbahScreen> {
             ? IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.teal,
+                  color: const Color.fromARGB(255, 56, 96, 31),
                 ),
                 onPressed: () {
                   setState(() {

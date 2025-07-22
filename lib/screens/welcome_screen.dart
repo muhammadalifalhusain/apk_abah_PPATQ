@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/services.dart';
 import 'galeri_screen.dart'; 
+import 'dakwah_screen.dart'; 
+import 'about_screen.dart'; 
+
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
   
@@ -60,17 +63,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     
     // Navigasi berdasarkan menu yang dipilih
     switch(menuLabel) {
-      case 'Informasi Dakwah':
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => DakwahScreen()));
-        _showComingSoonSnackbar();
+      case 'Dawuh Abah':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => DakwahScreen()));
         break;
       case 'Informasi':
         // Navigator.push(context, MaterialPageRoute(builder: (_) => InfoScreen()));
         _showComingSoonSnackbar();
         break;
-      case 'Tentang Pesantren':
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => AboutScreen()));
-        _showComingSoonSnackbar();
+      case 'PPATQ-RF ku':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => AboutScreen()));
         break;
       case 'Galeri':
         Navigator.push(context, MaterialPageRoute(builder: (_) => GaleriScreen()));

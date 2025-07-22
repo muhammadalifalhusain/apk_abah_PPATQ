@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../models/kelas_model.dart';
-import '../../services/kelas_service.dart';
+import '../../models/kamar_model.dart';
+import '../../services/kamar_service.dart';
 import 'detail_keuangan_screen.dart';
 import '../../services/keuangan_service.dart';
 import '../../models/keuangan_model.dart';
+import '../../models/lapor_bayar_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'detail_syahriah_screen.dart';
+import 'detail_lapor_bayar_screen.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({super.key});
@@ -16,22 +18,35 @@ class KeuanganScreen extends StatefulWidget {
 
 class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  final KelasService _kelasService = KelasService();
+  final KamarService _kamarService = KamarService();
 
   bool isLoading = true;
-  List<Kelas> _kelasList = [];
+  List<Kamar> _kamarList = [];
 
   final KeuanganService _keuanganService = KeuanganService();
   KeuanganSyahriahData? _syahriahData;
   bool isLoadingSyahriah = true;
+  PembayaranResponse? _laporBayarData;
+  bool isLoadingLaporBayar = true;
+
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _fetchKelas();
+    _tabController = TabController(length: 3, vsync: this);
+    _fetchKamar();
+    _fetchLaporBayar();
     _fetchSyahriah();
   }
+
+  Future<void> _fetchLaporBayar() async {
+    final data = await _keuanganService.fetchLaporBayar();
+    setState(() {
+      _laporBayarData = data;
+      isLoadingLaporBayar = false;
+    });
+  }
+
 
   Future<void> _fetchSyahriah() async {
     final data = await _keuanganService.fetchSyahriahList();
@@ -42,10 +57,10 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
   }
 
 
-  Future<void> _fetchKelas() async {
-    final data = await _kelasService.fetchKelasList();
+  Future<void> _fetchKamar() async {
+    final response = await _kamarService.fetchKamarData();
     setState(() {
-      _kelasList = data;
+      _kamarList = response?.data ?? [];
       isLoading = false;
     });
   }
@@ -81,6 +96,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
           indicatorPadding: const EdgeInsets.symmetric(horizontal: 16),
           tabs: const [
             Tab(text: 'Saku'),
+            Tab(text: 'Lapor Bayar'),
             Tab(text: 'Syahriah'),
           ],
         ),
@@ -88,12 +104,76 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildKelasTab(),
+          _buildKamarTab(),
+          _buildLaporBayarTab(),
           _buildSyahriahTab(),
         ],
       ),
     );
   }
+
+  Widget _buildLaporBayarTab() {
+    if (isLoadingLaporBayar) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_laporBayarData == null || _laporBayarData!.data.isEmpty) {
+      return const Center(child: Text('Tidak ada data lapor bayar.'));
+    }
+
+    final dataKelas = _laporBayarData!.data.entries.toList();
+
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: GridView.builder(
+        itemCount: dataKelas.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          childAspectRatio: 1,
+        ),
+        itemBuilder: (context, index) {
+          final entry = dataKelas[index];
+          final kodeKelas = entry.key;
+
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DetailLaporBayarScreen(kodeKelas: kodeKelas),
+                ),
+              );
+            },
+            child: Card(
+              color: const Color.fromARGB(255, 56, 96, 31),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 2,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Text(
+                    'Kelas $kodeKelas',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+
   Widget _buildSyahriahTab() {
     if (isLoadingSyahriah) {
       return const Center(child: CircularProgressIndicator());
@@ -153,33 +233,33 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
     );
   }
 
-  Widget _buildKelasTab() {
+  Widget _buildKamarTab() {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_kelasList.isEmpty) {
-      return const Center(child: Text('Belum ada data Keuangan.'));
+    if (_kamarList.isEmpty) {
+      return const Center(child: Text('Belum ada data kamar.'));
     }
 
     return Padding(
       padding: const EdgeInsets.all(12),
       child: GridView.builder(
-        itemCount: _kelasList.length,
+        itemCount: _kamarList.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
+          crossAxisCount: 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           childAspectRatio: 1,
         ),
         itemBuilder: (context, index) {
-          final kelas = _kelasList[index];
+          final kamar = _kamarList[index];
           return InkWell(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => KeuanganDetailScreen(kodeKelas: kelas.kode),
+                  builder: (_) => KeuanganDetailScreen(idKamar: kamar.id.toString()),
                 ),
               );
             },
@@ -192,14 +272,21 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(6),
-                  child: Text(
-                    kelas.namaKelas,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.meeting_room, color: Colors.white, size: 30),
+                      const SizedBox(height: 6),
+                      Text(
+                        kamar.murroby,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -209,5 +296,6 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
       ),
     );
   }
+
 
 }
