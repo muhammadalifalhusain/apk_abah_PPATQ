@@ -318,27 +318,122 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
 
   Widget _buildKesehatanTab(SantriDetail data) {
     if (data.riwayatSakit.isEmpty) {
-      return const Center(child: Text('Belum ada data riwayat sakit'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.healing_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada data riwayat sakit',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Riwayat sakit santri akan muncul di sini',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       itemCount: data.riwayatSakit.length,
       itemBuilder: (context, index) {
         final e = data.riwayatSakit[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(
-              e.keluhan,
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-            ),
-            subtitle: Text(
-              'Sakit: ${e.tanggalSakit}\nSembuh: ${e.tanggalSembuh}',
-              style: GoogleFonts.poppins(fontSize: 12),
-            ),
-            isThreeLine: true,
-          ),
+        bool isCardExpanded = index == 0 && data.riwayatSakit.length > 1;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Colors.grey[50]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCardExpanded = !isCardExpanded;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 56, 96, 31),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.healing, color: Colors.white, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Riwayat Sakit ke-${index + 1}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (data.riwayatSakit.length > 1)
+                              Icon(
+                                isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isCardExpanded || data.riwayatSakit.length == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildDataItem(Icons.sick, 'Keluhan', e.keluhan),
+                            _buildDataItem(Icons.event, 'Tanggal Sakit', e.tanggalSakit ?? '-'),
+                            _buildDataItem(Icons.attractions, 'Tindakan', e.tindakan ?? '-'),
+                            _buildDataItem(Icons.check_circle, 'Tanggal Sembuh', e.tanggalSembuh ?? '-'),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -654,55 +749,256 @@ class _SantriDetailScreenState extends State<SantriDetailScreen>
 
   Widget _buildPerilakuTab(SantriDetail data) {
     if (data.perilaku.isEmpty) {
-      return const Center(child: Text('Belum ada data perilaku'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.psychology_alt_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada data perilaku',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Riwayat perilaku santri akan muncul di sini',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       itemCount: data.perilaku.length,
       itemBuilder: (context, index) {
         final e = data.perilaku[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(
-              'Tanggal: ${e.tanggal}',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-            ),
-            subtitle: Text(
-              'Kesopanan: ${e.kesopanan}\nKedisiplinan: ${e.kedisiplinan}',
-              style: GoogleFonts.poppins(fontSize: 12),
-            ),
-            isThreeLine: true,
-          ),
+        final isExpanded = index == 0 && data.perilaku.length > 1;
+        bool isCardExpanded = isExpanded;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Colors.grey[50]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCardExpanded = !isCardExpanded;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 91, 145, 59),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.psychology_alt, color: Colors.white, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Perilaku ke-${index + 1}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (data.perilaku.length > 1)
+                              Icon(
+                                isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isCardExpanded || data.perilaku.length == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildDataItem(Icons.calendar_month, 'Tanggal', e.tanggal),
+                            _buildDataItem(Icons.gavel, 'Ketertiban', e.ketertiban),                
+                            _buildDataItem(Icons.cleaning_services, 'Kebersihan', e.kebersihan),   
+                            _buildDataItem(Icons.timer, 'Kedisiplinan', e.kedisiplinan),           
+                            _buildDataItem(Icons.content_cut, 'Kerapian', e.kerapian),             
+                            _buildDataItem(Icons.group, 'Kesopanan', e.kesopanan),                 
+                            _buildDataItem(Icons.eco, 'Peka Lingkungan', e.kepekaanLingkungan),    
+                            _buildDataItem(Icons.rule, 'Taat Peraturan', e.ketaatanPeraturan),     
+
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
+
   Widget _buildKelengkapanTab(SantriDetail data) {
     if (data.kelengkapan.isEmpty) {
-      return const Center(child: Text('Belum ada data kelengkapan'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.backpack_outlined,
+              size: 80,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada data kelengkapan',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Riwayat kelengkapan santri akan muncul di sini',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       itemCount: data.kelengkapan.length,
       itemBuilder: (context, index) {
         final e = data.kelengkapan[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(
-              'Tanggal: ${e.tanggal}',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-            ),
-            subtitle: Text(
-              'Sekolah: ${e.peralatanSekolah}\nDiri: ${e.perlengkapanDiri}',
-              style: GoogleFonts.poppins(fontSize: 12),
-            ),
-            isThreeLine: true,
-          ),
+        final isExpanded = index == 0 && data.kelengkapan.length > 1;
+        bool isCardExpanded = isExpanded;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Colors.grey[50]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isCardExpanded = !isCardExpanded;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 56, 96, 31),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.backpack, color: Colors.white, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Kelengkapan ke-${index + 1}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (data.kelengkapan.length > 1)
+                              Icon(
+                                isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                                color: Colors.white,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isCardExpanded || data.kelengkapan.length == 1)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildDataItem(Icons.calendar_today, 'Tanggal', e.tanggal),
+                            _buildDataItem(Icons.shower, 'Perlengkapan Mandi', e.perlengkapanMandi),
+                            _buildDataItem(Icons.shower, 'Catatan', e.catatanMandi),
+                            _buildDataItem(Icons.school, 'Peralatan Sekolah', e.peralatanSekolah),
+                            _buildDataItem(Icons.school, 'Catatan', e.catatanSekolah),
+                            _buildDataItem(Icons.checkroom, 'Perlengkapan', e.perlengkapanDiri),
+                            _buildDataItem(Icons.checkroom, 'Catatan', e.catatanDiri),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
