@@ -93,7 +93,7 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
           unselectedLabelColor: Colors.white70, 
           indicatorColor: Colors.black,
           indicatorWeight: 3.0, 
-          indicatorPadding: const EdgeInsets.symmetric(horizontal: 16),
+          indicatorSize: TabBarIndicatorSize.tab,
           tabs: const [
             Tab(text: 'Saku'),
             Tab(text: 'Lapor Bayar'),
@@ -250,10 +250,14 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
           crossAxisCount: 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
-          childAspectRatio: 1,
+          childAspectRatio: 0.85,
         ),
         itemBuilder: (context, index) {
           final kamar = _kamarList[index];
+          final imageUrl = (kamar.fotoMurroby != null && kamar.fotoMurroby!.isNotEmpty)
+              ? 'https://manajemen.ppatq-rf.id/assets/img/upload/photo/${kamar.fotoMurroby}'
+              : 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(kamar.murroby)}&background=0D8ABC&color=fff';
+
           return InkWell(
             onTap: () {
               Navigator.push(
@@ -269,25 +273,29 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
                 borderRadius: BorderRadius.circular(10),
               ),
               elevation: 2,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.meeting_room, color: Colors.white, size: 30),
-                      const SizedBox(height: 6),
-                      Text(
-                        kamar.murroby,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontSize: 8,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 26,
+                      backgroundImage: NetworkImage(imageUrl),
+                      backgroundColor: Colors.grey[200],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      kamar.murroby,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -296,6 +304,4 @@ class _KeuanganScreenState extends State<KeuanganScreen> with TickerProviderStat
       ),
     );
   }
-
-
 }

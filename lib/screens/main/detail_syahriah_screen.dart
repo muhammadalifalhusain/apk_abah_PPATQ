@@ -22,8 +22,6 @@ class _DetailSyahriahScreenState extends State<DetailSyahriahScreen> {
   final GlobalKey _sudahBayarKey = GlobalKey();
   final GlobalKey _belumBayarKey = GlobalKey();
 
-  
-
   void _scrollToKey(GlobalKey key) {
     final context = key.currentContext;
     if (context != null) {
@@ -35,8 +33,6 @@ class _DetailSyahriahScreenState extends State<DetailSyahriahScreen> {
     }
   }
  
-
-
   @override
   void initState() {
     super.initState();
@@ -206,32 +202,39 @@ class _DetailSyahriahScreenState extends State<DetailSyahriahScreen> {
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 28,
             backgroundImage: NetworkImage(imageUrl),
           ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                dataKelas.namaWaliKelas ?? 'Kelas Tidak Diketahui',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          const SizedBox(width: 10),
+          Expanded( 
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  dataKelas.namaWaliKelas ?? 'Kelas Tidak Diketahui',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                dataKelas.namaKelas ?? '',
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  color: Colors.white.withOpacity(0.9),
+                const SizedBox(height: 4),
+                Text(
+                  dataKelas.namaKelas ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

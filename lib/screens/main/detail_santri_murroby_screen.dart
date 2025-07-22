@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/santri_model.dart';
 import '../../services/santri_service.dart';
+import '../../models/kamar_model.dart';
+import '../../services/kamar_service.dart';
 import '../../utils/phone_formatter.dart';
+import '../../utils/currency_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -19,12 +22,18 @@ class _DetailSantriMurrobyScreenState extends State<DetailSantriMurrobyScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   bool isLoading = true;
+  bool _showMasuk = false;
+  bool _showKeluar = false;
+
   SantriDetail? _detail;
+  SakuResponse? _sakuData;
+
   bool _showOrangTua = false;
 
 
   final List<Tab> _tabs = const [
     Tab(text: 'Profil'),
+    Tab(text: 'Uang Saku'),
     Tab(text: 'Kesehatan'),
     Tab(text: 'Pemeriksaan'),
     Tab(text: 'Rawat Inap'),
@@ -39,11 +48,15 @@ class _DetailSantriMurrobyScreenState extends State<DetailSantriMurrobyScreen>
 
   Future<void> _fetchData() async {
     final data = await SantriService().fetchSantriDetail(widget.noInduk);
+    final saku = await KamarService().fetchSakuData(widget.noInduk.toString());
+
     setState(() {
       _detail = data;
+      _sakuData = saku;
       isLoading = false;
     });
   }
+
 
   @override
   void dispose() {
@@ -162,6 +175,7 @@ class _DetailSantriMurrobyScreenState extends State<DetailSantriMurrobyScreen>
               controller: _tabController,
               children: [
                 _buildProfilTab(_detail!),
+                _buildSakuTab(),
                 _buildKesehatanTab(_detail!),
                 _buildPemeriksaanTab(_detail!),
                 _buildRawatInapTab(_detail!),
@@ -290,6 +304,191 @@ class _DetailSantriMurrobyScreenState extends State<DetailSantriMurrobyScreen>
       ),
     );
   }
+
+  Widget _buildSakuTab() {
+    if (_sakuData == null) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.account_balance_wallet, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text('Belum ada data saku', style: TextStyle(fontSize: 16, color: Colors.grey)),
+          ],
+        ),
+      );
+    }
+
+    final validMasuk = _sakuData!.data.uangMasuk.where((e) =>
+        e.jumlahMasuk != null &&
+        e.jumlahMasuk != '-' &&
+        e.jumlahMasuk.toString() != '0' &&
+        e.tanggalTransaksi != null &&
+        e.tanggalTransaksi != '-').toList();
+
+    final validKeluar = _sakuData!.data.uangKeluar.where((e) =>
+        e.jumlahKeluar != null &&
+        e.jumlahKeluar != '-' &&
+        e.tanggalTransaksi != null &&
+        e.tanggalTransaksi != '-' &&
+        e.namaMurroby != null &&
+        e.namaMurroby != '-').toList();
+
+    String formatDate(String? date) {
+      if (date == null || date == '-' || date.isEmpty) return 'Tanggal tidak tersedia';
+      try {
+        DateTime parsedDate = DateTime.parse(date);
+        return '${parsedDate.day}/${parsedDate.month}/${parsedDate.year}';
+      } catch (e) {
+        return date;
+      }
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Saldo
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 56, 96, 31),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Saldo Saat Ini', style: TextStyle(fontSize: 14, color: Colors.white)),
+                const SizedBox(height: 4),
+                Text(
+                  CurrencyFormatter.format(_sakuData!.data.saldo),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          ExpansionTile(
+            initiallyExpanded: false,
+            leading: const Icon(Icons.trending_up, color: Colors.green),
+            title: const Text('Riwayat Saku Masuk', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+            children: [
+              if (validMasuk.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Icon(Icons.inbox, size: 48, color: Colors.grey.shade400),
+                      const SizedBox(height: 12),
+                      Text('Belum ada data Saku masuk', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+                    ],
+                  ),
+                )
+              else
+                ...validMasuk.map((item) => Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(16),
+                        title: Text(
+                          formatDate(item.tanggalTransaksi),
+                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                        subtitle: Row(
+                          children: [
+                            Text(
+                              CurrencyFormatter.format(int.parse(item.jumlahMasuk.toString())),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.green,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                              item.uangAsal ?? 'Tidak ada keterangan',
+                              style: const TextStyle(fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+            const SizedBox(height: 8),
+          ],
+        ),
+
+        const SizedBox(height: 12),
+
+        // Expansion untuk Riwayat Saku Keluar
+        ExpansionTile(
+          initiallyExpanded: false,
+          leading: const Icon(Icons.trending_down, color: Colors.red),
+          title: const Text('Riwayat Saku Keluar', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+          children: [
+            if (validKeluar.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Icon(Icons.inbox, size: 48, color: Colors.grey.shade400),
+                    const SizedBox(height: 12),
+                    Text('Belum ada data uang keluar', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+                  ],
+                ),
+              )
+            else
+              ...validKeluar.map((item) => Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.remove, color: Colors.red, size: 20),
+                      ),
+                      title: Text(
+                        CurrencyFormatter.format(int.parse(item.jumlahKeluar.toString())),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.red,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 4),
+                          Text(formatDate(item.tanggalTransaksi), style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                          const SizedBox(height: 2),
+                          Text('Oleh: ${item.namaMurroby}', style: const TextStyle(fontSize: 14)),
+                        ],
+                      ),
+                    ),
+                  )),
+            const SizedBox(height: 8),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+      ],
+    ),
+  );
+}
 
   Widget _buildRow(String label, String value) {
     return Padding(

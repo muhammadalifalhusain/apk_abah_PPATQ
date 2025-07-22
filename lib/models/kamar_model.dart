@@ -2,23 +2,26 @@ class Kamar {
   final int id;
   final String namaKamar;
   final String murroby;
+  final String? fotoMurroby;
 
   Kamar({
     required this.id,
     required this.namaKamar,
     required this.murroby,
+    this.fotoMurroby,
   });
 
   factory Kamar.fromJson(Map<String, dynamic> json) {
-    String parseString(dynamic value) {
+    String? parseNullableString(dynamic value) {
       final str = (value ?? '').toString().trim();
-      return str.isNotEmpty ? str : '-';
+      return str.isEmpty ? null : str;
     }
 
     return Kamar(
       id: json['id'] ?? 0,
-      namaKamar: parseString(json['namaKamar']),
-      murroby: parseString(json['murroby']),
+      namaKamar: (json['namaKamar'] ?? '').toString(),
+      murroby: (json['murroby'] ?? '').toString(),
+      fotoMurroby: parseNullableString(json['fotoMurroby']),
     );
   }
 }
@@ -140,5 +143,96 @@ class KamarDetailResponse {
     );
   }
 }
+
+class SakuResponse {
+  final int status;
+  final String message;
+  final SakuData data;
+
+  SakuResponse({
+    required this.status,
+    required this.message,
+    required this.data,
+  });
+
+  factory SakuResponse.fromJson(Map<String, dynamic> json) {
+    return SakuResponse(
+      status: json['status'],
+      message: json['message'],
+      data: SakuData.fromJson(json['data']),
+    );
+  }
+}
+
+class SakuData {
+  final int saldo;
+  final String waktu;
+  final List<UangMasuk> uangMasuk;
+  final List<UangKeluar> uangKeluar;
+
+  SakuData({
+    required this.saldo,
+    required this.waktu,
+    required this.uangMasuk,
+    required this.uangKeluar,
+  });
+
+  factory SakuData.fromJson(Map<String, dynamic> json) {
+    return SakuData(
+      saldo: json['saldo'],
+      waktu: json['waktu'],
+      uangMasuk: (json['uangMasuk'] as List)
+          .map((e) => UangMasuk.fromJson(e))
+          .toList(),
+      uangKeluar: (json['uangKeluar'] as List)
+          .map((e) => UangKeluar.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+class UangMasuk {
+  final String uangAsal;
+  final int jumlahMasuk;
+  final String tanggalTransaksi;
+
+  UangMasuk({
+    required this.uangAsal,
+    required this.jumlahMasuk,
+    required this.tanggalTransaksi,
+  });
+
+  factory UangMasuk.fromJson(Map<String, dynamic> json) {
+    return UangMasuk(
+      uangAsal: json['uangAsal'],
+      jumlahMasuk: json['jumlahMasuk'],
+      tanggalTransaksi: json['tanggalTransaksi'],
+    );
+  }
+}
+
+class UangKeluar {
+  final int jumlahKeluar;
+  final String catatan;
+  final String tanggalTransaksi;
+  final String namaMurroby;
+
+  UangKeluar({
+    required this.jumlahKeluar,
+    required this.catatan,
+    required this.tanggalTransaksi,
+    required this.namaMurroby,
+  });
+
+  factory UangKeluar.fromJson(Map<String, dynamic> json) {
+    return UangKeluar(
+      jumlahKeluar: json['jumlahKeluar'],
+      catatan: json['catatan'],
+      tanggalTransaksi: json['tanggalTransaksi'],
+      namaMurroby: json['namaMurroby'],
+    );
+  }
+}
+
 
 
