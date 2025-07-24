@@ -168,7 +168,7 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Text('Tambah Dawuh', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.indigo,
+        backgroundColor: const Color(0xFF5B913B), 
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -344,8 +344,8 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
         const SizedBox(height: 20),
         _buildTextField(
           controller: _isiDakwahController,
-          label: 'Isi Dakwah',
-          hint: 'Masukkan isi dakwah',
+          label: 'Isi Dawuh',
+          hint: 'Masukkan isi dakwah min 20 karakter',
           maxLines: 6,
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -442,7 +442,7 @@ class _AddDawuhScreenState extends State<AddDawuhScreen> with TickerProviderStat
       child: ElevatedButton(
         onPressed: _isLoading ? null : _submitForm,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.indigo,
+          backgroundColor: const Color.fromARGB(255, 56, 96, 31),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

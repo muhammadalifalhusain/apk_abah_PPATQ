@@ -43,6 +43,7 @@ class DashboardData {
   final String totalPembayaranUnvalidBulanIni;
   final int jumlahSantriBelumLapor;
   final String jumlahPembayaranLalu;
+  final int tunggakan;
   final Tahfidzan tahfidzan;
 
   DashboardData({
@@ -62,6 +63,7 @@ class DashboardData {
     required this.totalPembayaranUnvalidBulanIni,
     required this.jumlahSantriBelumLapor,
     required this.jumlahPembayaranLalu,
+    required this.tunggakan,
     required this.tahfidzan,
   });
 
@@ -86,7 +88,9 @@ class DashboardData {
           json['totalPembayaranUnvalidBulanIni'] as String? ?? '0',
       jumlahSantriBelumLapor: json['jumlahSantriBelumLapor'] as int? ?? 0,
       jumlahPembayaranLalu: json['jumlahPembayaranLalu'] as String? ?? '0',
-      tahfidzan: Tahfidzan.fromJson(json['tahfidzan'] as Map<String, dynamic>?),
+      tunggakan: json['tunggakan'] as int? ?? 0,
+      tahfidzan:
+          Tahfidzan.fromJson(json['tahfidzan'] as Map<String, dynamic>? ?? {}),
     );
   }
 
@@ -108,82 +112,88 @@ class DashboardData {
       totalPembayaranUnvalidBulanIni: '0',
       jumlahSantriBelumLapor: 0,
       jumlahPembayaranLalu: '0',
-      tahfidzan: Tahfidzan.empty());
+      tunggakan: 0,
+      tahfidzan: Tahfidzan.empty(),
+    );
   }
 }
 
 class Tahfidzan {
-  final HighestLowest? highest;
-  final HighestLowest? lowest;
+  final Capaian? tertinggi;
+  final Capaian? terendah;
 
   Tahfidzan({
-    required this.highest,
-    required this.lowest,
+    required this.tertinggi,
+    required this.terendah,
   });
 
   factory Tahfidzan.fromJson(Map<String, dynamic>? json) {
     json ??= {};
     return Tahfidzan(
-      highest: json['tertinggi'] != null
-          ? HighestLowest.fromJson(json['tertinggi'] as Map<String, dynamic>)
+      tertinggi: json['tertinggi'] != null
+          ? Capaian.fromJson(json['tertinggi'] as Map<String, dynamic>)
           : null,
-      lowest: json['terendah'] != null
-          ? HighestLowest.fromJson(json['terendah'] as Map<String, dynamic>)
+      terendah: json['terendah'] != null
+          ? Capaian.fromJson(json['terendah'] as Map<String, dynamic>)
           : null,
     );
   }
 
   factory Tahfidzan.empty() {
     return Tahfidzan(
-      highest: HighestLowest.empty(),
-      lowest: HighestLowest.empty(),
+      tertinggi: Capaian.empty(),
+      terendah: Capaian.empty(),
     );
   }
 }
 
-class HighestLowest {
-  final String achievement;
-  final List<Student> students;
+class Capaian {
+  final String capaian;
+  final int jumlah;
+  final List<Santri> santri;
 
-  HighestLowest({
-    required this.achievement,
-    required this.students,
+  Capaian({
+    required this.capaian,
+    required this.jumlah,
+    required this.santri,
   });
 
-  factory HighestLowest.fromJson(Map<String, dynamic>? json) {
+  factory Capaian.fromJson(Map<String, dynamic>? json) {
     json ??= {};
-    return HighestLowest(
-      achievement: json['capaian'] as String? ?? '',
-      students: (json['santri'] as List<dynamic>? ?? [])
-          .map((e) => Student.fromJson(e as Map<String, dynamic>? ?? {}))
+    return Capaian(
+      capaian: json['capaian'] as String? ?? '',
+      jumlah: json['jumlah'] as int? ?? 0,
+      santri: (json['santri'] as List<dynamic>? ?? [])
+          .map((e) => Santri.fromJson(e as Map<String, dynamic>? ?? {}))
           .toList(),
     );
   }
 
-  factory HighestLowest.empty() {
-    return HighestLowest(
-      achievement: '',
-      students: [],
+  factory Capaian.empty() {
+    return Capaian(
+      capaian: '',
+      jumlah: 0,
+      santri: [],
     );
   }
 }
 
-class Student {
+class Santri {
   final String nama;
   final String? photo;
   final String? kelas;
   final String? guruTahfidz;
 
-  Student({
+  Santri({
     required this.nama,
     this.photo,
     this.kelas,
     this.guruTahfidz,
   });
 
-  factory Student.fromJson(Map<String, dynamic>? json) {
+  factory Santri.fromJson(Map<String, dynamic>? json) {
     json ??= {};
-    return Student(
+    return Santri(
       nama: json['nama'] as String? ?? '',
       photo: json['photo'] as String?,
       kelas: json['kelas'] as String?,

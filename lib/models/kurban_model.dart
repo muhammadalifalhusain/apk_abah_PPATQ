@@ -124,3 +124,58 @@ class QurbanDetailItem {
     );
   }
 }
+
+class RiwayatKurbanResponse {
+  final int status;
+  final String message;
+  final List<RiwayatKurban> data;
+
+  RiwayatKurbanResponse({
+    required this.status,
+    required this.message,
+    required this.data,
+  });
+
+  factory RiwayatKurbanResponse.fromJson(Map<String, dynamic> json) {
+    return RiwayatKurbanResponse(
+      status: json['status'] ?? 0,
+      message: json['message'] ?? '-',
+      data: (json['data'] as List<dynamic>?)
+              ?.map((item) => RiwayatKurban.fromJson(item))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class RiwayatKurban {
+  final String nama;
+  final String photo;
+  final String atasNama;
+  final String foto;
+  final String jenis;
+  final int jumlah;
+  final int tahunHijriah;
+
+  RiwayatKurban({
+    required this.nama,
+    required this.photo,
+    required this.atasNama,
+    required this.foto,
+    required this.jenis,
+    required this.jumlah,
+    required this.tahunHijriah,
+  });
+
+  factory RiwayatKurban.fromJson(Map<String, dynamic> json) {
+    return RiwayatKurban(
+      nama: (json['nama'] ?? '-').toString(),
+      photo: (json['photo'] ?? '-').toString(),
+      atasNama: (json['atasNama'] ?? '-').toString(),
+      foto: (json['foto'] ?? '-').toString(),
+      jenis: (json['jenis'] ?? '-').toString(),
+      jumlah: json['jumlah'] ?? 0,
+      tahunHijriah: json['tahunHijriah'] ?? 0,
+    );
+  }
+}

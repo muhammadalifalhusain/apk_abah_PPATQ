@@ -15,6 +15,9 @@ import '../../models/berita_model.dart';
 import '../../services/berita_service.dart';
 import '../../utils/get_month.dart';
 
+import '../../models/capaian_tahfidz_model.dart';
+import '../../services/capaian_tahfidz_service.dart';
+import '../../widgets/capaian_tahfidz.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -25,8 +28,11 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final DashboardService _dashboardService = DashboardService();
   DashboardData? _dashboardData;
+  final CapaianTahfidzService capaianService = CapaianTahfidzService();
   bool _isLoading = true;
-
+  bool _isHighestExpanded = false;
+  bool _isLowestExpanded = false;
+  CapaianTahfidzResponse? capaianResponse; 
   String? nama;
   String? photo;
   List<BeritaItem> _beritaList = [];
@@ -39,7 +45,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     loadUserSession();
     loadDashboard();
+    _loadCapaianTahfidz();();
     loadBerita(); 
+  }
+
+  Future<void> _loadCapaianTahfidz() async {
+    final result = await CapaianTahfidzService.fetchCapaianTahfidz();
+    if (result != null) {
+      setState(() {
+        capaianResponse = result;
+      });
+    }
   }
 
   Future<void> loadUserSession() async {
@@ -387,56 +403,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'value': _dashboardData!.jumlahPegawaiPerempuan,
                           },
                         ]),
-                        if ((_dashboardData?.tahfidzan.highest?.students.isNotEmpty ?? false) ||
-                          (_dashboardData?.tahfidzan.lowest?.students.isNotEmpty ?? false)) ...[
-                          _buildSectionTitle('Ketahfidzan Santri', Icons.menu_book_rounded),
-                          const SizedBox(height: 4),
-                          Card(
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            child: ExpansionTile(
-                              initiallyExpanded: false,
-                              title: const Text('Lihat Detail Capaian'),
-                              childrenPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                              children: [
-                                if (_dashboardData!.tahfidzan.highest?.students.isNotEmpty == true) ...[
-                                  Card(
-                                    color: const Color.fromARGB(255, 56, 96, 31),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Text(
-                                        'Capaian Tertinggi: ${_dashboardData!.tahfidzan.highest?.achievement?.isNotEmpty == true ? _dashboardData!.tahfidzan.highest!.achievement! : "-"}',
-                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _buildSantriList(_dashboardData!.tahfidzan.highest!.students),
-                                  const SizedBox(height: 16),
-                                ],
-                                if (_dashboardData!.tahfidzan.lowest?.students.isNotEmpty == true) ...[
-                                  Card(
-                                    color: const Color.fromARGB(255, 56, 96, 31),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Text(
-                                        'Capaian Terendah: ${_dashboardData!.tahfidzan.lowest?.achievement.isNotEmpty == true ? _dashboardData!.tahfidzan.lowest!.achievement : "-"}',
-                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _buildSantriList(_dashboardData!.tahfidzan.lowest!.students),
-                                ],
-                              ],
+                        if (capaianResponse?.data != null) ...[
+                          CapaianCard(
+                            title: 'Tertinggi',
+                            data: capaianResponse!.data.tertinggi,
+                          ),
+                          CapaianCard(
+                            title: 'Terendah',
+                            data: capaianResponse!.data.terendah,
+                          ),
+                        ] else ...[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'Data capaian tahfidz tidak tersedia.',
+                              style: TextStyle(color: Colors.grey),
                             ),
                           ),
                         ],
@@ -524,20 +505,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 6),
           Text.rich(
             TextSpan(
-              text: "Laporan Bayar s/d tanggal ${DateTime.now().day} ${getMonthName(DateTime.now().month)} ${DateTime.now().year}\n",
-              style: TextStyle(fontSize: 14), 
+              text:
+                  "Laporan Bayar s/d tanggal ${DateTime.now().day} ${getMonthName(DateTime.now().month)} ${DateTime.now().year}\n",
+              style: const TextStyle(fontSize: 14),
               children: [
                 TextSpan(
-                  text: "Jumlah Tagihan Syahriah\nRp: ${_dashboardData?.totalTagihanSyahriah ?? '0'}\n",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: const Color.fromARGB(221, 188, 42, 42)),
+                  text: "Jumlah Tunggakan: ",
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: "Rp${_dashboardData?.tunggakan ?? '0'}\n",
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ],
                 ),
                 TextSpan(
-                  text: "Syahriah tervalidasi\nRp : ${_dashboardData?.totalPembayaranValidBulanIni ?? '0'}\n",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+                  text: "Jumlah Tagihan Syahriah: ",
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: "Rp${_dashboardData?.totalTagihanSyahriah ?? '0'}\n",
+                      style: const TextStyle(color: Colors.orange),
+                    ),
+                  ],
                 ),
                 TextSpan(
-                  text: "Syahriah belum tervalidasi\nRp : ${_dashboardData?.totalPembayaranUnvalidBulanIni ?? '0'}",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: const Color.fromARGB(221, 188, 42, 42)),
+                  text: "Syahriah belum tervalidasi: ",
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: "Rp${_dashboardData?.totalPembayaranUnvalidBulanIni ?? '0'}\n",
+                      style: const TextStyle(color: Colors.lime),
+                    ),
+                  ],
+                ),
+                TextSpan(
+                  text: "Syahriah tervalidasi: ",
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: "Rp${_dashboardData?.totalPembayaranValidBulanIni ?? '0'}\n",
+                      style: const TextStyle(color: Colors.green),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -571,7 +581,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildSantriList(List<Student> students) {
+  Widget _buildSantriList(List<Santri> students) {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

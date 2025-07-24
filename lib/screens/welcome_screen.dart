@@ -1,29 +1,29 @@
 import 'package:abah/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
-import 'galeri_screen.dart'; 
-import 'dakwah_screen.dart'; 
-import 'about_screen.dart'; 
+import 'galeri_screen.dart';
+import 'dakwah_screen.dart';
+import 'about_screen.dart';
+import 'informasi_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
-  
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateMixin {
-  final PageController _pageController = PageController(viewportFraction: 0.85);
+  final PageController _pageController = PageController(viewportFraction: 0.9);
   int _currentPage = 0;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   String? _lastPressedMenu;
+
   final List<List<Map<String, dynamic>>> menuPages = [
     [
       {'icon': Icons.record_voice_over, 'label': 'Dawuh Abah', 'color': Colors.orange},
-      
       {'icon': Icons.photo_library, 'label': 'Galeri', 'color': Colors.purple},
       {'icon': Icons.school, 'label': 'PPATQ-RF ku', 'color': Colors.green},
     ],
@@ -52,123 +52,125 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     _animationController.dispose();
     super.dispose();
   }
-  void _handleMenuTap(String menuLabel) {
-    // Feedback haptic
+
+  void _handleMenuTap(String label) async {
     HapticFeedback.lightImpact();
-    
-    // Animasi tekan
-    setState(() {
-      _lastPressedMenu = menuLabel;
-    });
-    
-    // Navigasi berdasarkan menu yang dipilih
-    switch(menuLabel) {
+    setState(() => _lastPressedMenu = label);
+
+    switch (label) {
       case 'Dawuh Abah':
         Navigator.push(context, MaterialPageRoute(builder: (_) => DakwahScreen()));
-        break;
-      case 'Informasi':
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => InfoScreen()));
-        _showComingSoonSnackbar();
-        break;
-      case 'PPATQ-RF ku':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => AboutScreen()));
         break;
       case 'Galeri':
         Navigator.push(context, MaterialPageRoute(builder: (_) => GaleriScreen()));
         break;
-      case 'Lokasi':
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => LocationScreen()));
-        _showComingSoonSnackbar();
+      case 'PPATQ-RF ku':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => AboutScreen()));
         break;
+      case 'Lokasi':
+        final url = Uri.parse('https://maps.app.goo.gl/MdLVEh8XRvam5ohc7');
+        if (await canLaunchUrl(url)) {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Tidak dapat membuka Google Maps")),
+          );
+        }
+        break;
+      case 'Informasi':
+        Navigator.push(context, MaterialPageRoute(builder: (_) => InformasiScreen()));
+        break;
+      default:
+        _showComingSoonSnackbar();
     }
   }
 
   void _showComingSoonSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Fitur ini akan segera hadir', 
-          style: GoogleFonts.poppins()),
+        content: Text('Fitur ini akan segera hadir', style: GoogleFonts.poppins()),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
 
-  Widget _buildMenuItem(IconData icon, String label, Color iconColor) {
-    final isPressed = _lastPressedMenu == label;
-    
+  Widget _buildMenuGrid(List<Map<String, dynamic>> menus) {
     return Padding(
-      padding: const EdgeInsets.all(4),
-      child: AnimatedScale(
-        duration: const Duration(milliseconds: 200),
-        scale: isPressed ? 0.95 : 1.0,
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () => _handleMenuTap(label),
-            splashColor: Colors.white.withOpacity(0.2),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: Colors.teal.withOpacity(0.15),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
-                        width: 1.5,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: menus.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 2,
+          crossAxisSpacing: 6,
+          childAspectRatio: 1.1,
+        ),
+        itemBuilder: (context, index) {
+          final item = menus[index];
+          final isPressed = _lastPressedMenu == item['label'];
+
+          return AnimatedScale(
+            scale: isPressed ? 0.95 : 1.0,
+            duration: const Duration(milliseconds: 120),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: () => _handleMenuTap(item['label']),
+                splashColor: Colors.white.withOpacity(0.1),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: item['color'].withOpacity(0.7),
+                        shape: BoxShape.circle,
                       ),
+                      child: Icon(item['icon'], size: 27, color: Colors.white),
                     ),
-                    child: Icon(
-                      icon,
-                      color: iconColor,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Flexible(
-                    child: Text(
-                      label,
+                    const SizedBox(height: 4),
+                    Text(
+                      item['label'],
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
-                      textAlign: TextAlign.center,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 
-
-  Widget _buildCustomIndicator() {
-    return SmoothPageIndicator(
-      controller: _pageController,
-      count: menuPages.length,
-      effect: ExpandingDotsEffect(
-        activeDotColor: Colors.teal.shade400,
-        dotColor: Colors.white.withOpacity(0.4),
-        dotHeight: 6,
-        dotWidth: 6,
-        expansionFactor: 3,
-        spacing: 4,
+  Widget _buildPageIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        menuPages.length,
+        (index) => AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: _currentPage == index ? 16 : 8,
+          height: 6,
+          decoration: BoxDecoration(
+            color: _currentPage == index ? Colors.white : Colors.white.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
       ),
     );
   }
@@ -180,7 +182,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
         children: [
           Positioned.fill(
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/bg-welcome.jpg'),
                   fit: BoxFit.cover,
@@ -191,17 +193,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.3),
-                      Colors.black.withOpacity(0.6),
-                    ],
+                    colors: [Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.6)],
                   ),
                 ),
               ),
             ),
           ),
-          
-          // Main content
           FadeTransition(
             opacity: _fadeAnimation,
             child: Column(
@@ -210,107 +207,59 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                   child: Column(
                     children: [
                       const SizedBox(height: 5),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 800),
+                      Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                          
-                          child: Column(
-                            children: [
-                              Text(
-                                'RAUDLATUL FALAH - PATI',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.0,
-                                ),
-                                textAlign: TextAlign.center,
+                        child: Column(
+                          children: [
+                            Text(
+                              'RAUDLATUL FALAH - PATI',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0,
                               ),
-                              const SizedBox(height: 3),
-                              Text(
-                                'AKSES ABAH',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 1.5,
-                                ),
-                                textAlign: TextAlign.center,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              'AKSES ABAH',
+                              style: GoogleFonts.poppins(
+                                color: Colors.black,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 1.5,
                               ),
-                            ],
-                          ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                
-                const SizedBox(height: 25),
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(125),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(125),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: 220, 
-                        height: 220,
-                      ),
-                    ),
-                  ),
-                ),
-                
-                const Spacer(),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.teal.withOpacity(0.15),
-                        Colors.white.withOpacity(0.08),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.25)),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 85, 
-                        child: PageView.builder(
-                          controller: _pageController,
-                          itemCount: menuPages.length,
-                          onPageChanged: (index) => setState(() => _currentPage = index),
-                          itemBuilder: (context, pageIndex) {
-                            return GridView.count(
-                              physics: const NeverScrollableScrollPhysics(), 
-                              crossAxisCount: 3, 
-                              childAspectRatio: 0.8, 
-                              shrinkWrap: true,
-                              children: menuPages[pageIndex]
-                                  .map((item) => _buildMenuItem(
-                                        item['icon'],
-                                        item['label'],
-                                        item['color'],
-                                      ))
-                                  .toList(),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      _buildCustomIndicator(),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(125),
+                  child: Image.asset('assets/images/logo.png', width: 180, height: 180),
+                ),
+                const SizedBox(height: 280),
+
+                // Menu Area
+                SizedBox(
+                  height: 155,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (index) => setState(() => _currentPage = index),
+                    itemCount: menuPages.length,
+                    itemBuilder: (context, index) => _buildMenuGrid(menuPages[index]),
+                  ),
+                ),
+                _buildPageIndicator(),
+                const SizedBox(height: 10),
+
+                // Login Button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
@@ -325,28 +274,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(25),
+                        borderRadius: BorderRadius.circular(15),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginAbahScreen()),
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => LoginAbahScreen()));
                         },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 18),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.login,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                              const SizedBox(width: 10),
+                              const Icon(Icons.login, color: Colors.white, size: 20),
+                              const SizedBox(width: 8),
                               Text(
                                 'MASUK',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                   letterSpacing: 1.5,
@@ -359,8 +301,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                     ),
                   ),
                 ),
-                
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
               ],
             ),
           ),
